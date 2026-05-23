@@ -1,0 +1,27 @@
+{
+  "name": "bafen",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/a11y": "^1.0.0-alpha.1",
+    "@nuxt/eslint": "^1.15.2",
+    "@nuxt/hints": "^1.1.2",
+    "@nuxt/image": "^2.0.0",
+    "@nuxt/scripts": "^1.1.1",
+    "@nuxt/ui": "^4.8.0",
+    "@unhead/vue": "^2.1.15",
+    "eslint": "^10.4.0",
+    "nuxt": "^4.4.6",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3",
+    "vue": "^3.5.34",
+    "vue-router": "^5.0.7"
+  }
+}
