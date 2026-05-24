@@ -1,6 +1,18 @@
 // @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import withNuxt from './.nuxt/eslint.config.mjs';
 
 export default withNuxt(
-  // Your custom configs here
-)
+  eslintPluginPrettierRecommended,
+  {
+    rules: {
+      'prettier/prettier': 'warn',
+    },
+  },
+  {
+    ignores: ['server/api/**'],
+    rules: {
+      'no-console': 'warn',
+    },
+  },
+);
