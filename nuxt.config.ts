@@ -22,6 +22,11 @@ export default defineNuxtConfig({
     db: 'sqlite',
     kv: true,
   },
+  security: {
+    headers: {
+      crossOriginOpenerPolicy: 'same-origin-allow-popups',
+    },
+  },
   icon: {
     size: '20px',
   },
@@ -37,4 +42,19 @@ export default defineNuxtConfig({
 
   css: ['./app/assets/css/main.css'],
   vite: { plugins: [tailwindcss()] },
+
+  nitro: {
+    routeRules: {
+      '/admin/**': { ssr: false },
+    },
+  },
+  runtimeConfig: {
+    adminEmails: process.env.NUXT_ADMIN_EMAILS, // 使用 ',' 分隔
+    jwtSecret: process.env.NUXT_JWT_SECRET,
+    jwtExpTime: process.env.NUXT_JWT_EXP_TIME, // ex: '1d', '12h', '30m'
+
+    public: {
+      googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
+    },
+  },
 });
