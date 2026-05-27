@@ -1,6 +1,7 @@
 <template>
   <div>
     <button type="button" @click="handleLogout">登出</button>
+    <ImageUpload />
   </div>
 </template>
 
