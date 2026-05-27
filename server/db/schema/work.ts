@@ -1,7 +1,6 @@
 import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { timestamp, uuid } from './_utils';
-import { imageTable } from './image';
-import { tagTable } from './tag';
+import { imageTable, tagTable } from './index';
 
 export const workTable = sqliteTable('work', {
   id: uuid('id'),
