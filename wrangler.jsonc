@@ -1,4 +1,5 @@
 {
+  "name": "bafen",
   "$schema": "node_modules/wrangler/config-schema.json",
   "observability": {
     "logs": {
@@ -24,7 +25,7 @@
       "binding": "DB",
       "database_id": "51e38e30-2454-4667-a4d0-49c9e786540b",
       "migrations_table": "_hub_migrations",
-      "migrations_dir": ".output/server/db/migrations/sqlite/",
+      "migrations_dir": "server/db/migrations/sqlite/",
     },
   ],
   "kv_namespaces": [
@@ -32,5 +33,5 @@
       "binding": "KV",
       "id": "a1fd2ba419874ad5b82927773b7dd14f",
     },
-  ],"name": "bafen",
+  ],
 }

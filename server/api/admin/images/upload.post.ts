@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
 
   // 將資訊存入資料表
   const recordsToInsert = uploadResults.map((file) => ({
-    r2Key: file.pathname,
+    storageKey: file.pathname,
     size: file.size,
   }));
 
