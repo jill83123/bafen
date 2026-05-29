@@ -1,9 +1,9 @@
 import { contactTable } from '#server/db/schema';
-import ContactFormDataSchema from '#shared/schema/ContactFormData';
+import { ContactFormSchema } from '#shared/schema';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const result = ContactFormDataSchema.safeParse(body);
+  const result = ContactFormSchema.safeParse(body);
   if (!result.success) throw createError({ statusCode: 400, message: '資料格式不正確' });
 
   const contactData = result.data;

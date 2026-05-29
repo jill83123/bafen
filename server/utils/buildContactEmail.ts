@@ -1,9 +1,9 @@
-import type { ContactFormData } from '#shared/schema/ContactFormData';
+import type { ContactForm } from '#shared/schema';
 
 type BuildContactEmailParams = {
   from: string;
   to: string;
-  data: ContactFormData;
+  data: ContactForm;
 };
 
 const CRLF = '\r\n';
@@ -19,7 +19,7 @@ const escapeHtml = (value: string) => {
 
 const encodeMimeHeader = (value: string) => `=?utf-8?B?${Buffer.from(value).toString('base64')}?=`;
 
-const buildContactEmailTextBody = (data: ContactFormData) => {
+const buildContactEmailTextBody = (data: ContactForm) => {
   return (
     `網站收到一筆新的聯絡表單，內容如下。${CRLF}${CRLF}` +
     `姓名：${data.name}${CRLF}` +
@@ -30,7 +30,7 @@ const buildContactEmailTextBody = (data: ContactFormData) => {
   );
 };
 
-const buildContactEmailHtmlBody = (data: ContactFormData) => {
+const buildContactEmailHtmlBody = (data: ContactForm) => {
   const fields = [
     { label: '姓名', value: data.name },
     { label: 'EMAIL', value: data.email },

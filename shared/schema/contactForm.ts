@@ -6,7 +6,7 @@ const telRegex = /^(09\d{2}-\d{3}-\d{3}|09\d{8}|0\d{1,2}-?\d{7,8})$/;
 // 需包含縣市區鄉鎮路街巷弄字眼
 const addressRegex = /^.*[縣市區鄉鎮路街巷弄].*$/;
 
-const ContactFormDataSchema = z.object({
+export const ContactFormSchema = z.object({
   name: z.string().min(2, '姓名最少需要 2 個字'),
   email: z.email('請輸入有效的電子郵件地址'),
   tel: z.string().regex(telRegex, '電話格式不正確，例如：09xx-xxx-xxx、0x-xxxxxxxx'),
@@ -14,5 +14,4 @@ const ContactFormDataSchema = z.object({
   content: z.string().trim().min(1, '需求內容為必填欄位'),
 });
 
-export default ContactFormDataSchema;
-export type ContactFormData = z.infer<typeof ContactFormDataSchema>;
+export type ContactForm = z.infer<typeof ContactFormSchema>;
