@@ -3,10 +3,10 @@ import { ContactFormSchema } from '#shared/schema';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const result = ContactFormSchema.safeParse(body);
-  if (!result.success) throw createError({ statusCode: 400, message: '資料格式不正確' });
+  const bodyParseResult = ContactFormSchema.safeParse(body);
+  if (!bodyParseResult.success) throw createError({ statusCode: 400 });
 
-  const contactData = result.data;
+  const contactData = bodyParseResult.data;
 
   // 存入資料表
   await db.insert(contactTable).values(contactData);
@@ -61,5 +61,5 @@ export default defineEventHandler(async (event) => {
     body: { raw: encodedEmail },
   });
 
-  return { message: '資料送出成功' };
+  return {};
 });

@@ -1,11 +1,17 @@
 import { contactTable } from '#server/db/schema';
+import { PaginationShape } from '#server/schema';
 import { countDistinct, desc } from 'drizzle-orm';
+import { z } from 'zod';
+
+const QuerySchema = z.object({ ...PaginationShape });
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
+  const queryParseResult = QuerySchema.safeParse(query);
+  if (!queryParseResult.success) throw createError({ statusCode: 400 });
 
-  const currentPage = parseInt(query.page as string) || 1;
-  const pageSize = parseInt(query.page_size as string) || 10;
+  const currentPage = queryParseResult.data.page;
+  const pageSize = queryParseResult.data.page_size;
   const offset = (currentPage - 1) * pageSize;
 
   const contacts = await db
@@ -24,7 +30,6 @@ export default defineEventHandler(async (event) => {
   const totalPages = Math.ceil(totalCount / pageSize);
 
   return {
-    message: '資料取得成功',
     data: {
       contacts,
       pagination: {

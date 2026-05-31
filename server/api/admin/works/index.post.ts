@@ -10,17 +10,13 @@ import { eq, inArray } from 'drizzle-orm';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const result = WorkFormSchema.safeParse(body);
-  if (!result.success) throw createError({ statusCode: 400, message: '資料格式不正確' });
+  const bodyParseResult = WorkFormSchema.safeParse(body);
+  if (!bodyParseResult.success) throw createError({ statusCode: 400 });
 
-  const workData = {
-    ...result.data,
-    cover_id: result.data.coverId,
-    image_ids: result.data.imageIds,
-    is_public: result.data.isPublic,
-  };
-  const imageIds = [...new Set(workData.image_ids)];
-  const imageIdsToCheck = [...new Set([workData.cover_id, ...imageIds])];
+  const workData = bodyParseResult.data;
+
+  const imageIds = [...new Set(workData.imageIds)];
+  const imageIdsToCheck = [...new Set([workData.coverId, ...imageIds])];
   const tagNames = [...new Set(workData.tags.map((tag) => tag.trim()).filter(Boolean))];
 
   // 確保 slug 是唯一的
@@ -48,8 +44,8 @@ export default defineEventHandler(async (event) => {
         title: workData.title,
         slug: workData.slug,
         category: workData.category,
-        coverId: workData.cover_id,
-        isPublic: workData.is_public,
+        coverId: workData.coverId,
+        isPublic: workData.isPublic,
       })
       .returning({ id: workTable.id });
 
@@ -94,5 +90,5 @@ export default defineEventHandler(async (event) => {
     }
   });
 
-  return { message: '作品新增成功' };
+  return {};
 });

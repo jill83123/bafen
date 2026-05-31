@@ -10,8 +10,8 @@ const toast = useAppToast();
 
 const handleLogout = async () => {
   try {
-    const result = await $fetch('/api/admin/logout', { method: 'POST' });
-    toast.success(result.message || '登出成功');
+    await $fetch('/api/admin/logout', { method: 'POST' });
+    toast.success('登出成功');
     navigateTo('/');
   } catch (error) {
     toast.error(getErrorMessage(error, '登出失敗'));

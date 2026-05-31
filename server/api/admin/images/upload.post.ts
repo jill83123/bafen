@@ -3,14 +3,12 @@ import { blob, ensureBlob } from '@nuxthub/blob';
 
 export default defineEventHandler(async (event) => {
   const contentType = event.node.req.headers['content-type'] || '';
-  if (!contentType.startsWith('multipart/form-data')) {
-    throw createError({ statusCode: 400, message: '圖片上傳失敗' });
-  }
+  if (!contentType.startsWith('multipart/form-data')) throw createError({ statusCode: 400 });
 
   const formData = await readFormData(event);
   const images = formData.getAll('images') as File[];
 
-  if (!images.length) throw createError({ statusCode: 400, message: '圖片上傳失敗' });
+  if (!images.length) throw createError({ statusCode: 400 });
 
   // 上傳到檔案儲存服務
   const uploadResults = await Promise.all(
@@ -32,7 +30,6 @@ export default defineEventHandler(async (event) => {
   await db.insert(imageTable).values(recordsToInsert);
 
   return {
-    message: '圖片上傳成功',
     data: {
       count: uploadResults.length,
     },

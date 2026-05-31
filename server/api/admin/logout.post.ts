@@ -8,5 +8,5 @@ export default defineEventHandler(async (event) => {
   const timeLeft = admin.exp - nowInSeconds;
   if (timeLeft > 0) await kv.set(`blackToken:${admin.token}`, 'logout_revoked', { ttl: timeLeft });
 
-  return { message: '登出成功' };
+  return {};
 });

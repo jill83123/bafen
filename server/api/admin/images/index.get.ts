@@ -1,20 +1,26 @@
 import { imageTable, workToImageTable } from '#server/db/schema';
+import { PaginationShape } from '#server/schema';
 import { and, countDistinct, desc, eq, isNotNull, isNull, sum } from 'drizzle-orm';
+import { z } from 'zod';
 
-type FilterStatus = 'used' | 'unused' | 'all';
+const QuerySchema = z.object({
+  ...PaginationShape,
+  is_used: z.enum(['true', 'false', '']).optional().default(''),
+});
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
+  const queryParseResult = QuerySchema.safeParse(query);
+  if (!queryParseResult.success) throw createError({ statusCode: 400 });
 
-  const currentPage = parseInt(query.page as string) || 1;
-  const pageSize = parseInt(query.page_size as string) || 10;
+  const currentPage = queryParseResult.data.page;
+  const pageSize = queryParseResult.data.page_size;
   const offset = (currentPage - 1) * pageSize;
-  let filterStatus = (query.filter as FilterStatus) || '';
+  const isUsed = queryParseResult.data.is_used;
 
   const whereConditions = [];
-  if (filterStatus === 'unused') whereConditions.push(isNull(workToImageTable.imageId));
-  else if (filterStatus === 'used') whereConditions.push(isNotNull(workToImageTable.imageId));
-  else filterStatus = 'all';
+  if (isUsed === 'true') whereConditions.push(isNotNull(workToImageTable.imageId));
+  else if (isUsed === 'false') whereConditions.push(isNull(workToImageTable.imageId));
 
   const whereClause = whereConditions.length ? and(...whereConditions) : undefined;
 
@@ -48,9 +54,7 @@ export default defineEventHandler(async (event) => {
       : `${(totalSize / 1024 ** 2).toFixed(2)} MB`;
 
   return {
-    message: '圖片取得成功',
     data: {
-      filterStatus,
       images,
       pagination: {
         currentPage,

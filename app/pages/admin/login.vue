@@ -26,11 +26,11 @@ const handleLogin = async () => {
   if (!accessToken) return;
 
   try {
-    const result = await $fetch('/api/admin/login', {
+    await $fetch('/api/admin/login', {
       method: 'POST',
       body: { token: accessToken },
     });
-    toast.success(result.message || '登入成功');
+    toast.success('登入成功');
     navigateTo('/admin', { replace: true });
   } catch (error) {
     toast.error(getErrorMessage(error, '登入失敗'));

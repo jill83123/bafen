@@ -1,9 +1,16 @@
 import { imageTable } from '#server/db/schema';
+import { UuidV4Schema } from '#server/schema';
 import { eq } from 'drizzle-orm';
+import { z } from 'zod';
+
+const ParamSchema = z.object({ id: UuidV4Schema });
 
 export default defineEventHandler(async (event) => {
-  const { id: imageId } = getRouterParams(event);
-  if (!imageId) throw createError({ statusCode: 400, message: '圖片刪除失敗' });
+  const param = getRouterParams(event);
+  const paramParseResult = ParamSchema.safeParse(param);
+  if (!paramParseResult.success) throw createError({ statusCode: 400 });
+
+  const { id: imageId } = paramParseResult.data;
 
   const [image] = await db
     .select({ id: imageTable.id, storageKey: imageTable.storageKey })
@@ -18,5 +25,5 @@ export default defineEventHandler(async (event) => {
     blob.del(image.storageKey),
   ]);
 
-  return { message: '圖片刪除成功' };
+  return {};
 });
