@@ -27,7 +27,15 @@ export default defineEventHandler(async (event) => {
     size: file.size,
   }));
 
-  await db.insert(imageTable).values(recordsToInsert);
+  try {
+    await db.transaction(async (tx: typeof db) => {
+      await tx.insert(imageTable).values(recordsToInsert);
+    });
+  } catch {
+    // DB 寫入失敗時，清掉已上傳檔案以避免殘留 orphan files
+    await Promise.allSettled(uploadResults.map((file) => blob.del(file.pathname)));
+    throw createError({ statusCode: 500, message: '伺服器錯誤，請稍後再試' });
+  }
 
   return {
     data: {
