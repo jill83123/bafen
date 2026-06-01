@@ -24,28 +24,28 @@ export default defineEventHandler(async (event) => {
 
   const whereClause = whereConditions.length ? and(...whereConditions) : undefined;
 
-  const images = await db
-    .select({ id: imageTable.id, path: imageTable.storageKey })
-    .from(imageTable)
-    .leftJoin(workToImageTable, eq(imageTable.id, workToImageTable.imageId))
-    .where(whereClause)
-    .groupBy(imageTable.id)
-    .orderBy(desc(imageTable.createdAt))
-    .limit(pageSize)
-    .offset(offset);
+  const [images, [countSummary], [sizeSummary]] = await Promise.all([
+    db
+      .select({ id: imageTable.id, path: imageTable.storageKey })
+      .from(imageTable)
+      .leftJoin(workToImageTable, eq(imageTable.id, workToImageTable.imageId))
+      .where(whereClause)
+      .groupBy(imageTable.id)
+      .orderBy(desc(imageTable.createdAt))
+      .limit(pageSize)
+      .offset(offset),
 
-  // 計算總頁數
-  const [countSummary] = await db
-    .select({ total: countDistinct(imageTable.id) })
-    .from(imageTable)
-    .leftJoin(workToImageTable, eq(imageTable.id, workToImageTable.imageId))
-    .where(whereClause);
+    db
+      .select({ total: countDistinct(imageTable.id) })
+      .from(imageTable)
+      .leftJoin(workToImageTable, eq(imageTable.id, workToImageTable.imageId))
+      .where(whereClause),
+
+    db.select({ total: sum(imageTable.size) }).from(imageTable),
+  ]);
 
   const totalCount = Number(countSummary?.total || 0);
   const totalPages = Math.ceil(totalCount / pageSize);
-
-  // 計算總大小
-  const [sizeSummary] = await db.select({ total: sum(imageTable.size) }).from(imageTable);
 
   const totalSize = Number(sizeSummary?.total || 0);
   const totalSizeText =

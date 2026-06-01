@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
 
   const { id: imageId } = paramParseResult.data;
 
+  // 檢查圖片是否存在
   const [image] = await db
     .select({ id: imageTable.id, storageKey: imageTable.storageKey })
     .from(imageTable)
@@ -19,17 +20,20 @@ export default defineEventHandler(async (event) => {
 
   if (!image) throw createError({ statusCode: 400, message: '圖片不存在' });
 
-  const [usedInContent] = await db
-    .select({ imageId: workToImageTable.imageId })
-    .from(workToImageTable)
-    .where(eq(workToImageTable.imageId, imageId))
-    .limit(1);
+  // 檢查圖片是否被使用
+  const [[usedInContent], [usedAsCover]] = await Promise.all([
+    db
+      .select({ workId: workToImageTable.workId })
+      .from(workToImageTable)
+      .where(eq(workToImageTable.imageId, imageId))
+      .limit(1),
 
-  const [usedAsCover] = await db
-    .select({ workId: workTable.id })
-    .from(workTable)
-    .where(eq(workTable.coverId, imageId))
-    .limit(1);
+    db
+      .select({ workId: workTable.id })
+      .from(workTable)
+      .where(eq(workTable.coverId, imageId))
+      .limit(1),
+  ]);
 
   if (usedInContent || usedAsCover) {
     throw createError({ statusCode: 400, message: '圖片已被使用，無法刪除' });

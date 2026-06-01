@@ -14,17 +14,16 @@ export default defineEventHandler(async (event) => {
   const pageSize = queryParseResult.data.page_size;
   const offset = (currentPage - 1) * pageSize;
 
-  const contacts = await db
-    .select()
-    .from(contactTable)
-    .orderBy(desc(contactTable.createdAt))
-    .limit(pageSize)
-    .offset(offset);
+  const [contacts, [countSummary]] = await Promise.all([
+    db
+      .select()
+      .from(contactTable)
+      .orderBy(desc(contactTable.createdAt))
+      .limit(pageSize)
+      .offset(offset),
 
-  // 計算總頁數
-  const [countSummary] = await db
-    .select({ total: countDistinct(contactTable.id) })
-    .from(contactTable);
+    db.select({ total: countDistinct(contactTable.id) }).from(contactTable),
+  ]);
 
   const totalCount = Number(countSummary?.total || 0);
   const totalPages = Math.ceil(totalCount / pageSize);
