@@ -44,10 +44,9 @@ export default defineEventHandler(async (event) => {
     db.select({ total: sum(imageTable.size) }).from(imageTable),
   ]);
 
-  const totalCount = Number(countSummary?.total || 0);
-  const totalPages = Math.ceil(totalCount / pageSize);
+  const totalPages = Math.ceil(countSummary.total / pageSize);
 
-  const totalSize = Number(sizeSummary?.total || 0);
+  const totalSize = sizeSummary.total;
   const totalSizeText =
     totalSize >= 1024 ** 3
       ? `${(totalSize / 1024 ** 3).toFixed(2)} GB`

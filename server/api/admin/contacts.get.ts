@@ -25,8 +25,7 @@ export default defineEventHandler(async (event) => {
     db.select({ total: countDistinct(contactTable.id) }).from(contactTable),
   ]);
 
-  const totalCount = Number(countSummary?.total || 0);
-  const totalPages = Math.ceil(totalCount / pageSize);
+  const totalPages = Math.ceil(countSummary.total / pageSize);
 
   return {
     data: {
