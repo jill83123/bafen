@@ -12,7 +12,10 @@ import { z } from 'zod';
 
 const QuerySchema = z.object({
   ...PaginationShape,
-  category: z.enum(['all', ...workCategories]).default('all'),
+  category: z
+    .enum(['all', ...workCategories, ''])
+    .optional()
+    .transform((value) => value || 'all'),
   is_public: z.enum(['true', 'false', '']).optional().default(''),
 });
 
