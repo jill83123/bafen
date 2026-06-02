@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     .from(workTable)
     .where(eq(workTable.id, workId));
 
-  if (!existingWorkById) throw createError({ statusCode: 400, message: '作品不存在' });
+  if (!existingWorkById) throw createError({ statusCode: 404, message: '作品不存在' });
 
   // 確保 slug 唯一（可沿用原本的 slug）
   const [existingWorkBySlug] = await db
@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
 
   const existingImageIds = new Set(existingImages.map((image: { id: string }) => image.id));
   const missingImageIds = imageIdsToCheck.filter((imageId) => !existingImageIds.has(imageId));
-  if (missingImageIds.length) throw createError({ statusCode: 400, message: '圖片不存在' });
+  if (missingImageIds.length) throw createError({ statusCode: 404, message: '圖片不存在' });
 
   await db.transaction(async (tx: typeof db) => {
     await tx

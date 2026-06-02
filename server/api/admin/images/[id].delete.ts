@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     .from(imageTable)
     .where(eq(imageTable.id, imageId));
 
-  if (!image) throw createError({ statusCode: 400, message: '圖片不存在' });
+  if (!image) throw createError({ statusCode: 404, message: '圖片不存在' });
 
   // 檢查圖片是否被使用
   const [[usedInContent], [usedAsCover]] = await Promise.all([

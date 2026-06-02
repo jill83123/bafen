@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     .from(tagTable)
     .where(eq(tagTable.id, tagId));
 
-  if (!existingTagById) throw createError({ statusCode: 400, message: '標籤不存在' });
+  if (!existingTagById) throw createError({ statusCode: 404, message: '標籤不存在' });
 
   // 確保名稱唯一（原本的名稱可通過）
   const [existingTagByName] = await db

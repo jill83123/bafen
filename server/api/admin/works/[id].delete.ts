@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     .from(workTable)
     .where(eq(workTable.id, workId));
 
-  if (!work) throw createError({ statusCode: 400, message: '作品不存在' });
+  if (!work) throw createError({ statusCode: 404, message: '作品不存在' });
 
   await db.transaction(async (tx: typeof db) => {
     await tx.delete(workTable).where(eq(workTable.id, workId));
