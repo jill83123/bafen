@@ -7,7 +7,7 @@ import {
 } from '#server/db/schema';
 import { UuidV4Schema } from '#server/schema';
 import { WorkFormSchema } from '#shared/schema';
-import { and, eq, inArray, ne } from 'drizzle-orm';
+import { and, eq, inArray, ne, notExists } from 'drizzle-orm';
 
 const BodySchema = WorkFormSchema.extend({
   id: UuidV4Schema,
@@ -76,35 +76,42 @@ export default defineEventHandler(async (event) => {
 
     await tx.delete(workToTagTable).where(eq(workToTagTable.workId, workId));
 
-    if (!tagNames.length) return;
+    if (tagNames.length) {
+      const existingTags = await tx
+        .select({ id: tagTable.id, name: tagTable.name })
+        .from(tagTable)
+        .where(inArray(tagTable.name, tagNames));
 
-    const existingTags = await tx
-      .select({ id: tagTable.id, name: tagTable.name })
-      .from(tagTable)
-      .where(inArray(tagTable.name, tagNames));
+      const existingTagNames = new Set(existingTags.map((tag: { name: string }) => tag.name));
+      const missingTagNames = tagNames.filter((tagName) => !existingTagNames.has(tagName));
 
-    const existingTagNames = new Set(existingTags.map((tag: { name: string }) => tag.name));
-    const missingTagNames = tagNames.filter((tagName) => !existingTagNames.has(tagName));
+      // 標籤若不存在則新增
+      if (missingTagNames.length) {
+        await tx
+          .insert(tagTable)
+          .values(missingTagNames.map((name) => ({ name })))
+          .onConflictDoNothing();
+      }
 
-    // 標籤若不存在則新增
-    if (missingTagNames.length) {
-      await tx
-        .insert(tagTable)
-        .values(missingTagNames.map((name) => ({ name })))
-        .onConflictDoNothing();
+      const tags = await tx
+        .select({ id: tagTable.id })
+        .from(tagTable)
+        .where(inArray(tagTable.name, tagNames));
+
+      await tx.insert(workToTagTable).values(
+        tags.map((tag: { id: number }) => ({
+          workId,
+          tagId: tag.id,
+        })),
+      );
     }
 
-    const tags = await tx
-      .select({ id: tagTable.id })
-      .from(tagTable)
-      .where(inArray(tagTable.name, tagNames));
-
-    await tx.insert(workToTagTable).values(
-      tags.map((tag: { id: number }) => ({
-        workId,
-        tagId: tag.id,
-      })),
-    );
+    // 清理未使用的標籤
+    await tx
+      .delete(tagTable)
+      .where(
+        notExists(tx.select().from(workToTagTable).where(eq(workToTagTable.tagId, tagTable.id))),
+      );
   });
 
   return {};

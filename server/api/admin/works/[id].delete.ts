@@ -1,6 +1,6 @@
-import { workTable } from '#server/db/schema';
+import { tagTable, workTable, workToTagTable } from '#server/db/schema';
 import { UuidV4Schema } from '#server/schema';
-import { eq } from 'drizzle-orm';
+import { eq, notExists } from 'drizzle-orm';
 import { z } from 'zod';
 
 const ParamSchema = z.object({ id: UuidV4Schema });
@@ -20,7 +20,16 @@ export default defineEventHandler(async (event) => {
 
   if (!work) throw createError({ statusCode: 400, message: '作品不存在' });
 
-  await db.delete(workTable).where(eq(workTable.id, workId));
+  await db.transaction(async (tx: typeof db) => {
+    await tx.delete(workTable).where(eq(workTable.id, workId));
+
+    // 清理未使用的標籤
+    await tx
+      .delete(tagTable)
+      .where(
+        notExists(tx.select().from(workToTagTable).where(eq(workToTagTable.tagId, tagTable.id))),
+      );
+  });
 
   return {};
 });
