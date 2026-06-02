@@ -55,7 +55,6 @@ export default defineEventHandler(async (event) => {
         category: workTable.category,
         coverId: workTable.coverId,
         coverPath: imageTable.storageKey,
-        isPublic: workTable.isPublic,
         createdAt: workTable.createdAt,
         updatedAt: workTable.updatedAt,
       })
@@ -141,7 +140,6 @@ export default defineEventHandler(async (event) => {
       path: work.coverPath,
     },
     images: imagesByWorkId[work.id] || [],
-    isPublic: work.isPublic,
     createdAt: work.createdAt,
     updatedAt: work.updatedAt,
   }));
