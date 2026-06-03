@@ -1,6 +1,6 @@
 import { contactTable } from '#server/db/schema';
 import { PaginationShape } from '#server/schema';
-import { countDistinct, desc } from 'drizzle-orm';
+import { count, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
 const QuerySchema = z.object({
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
       .limit(pageSize)
       .offset(offset),
 
-    db.select({ total: countDistinct(contactTable.id) }).from(contactTable),
+    db.select({ total: count(contactTable.id) }).from(contactTable),
   ]);
 
   const totalPages = Math.ceil(countSummary.total / pageSize);

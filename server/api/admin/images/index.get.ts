@@ -1,6 +1,6 @@
 import { imageTable, workToImageTable } from '#server/db/schema';
 import { PaginationShape } from '#server/schema';
-import { and, countDistinct, desc, eq, isNotNull, isNull, sum } from 'drizzle-orm';
+import { and, count, desc, eq, isNotNull, isNull, sum } from 'drizzle-orm';
 import { z } from 'zod';
 
 const QuerySchema = z.object({
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
       .offset(offset),
 
     db
-      .select({ total: countDistinct(imageTable.id) })
+      .select({ total: count(imageTable.id) })
       .from(imageTable)
       .leftJoin(workToImageTable, eq(imageTable.id, workToImageTable.imageId))
       .where(whereClause),
