@@ -6,7 +6,7 @@ import { z } from 'zod';
 type GoogleUserInfo = { email: string };
 
 const BodySchema = z.object({
-  token: z.string().min(1),
+  token: z.string().trim().min(1),
 });
 
 export default defineEventHandler(async (event) => {

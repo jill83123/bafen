@@ -1,9 +1,11 @@
 import { contactTable } from '#server/db/schema';
 import { ContactFormSchema } from '#shared/schema';
 
+const BodySchema = ContactFormSchema;
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const bodyParseResult = ContactFormSchema.safeParse(body);
+  const bodyParseResult = BodySchema.safeParse(body);
   if (!bodyParseResult.success) throw createError({ statusCode: 400 });
 
   const contactData = bodyParseResult.data;

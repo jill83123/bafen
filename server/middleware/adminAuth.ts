@@ -2,9 +2,10 @@ import { jwtVerify } from 'jose';
 import { z } from 'zod';
 
 const jwtRegex = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
-export const JwtSchema = z.string().regex(jwtRegex);
 
-const CookieSchema = z.object({ admin_token: JwtSchema });
+const CookieSchema = z.object({
+  admin_token: z.string().regex(jwtRegex),
+});
 
 export default defineEventHandler(async (event) => {
   const shouldVerifyPath = event.path.startsWith('/api/admin') && !event.path.includes('login');

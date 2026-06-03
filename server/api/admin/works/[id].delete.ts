@@ -3,7 +3,9 @@ import { UuidV4Schema } from '#server/schema';
 import { eq, notExists } from 'drizzle-orm';
 import { z } from 'zod';
 
-const ParamSchema = z.object({ id: UuidV4Schema });
+const ParamSchema = z.object({
+  id: UuidV4Schema,
+});
 
 export default defineEventHandler(async (event) => {
   const param = getRouterParams(event);

@@ -3,7 +3,9 @@ import { PaginationShape } from '#server/schema';
 import { countDistinct, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
-const QuerySchema = z.object({ ...PaginationShape });
+const QuerySchema = z.object({
+  ...PaginationShape,
+});
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);

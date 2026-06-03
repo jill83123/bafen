@@ -8,9 +8,11 @@ import {
 import { WorkFormSchema } from '#shared/schema';
 import { eq, inArray } from 'drizzle-orm';
 
+const BodySchema = WorkFormSchema;
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const bodyParseResult = WorkFormSchema.safeParse(body);
+  const bodyParseResult = BodySchema.safeParse(body);
   if (!bodyParseResult.success) throw createError({ statusCode: 400 });
 
   const workData = bodyParseResult.data;
