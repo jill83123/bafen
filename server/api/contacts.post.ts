@@ -16,12 +16,15 @@ export default defineEventHandler(async (event) => {
   // 轉寄到信箱
   const runtimeConfig = useRuntimeConfig();
   const {
+    isEmailSenderEnabled: IS_EMAIL_SENDER_ENABLED,
     googleClientSecret: GOOGLE_CLIENT_SECRET,
     senderGmailRefreshToken: SENDER_GMAIL_REFRESH_TOKEN,
     senderGmailAddress: SENDER_GMAIL_ADDRESS,
     receiverMailAddress: RECEIVER_MAIL_ADDRESS,
   } = runtimeConfig;
   const { googleClientId: GOOGLE_CLIENT_ID } = runtimeConfig.public;
+
+  if (!IS_EMAIL_SENDER_ENABLED) return {};
 
   const tokenResponse = await $fetch<{ access_token: string }>(
     'https://oauth2.googleapis.com/token',

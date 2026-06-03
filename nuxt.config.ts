@@ -52,6 +52,8 @@ export default defineNuxtConfig({
     adminEmails: process.env.NUXT_ADMIN_EMAILS, // 使用 ',' 分隔
     jwtSecret: process.env.NUXT_JWT_SECRET,
     jwtExpTime: process.env.NUXT_JWT_EXP_TIME, // ex: '1d', '12h', '30m'
+
+    isEmailSenderEnabled: process.env.NUXT_IS_EMAIL_SENDER_ENABLED === 'true',
     googleClientSecret: process.env.NUXT_GOOGLE_CLIENT_SECRET,
     senderGmailAddress: process.env.NUXT_SENDER_GMAIL_ADDRESS,
     senderGmailRefreshToken: process.env.NUXT_SENDER_GMAIL_REFRESH_TOKEN,
