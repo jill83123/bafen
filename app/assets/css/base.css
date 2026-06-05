@@ -13,4 +13,8 @@
   [role='button']:not(:disabled) {
     cursor: pointer;
   }
+
+  a {
+    @apply transition-colors;
+  }
 }
