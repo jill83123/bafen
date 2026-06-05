@@ -1,0 +1,20 @@
+:root {
+  --ui-radius: 0;
+  --ui-border: var(--color-line-light);
+}
+
+@layer base {
+  body {
+    color: var(--color-ink);
+    letter-spacing: 0.02em;
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+
+  a {
+    @apply transition-colors;
+  }
+}

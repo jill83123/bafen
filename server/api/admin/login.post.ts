@@ -1,14 +1,20 @@
 import { SignJWT } from 'jose';
 import type { StringValue } from 'ms';
 import ms from 'ms';
+import { z } from 'zod';
 
 type GoogleUserInfo = { email: string };
 
+const BodySchema = z.object({
+  token: z.string().trim().min(1),
+});
+
 export default defineEventHandler(async (event) => {
-  const { token } = (await readBody(event)) || {};
-  if (typeof token !== 'string' || token.trim() === '') {
-    throw createError({ statusCode: 400, message: '請先登入 Google' });
-  }
+  const body = await readBody(event);
+  const bodyParseResult = BodySchema.safeParse(body);
+  if (!bodyParseResult.success) throw createError({ statusCode: 400 });
+
+  const { token } = bodyParseResult.data;
 
   // 驗證 Google Access Token
   const userInfo = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
@@ -50,5 +56,5 @@ export default defineEventHandler(async (event) => {
     sameSite: 'lax',
   });
 
-  return { message: '登入成功' };
+  return {};
 });

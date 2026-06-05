@@ -1,12 +1,14 @@
 import { contactTable } from '#server/db/schema';
 import { ContactFormSchema } from '#shared/schema';
 
+const BodySchema = ContactFormSchema;
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const result = ContactFormSchema.safeParse(body);
-  if (!result.success) throw createError({ statusCode: 400, message: '資料格式不正確' });
+  const bodyParseResult = BodySchema.safeParse(body);
+  if (!bodyParseResult.success) throw createError({ statusCode: 400 });
 
-  const contactData = result.data;
+  const contactData = bodyParseResult.data;
 
   // 存入資料表
   await db.insert(contactTable).values(contactData);
@@ -14,12 +16,15 @@ export default defineEventHandler(async (event) => {
   // 轉寄到信箱
   const runtimeConfig = useRuntimeConfig();
   const {
+    isEmailSenderEnabled: IS_EMAIL_SENDER_ENABLED,
     googleClientSecret: GOOGLE_CLIENT_SECRET,
     senderGmailRefreshToken: SENDER_GMAIL_REFRESH_TOKEN,
     senderGmailAddress: SENDER_GMAIL_ADDRESS,
     receiverMailAddress: RECEIVER_MAIL_ADDRESS,
   } = runtimeConfig;
   const { googleClientId: GOOGLE_CLIENT_ID } = runtimeConfig.public;
+
+  if (!IS_EMAIL_SENDER_ENABLED) return {};
 
   const tokenResponse = await $fetch<{ access_token: string }>(
     'https://oauth2.googleapis.com/token',
@@ -61,5 +66,5 @@ export default defineEventHandler(async (event) => {
     body: { raw: encodedEmail },
   });
 
-  return { message: '資料送出成功' };
+  return {};
 });
