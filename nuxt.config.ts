@@ -52,7 +52,14 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      include: ['@vue/devtools-core', '@vue/devtools-kit', 'clsx', 'vue3-google-login'],
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'browser-image-compression',
+        'clsx',
+        'vue3-google-login',
+        'zod',
+      ],
     },
   },
   nitro: {
