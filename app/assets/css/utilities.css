@@ -1,0 +1,25 @@
+/* Nuxt UI 會覆蓋 rounded-* 預設值，這裡額外定義以備不時之需 */
+@utility radius-xs {
+  border-radius: var(--radius-xs);
+}
+@utility radius-sm {
+  border-radius: var(--radius-sm);
+}
+@utility radius-md {
+  border-radius: var(--radius-md);
+}
+@utility radius-lg {
+  border-radius: var(--radius-lg);
+}
+@utility radius-xl {
+  border-radius: var(--radius-xl);
+}
+@utility radius-2xl {
+  border-radius: var(--radius-2xl);
+}
+@utility radius-3xl {
+  border-radius: var(--radius-3xl);
+}
+@utility radius-4xl {
+  border-radius: var(--radius-4xl);
+}

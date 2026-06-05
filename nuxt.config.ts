@@ -30,6 +30,13 @@ export default defineNuxtConfig({
   icon: {
     size: '20px',
   },
+  fonts: {
+    families: [
+      { name: 'Arimo', provider: 'google' },
+      { name: 'Chiron Hei HK', provider: 'google' },
+      { name: 'Noto Serif TC', provider: 'google' },
+    ],
+  },
   veeValidate: {
     autoImports: true,
     componentNames: {
