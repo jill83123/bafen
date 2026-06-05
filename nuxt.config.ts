@@ -41,8 +41,13 @@ export default defineNuxtConfig({
   },
 
   css: ['./app/assets/css/main.css'],
-  vite: { plugins: [tailwindcss()] },
 
+  vite: {
+    plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ['@vue/devtools-core', '@vue/devtools-kit', 'clsx', 'vue3-google-login'],
+    },
+  },
   nitro: {
     routeRules: {
       '/admin/**': { ssr: false },
