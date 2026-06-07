@@ -1,6 +1,8 @@
 <template>
   <UApp :toaster="{ position: 'top-right' }">
     <NuxtRouteAnnouncer />
-    <NuxtPage />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </UApp>
 </template>

@@ -64,6 +64,7 @@ export default defineNuxtConfig({
   nitro: {
     routeRules: {
       '/admin/**': { ssr: false },
+      '/admin/dashboard/**': { appLayout: 'admin-dashboard' },
     },
   },
   runtimeConfig: {

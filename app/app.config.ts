@@ -10,8 +10,7 @@ export default defineAppConfig({
     button: {
       slots: {
         base: tw`group font-normal`,
-        leadingIcon: tw`-ml-0.5`,
-        trailingIcon: tw`-mr-0.5 transition-transform group-hover:rotate-45 group-disabled:rotate-0`,
+        trailingIcon: tw`transition-transform group-hover:rotate-45 group-disabled:rotate-0`,
       },
       variants: {
         size: {
@@ -180,6 +179,41 @@ export default defineAppConfig({
             content: tw`shadow-none`,
           },
         },
+      },
+    },
+
+    navigationMenu: {
+      compoundVariants: [
+        {
+          color: 'primary',
+          variant: 'pill',
+          class: {
+            link: tw`hover:before:bg-canvas gap-2 p-6 text-base leading-none`,
+          },
+        },
+        {
+          color: 'primary',
+          variant: 'pill',
+          active: false,
+          class: {
+            link: tw`text-ink font-normal`,
+            linkLeadingIcon: tw`text-ink`,
+          },
+        },
+        {
+          color: 'primary',
+          variant: 'pill',
+          active: true,
+          class: {
+            link: tw`hover:before:bg-canvas font-medium before:bg-transparent`,
+          },
+        },
+      ],
+    },
+
+    tooltip: {
+      slots: {
+        content: tw`text-sm`,
       },
     },
   },
