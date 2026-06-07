@@ -56,7 +56,6 @@ export default defineNuxtConfig({
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'browser-image-compression',
-        'clsx',
         'vue3-google-login',
         'zod',
       ],

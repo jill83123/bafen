@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { tw } from './utils/tailwind';
 
 export default defineAppConfig({
   ui: {
@@ -9,19 +9,17 @@ export default defineAppConfig({
 
     button: {
       slots: {
-        base: clsx('group font-normal'),
-        leadingIcon: clsx('-ml-0.5'),
-        trailingIcon: clsx(
-          '-mr-0.5 transition-transform group-hover:rotate-45 group-disabled:rotate-0',
-        ),
+        base: tw`group font-normal`,
+        leadingIcon: tw`-ml-0.5`,
+        trailingIcon: tw`-mr-0.5 transition-transform group-hover:rotate-45 group-disabled:rotate-0`,
       },
       variants: {
         size: {
           md: {
-            base: clsx('gap-1 text-base'),
+            base: tw`gap-1 text-base`,
           },
           lg: {
-            base: clsx('gap-1 text-base tracking-wider'),
+            base: tw`gap-1 text-base tracking-wider`,
           },
         },
       },
@@ -29,29 +27,27 @@ export default defineAppConfig({
         {
           color: 'primary',
           variant: 'solid',
-          class: clsx('hover:bg-brand-hover active:bg-brand-hover'),
+          class: tw`hover:bg-brand-hover active:bg-brand-hover`,
         },
         {
           color: 'neutral',
           variant: 'solid',
-          class: clsx('hover:bg-brand-main active:bg-brand-main'),
+          class: tw`hover:bg-brand-main active:bg-brand-main`,
         },
         {
           color: 'neutral',
           variant: 'outline',
-          class: clsx(
-            'hover:bg-ink ring-ink hover:text-inverted active:bg-ink active:text-inverted disabled:text-disabled disabled:ring-disabled',
-          ),
+          class: tw`hover:bg-ink ring-ink hover:text-inverted active:bg-ink active:text-inverted disabled:text-disabled disabled:ring-disabled`,
         },
         {
           size: 'md',
           square: false,
-          class: clsx('px-3 py-2'),
+          class: tw`px-3 py-2`,
         },
         {
           size: 'lg',
           square: false,
-          class: clsx('px-12 py-3.5'),
+          class: tw`px-12 py-3.5`,
         },
       ],
       defaultVariants: {
@@ -63,22 +59,22 @@ export default defineAppConfig({
 
     pagination: {
       slots: {
-        first: clsx('h-10 w-10 justify-center'),
-        prev: clsx('h-10 w-10 justify-center'),
-        item: clsx('h-10 w-10 justify-center'),
-        next: clsx('h-10 w-10 justify-center'),
-        last: clsx('h-10 w-10 justify-center'),
+        first: tw`h-10 w-10 justify-center`,
+        prev: tw`h-10 w-10 justify-center`,
+        item: tw`h-10 w-10 justify-center`,
+        next: tw`h-10 w-10 justify-center`,
+        last: tw`h-10 w-10 justify-center`,
       },
     },
 
     formField: {
       slots: {
-        label: clsx('font-normal'),
+        label: tw`font-normal`,
       },
       variants: {
         size: {
           md: {
-            label: clsx('text-base'),
+            label: tw`text-base`,
           },
         },
       },
@@ -86,14 +82,12 @@ export default defineAppConfig({
 
     input: {
       slots: {
-        base: clsx(
-          'placeholder:text-sub disabled:bg-canvas read-only:focus-visible:ring-line-light',
-        ),
+        base: tw`placeholder:text-sub disabled:bg-canvas read-only:focus-visible:ring-line-light`,
       },
       variants: {
         size: {
           md: {
-            base: clsx('px-4 py-3 !text-base'),
+            base: tw`px-4 py-3 text-base!`,
           },
         },
       },
@@ -101,7 +95,7 @@ export default defineAppConfig({
         {
           color: 'neutral',
           variant: 'outline',
-          class: clsx('focus-visible:ring-1'),
+          class: tw`focus-visible:ring-1`,
         },
       ],
       defaultVariants: {
@@ -113,14 +107,12 @@ export default defineAppConfig({
 
     textarea: {
       slots: {
-        base: clsx(
-          'placeholder:text-sub disabled:bg-canvas read-only:focus-visible:ring-line-light',
-        ),
+        base: tw`placeholder:text-sub disabled:bg-canvas read-only:focus-visible:ring-line-light`,
       },
       variants: {
         size: {
           md: {
-            base: clsx('px-4 py-3 !text-base'),
+            base: tw`px-4 py-3 text-base!`,
           },
         },
       },
@@ -128,7 +120,7 @@ export default defineAppConfig({
         {
           color: 'neutral',
           variant: 'outline',
-          class: clsx('focus-visible:ring-1'),
+          class: tw`focus-visible:ring-1`,
         },
       ],
       defaultVariants: {
@@ -140,8 +132,8 @@ export default defineAppConfig({
 
     checkbox: {
       slots: {
-        root: clsx('items-center'),
-        label: clsx('text-base font-normal'),
+        root: tw`items-center`,
+        label: tw`text-base font-normal`,
       },
       defaultVariants: {
         size: 'md',
@@ -151,19 +143,19 @@ export default defineAppConfig({
 
     select: {
       slots: {
-        trailingIcon: clsx('text-ink'),
-        content: clsx('ring-ink shadow-none'),
-        group: clsx('p-0'),
-        item: clsx('cursor-pointer'),
-        itemTrailingIcon: clsx('text-ink'),
+        trailingIcon: tw`text-ink`,
+        content: tw`ring-ink shadow-none`,
+        group: tw`p-0`,
+        item: tw`cursor-pointer`,
+        itemTrailingIcon: tw`text-ink`,
       },
       variants: {
         size: {
           md: {
-            base: clsx('px-4 py-3 !text-base'),
-            trailingIcon: clsx('size-5'),
-            item: clsx('px-4 py-3 text-base'),
-            itemTrailingIcon: clsx('size-5'),
+            base: tw`px-4 py-3 text-base!`,
+            trailingIcon: tw`size-5`,
+            item: tw`px-4 py-3 text-base`,
+            itemTrailingIcon: tw`size-5`,
           },
         },
       },
@@ -171,7 +163,7 @@ export default defineAppConfig({
         {
           color: 'neutral',
           variant: 'outline',
-          class: clsx('ring-ink'),
+          class: tw`ring-ink`,
         },
       ],
       defaultVariants: {
@@ -185,7 +177,7 @@ export default defineAppConfig({
       variants: {
         fullscreen: {
           false: {
-            content: clsx('shadow-none'),
+            content: tw`shadow-none`,
           },
         },
       },

@@ -12,7 +12,8 @@ const config = {
     'prettier-plugin-organize-imports',
     'prettier-plugin-tailwindcss', // MUST come last
   ],
-  tailwindFunctions: ['clsx'],
+  tailwindAttributes: ['ui'],
+  tailwindFunctions: ['tw'],
 };
 
 export default config;
