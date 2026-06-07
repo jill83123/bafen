@@ -216,5 +216,11 @@ export default defineAppConfig({
         content: tw`text-sm`,
       },
     },
+
+    alert: {
+      slots: {
+        root: 'gap-2',
+      },
+    },
   },
 });

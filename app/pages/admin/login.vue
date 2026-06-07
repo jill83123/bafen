@@ -16,9 +16,16 @@
         </UAuthForm>
       </UPageCard>
 
-      <p v-show="errorMessage" class="text-error mt-7 flex items-center gap-1">
-        <Icon name="i-material-symbols-error-outline" />{{ errorMessage }}
-      </p>
+      <UAlert
+        v-show="errorMessage"
+        :title="errorMessage"
+        icon="i-material-symbols-error-outline"
+        color="error"
+        variant="soft"
+        :ui="{
+          root: 'mt-7 max-w-md',
+        }"
+      />
     </div>
   </main>
 </template>
