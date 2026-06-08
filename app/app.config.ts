@@ -7,6 +7,12 @@ export default defineAppConfig({
       neutral: 'base',
     },
 
+    alert: {
+      slots: {
+        root: 'gap-2',
+      },
+    },
+
     button: {
       slots: {
         base: tw`group font-normal`,
@@ -56,13 +62,14 @@ export default defineAppConfig({
       },
     },
 
-    pagination: {
+    checkbox: {
       slots: {
-        first: tw`h-10 w-10 justify-center`,
-        prev: tw`h-10 w-10 justify-center`,
-        item: tw`h-10 w-10 justify-center`,
-        next: tw`h-10 w-10 justify-center`,
-        last: tw`h-10 w-10 justify-center`,
+        root: tw`items-center`,
+        label: tw`text-base font-normal`,
+      },
+      defaultVariants: {
+        size: 'md',
+        color: 'neutral',
       },
     },
 
@@ -104,42 +111,6 @@ export default defineAppConfig({
       },
     },
 
-    textarea: {
-      slots: {
-        base: tw`placeholder:text-sub disabled:bg-canvas read-only:focus-visible:ring-line-light`,
-      },
-      variants: {
-        size: {
-          md: {
-            base: tw`px-4 py-3 text-base!`,
-          },
-        },
-      },
-      compoundVariants: [
-        {
-          color: 'neutral',
-          variant: 'outline',
-          class: tw`focus-visible:ring-1`,
-        },
-      ],
-      defaultVariants: {
-        size: 'md',
-        color: 'neutral',
-        variant: 'outline',
-      },
-    },
-
-    checkbox: {
-      slots: {
-        root: tw`items-center`,
-        label: tw`text-base font-normal`,
-      },
-      defaultVariants: {
-        size: 'md',
-        color: 'neutral',
-      },
-    },
-
     select: {
       slots: {
         trailingIcon: tw`text-ink`,
@@ -172,13 +143,28 @@ export default defineAppConfig({
       },
     },
 
-    modal: {
+    textarea: {
+      slots: {
+        base: tw`placeholder:text-sub disabled:bg-canvas read-only:focus-visible:ring-line-light`,
+      },
       variants: {
-        fullscreen: {
-          false: {
-            content: tw`shadow-none`,
+        size: {
+          md: {
+            base: tw`px-4 py-3 text-base!`,
           },
         },
+      },
+      compoundVariants: [
+        {
+          color: 'neutral',
+          variant: 'outline',
+          class: tw`focus-visible:ring-1`,
+        },
+      ],
+      defaultVariants: {
+        size: 'md',
+        color: 'neutral',
+        variant: 'outline',
       },
     },
 
@@ -211,15 +197,29 @@ export default defineAppConfig({
       ],
     },
 
-    tooltip: {
+    pagination: {
       slots: {
-        content: tw`text-sm`,
+        first: tw`h-10 w-10 justify-center`,
+        prev: tw`h-10 w-10 justify-center`,
+        item: tw`h-10 w-10 justify-center`,
+        next: tw`h-10 w-10 justify-center`,
+        last: tw`h-10 w-10 justify-center`,
       },
     },
 
-    alert: {
+    modal: {
+      variants: {
+        fullscreen: {
+          false: {
+            content: tw`shadow-none`,
+          },
+        },
+      },
+    },
+
+    tooltip: {
       slots: {
-        root: 'gap-2',
+        content: tw`text-sm`,
       },
     },
   },
