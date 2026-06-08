@@ -20,11 +20,15 @@ export default defineAppConfig({
       },
       variants: {
         size: {
-          md: {
+          sm: {
             base: tw`gap-1 text-base`,
+            leadingIcon: tw`size-5`,
+          },
+          md: {
+            base: tw`gap-2 text-base`,
           },
           lg: {
-            base: tw`gap-1 text-base tracking-wider`,
+            base: tw`gap-2 text-base tracking-wider`,
           },
         },
       },
@@ -45,20 +49,39 @@ export default defineAppConfig({
           class: tw`hover:bg-ink ring-ink hover:text-inverted active:bg-ink active:text-inverted disabled:text-disabled disabled:ring-disabled`,
         },
         {
-          size: 'md',
+          size: 'sm',
           square: false,
           class: tw`px-3 py-2`,
         },
         {
+          size: 'md',
+          square: false,
+          class: tw`px-4 py-3`,
+        },
+        {
           size: 'lg',
           square: false,
-          class: tw`px-12 py-3.5`,
+          class: tw`px-12 py-4`,
+        },
+        {
+          square: false,
+          leading: true,
+          class: {
+            leadingIcon: tw`-ml-0.5`,
+          },
+        },
+        {
+          square: false,
+          trailing: true,
+          class: {
+            trailingIcon: tw`-mr-0.5`,
+          },
         },
       ],
       defaultVariants: {
-        color: 'primary',
+        color: 'neutral',
         variant: 'solid',
-        size: 'lg',
+        size: 'md',
       },
     },
 
@@ -88,6 +111,7 @@ export default defineAppConfig({
 
     input: {
       slots: {
+        root: tw`w-full`,
         base: tw`placeholder:text-sub disabled:bg-canvas read-only:focus-visible:ring-line-light`,
       },
       variants: {
@@ -114,7 +138,7 @@ export default defineAppConfig({
     select: {
       slots: {
         trailingIcon: tw`text-ink`,
-        content: tw`ring-ink shadow-none`,
+        content: tw`ring-ink shadow-none ring-inset`,
         group: tw`p-0`,
         item: tw`cursor-pointer`,
         itemTrailingIcon: tw`text-ink`,
@@ -124,8 +148,8 @@ export default defineAppConfig({
           md: {
             base: tw`px-4 py-3 text-base!`,
             trailingIcon: tw`size-5`,
-            item: tw`px-4 py-3 text-base`,
-            itemTrailingIcon: tw`size-5`,
+            item: tw`items-center px-4 py-3 text-base`,
+            itemTrailingIcon: tw`size-4.5`,
           },
         },
       },
@@ -212,6 +236,9 @@ export default defineAppConfig({
         fullscreen: {
           false: {
             content: tw`shadow-none`,
+            header: tw`py-5`,
+            footer: tw`py-3`,
+            title: tw`font-serif text-xl leading-none`,
           },
         },
       },
