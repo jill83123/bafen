@@ -1,5 +1,6 @@
-import { contactTable } from '#server/db/schema';
 import { ContactFormSchema } from '#shared/schema';
+import { db } from '@nuxthub/db';
+import { contactTable } from '@nuxthub/db/schema';
 
 const BodySchema = ContactFormSchema;
 

@@ -1,5 +1,6 @@
-import { tagTable, workTable, workToTagTable } from '#server/db/schema';
 import { UuidV4Schema } from '#server/schema';
+import { db } from '@nuxthub/db';
+import { tagTable, workTable, workToTagTable } from '@nuxthub/db/schema';
 import { eq, notExists } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -22,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
   if (!work) throw createError({ statusCode: 404, message: '作品不存在' });
 
-  await db.transaction(async (tx: typeof db) => {
+  await db.transaction(async (tx) => {
     await tx.delete(workTable).where(eq(workTable.id, workId));
 
     // 清理未使用的標籤

@@ -1,5 +1,6 @@
-import { imageTable } from '#server/db/schema';
 import { blob, ensureBlob } from '@nuxthub/blob';
+import { db } from '@nuxthub/db';
+import { imageTable } from '@nuxthub/db/schema';
 
 export default defineEventHandler(async (event) => {
   const contentType = event.node.req.headers['content-type'] || '';
@@ -24,11 +25,11 @@ export default defineEventHandler(async (event) => {
   // 將資訊存入資料表
   const recordsToInsert = uploadResults.map((file) => ({
     storageKey: file.pathname,
-    size: file.size,
+    size: file.size as number,
   }));
 
   try {
-    await db.transaction(async (tx: typeof db) => {
+    await db.transaction(async (tx) => {
       await tx.insert(imageTable).values(recordsToInsert);
     });
   } catch {
@@ -38,8 +39,6 @@ export default defineEventHandler(async (event) => {
   }
 
   return {
-    data: {
-      count: uploadResults.length,
-    },
+    count: uploadResults.length,
   };
 });

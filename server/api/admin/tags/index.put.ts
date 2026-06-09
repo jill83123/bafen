@@ -1,4 +1,5 @@
-import { tagTable } from '#server/db/schema';
+import { db } from '@nuxthub/db';
+import { tagTable } from '@nuxthub/db/schema';
 import { and, eq, ne } from 'drizzle-orm';
 import { z } from 'zod';
 

@@ -1,10 +1,11 @@
+import { db } from '@nuxthub/db';
 import {
   imageTable,
   tagTable,
   workTable,
   workToImageTable,
   workToTagTable,
-} from '#server/db/schema';
+} from '@nuxthub/db/schema';
 import { and, asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -59,19 +60,17 @@ export default defineEventHandler(async (event) => {
   ]);
 
   return {
-    data: {
-      id: workData.id,
-      title: workData.title,
-      slug: workData.slug,
-      category: workData.category,
-      tags: workTags,
-      cover: {
-        id: workData.coverId,
-        path: workData.coverPath,
-      },
-      images: workImages,
-      createdAt: workData.createdAt,
-      updatedAt: workData.updatedAt,
+    id: workData.id,
+    title: workData.title,
+    slug: workData.slug,
+    category: workData.category,
+    tags: workTags,
+    cover: {
+      id: workData.coverId,
+      path: workData.coverPath,
     },
+    images: workImages,
+    createdAt: workData.createdAt,
+    updatedAt: workData.updatedAt,
   };
 });

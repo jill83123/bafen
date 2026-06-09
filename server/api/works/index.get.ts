@@ -1,12 +1,13 @@
+import { PaginationShape } from '#server/schema';
+import { workCategories } from '#shared/constants/workCategory';
+import { db } from '@nuxthub/db';
 import {
   imageTable,
   tagTable,
   workTable,
   workToImageTable,
   workToTagTable,
-} from '#server/db/schema';
-import { PaginationShape } from '#server/schema';
-import { workCategories } from '#shared/constants/workCategory';
+} from '@nuxthub/db/schema';
 import { and, asc, count, desc, eq, inArray, max } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -46,7 +47,7 @@ export default defineEventHandler(async (event) => {
   const whereClause = whereConditions.length ? and(...whereConditions) : undefined;
 
   // 取得原始資料和計算總數
-  const [rawWorks, [summary]] = await Promise.all([
+  const [rawWorks, summary] = await Promise.all([
     db
       .select({
         id: workTable.id,
@@ -74,15 +75,14 @@ export default defineEventHandler(async (event) => {
       })
       .from(workTable)
       .leftJoin(workToTagTable, eq(workTable.id, workToTagTable.workId))
-      .where(whereClause),
+      .where(whereClause)
+      .get(),
   ]);
 
-  const totalPages = Math.ceil(summary.total / pageSize);
+  const totalPages = Math.ceil(summary!.total / pageSize);
 
   // 取得該頁作品的標籤和圖片
-  type RawWork = (typeof rawWorks)[number];
-
-  const workIds = rawWorks.map((work: RawWork) => work.id);
+  const workIds = rawWorks.map((work) => work.id);
 
   const [workTags, workImages] = workIds.length
     ? await Promise.all([
@@ -101,7 +101,6 @@ export default defineEventHandler(async (event) => {
             workId: workToImageTable.workId,
             id: workToImageTable.imageId,
             path: imageTable.storageKey,
-            sortOrder: workToImageTable.sortOrder,
           })
           .from(workToImageTable)
           .innerJoin(imageTable, eq(workToImageTable.imageId, imageTable.id))
@@ -118,18 +117,16 @@ export default defineEventHandler(async (event) => {
 
   for (const tag of workTags) {
     const workId = tag.workId;
-    if (!tagsByWorkId[workId]) tagsByWorkId[workId] = [];
-    tagsByWorkId[workId].push({ id: tag.id, name: tag.name });
+    (tagsByWorkId[workId] ??= []).push({ id: tag.id, name: tag.name });
   }
 
   for (const image of workImages) {
     const workId = image.workId;
-    if (!imagesByWorkId[workId]) imagesByWorkId[workId] = [];
-    imagesByWorkId[workId].push({ id: image.id, path: image.path });
+    (imagesByWorkId[workId] ??= []).push({ id: image.id, path: image.path });
   }
 
   // 最終資料結構
-  const works = rawWorks.map((work: RawWork) => ({
+  const works = rawWorks.map((work) => ({
     id: work.id,
     title: work.title,
     slug: work.slug,
@@ -145,15 +142,13 @@ export default defineEventHandler(async (event) => {
   }));
 
   return {
-    data: {
-      works,
-      pagination: {
-        currentPage,
-        totalPages,
-        hasPrePage: currentPage > 1,
-        hasNextPage: currentPage < totalPages,
-      },
-      latestUpdatedAt: summary.latestUpdatedAt,
+    works,
+    pagination: {
+      currentPage,
+      totalPages,
+      hasPrePage: currentPage > 1,
+      hasNextPage: currentPage < totalPages,
     },
+    latestUpdatedAt: summary?.latestUpdatedAt ?? null,
   };
 });
