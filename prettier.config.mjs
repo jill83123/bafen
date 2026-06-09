@@ -9,7 +9,6 @@ const config = {
   trailingComma: 'all',
   arrowParens: 'always',
   plugins: [
-    'prettier-plugin-organize-imports',
     'prettier-plugin-tailwindcss', // MUST come last
   ],
   tailwindAttributes: ['ui'],
