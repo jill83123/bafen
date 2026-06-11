@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxthub/core',
     'nuxt-security',
+    '@vueuse/nuxt',
     '@nuxt/ui',
     '@nuxt/image',
     '@vee-validate/nuxt',
@@ -65,6 +66,14 @@ export default defineNuxtConfig({
     routeRules: {
       '/admin/**': { ssr: false },
       '/admin/dashboard/**': { appLayout: 'admin-dashboard' },
+      '/images/**': {
+        security: {
+          rateLimiter: {
+            tokensPerInterval: 200,
+            interval: '10s',
+          },
+        },
+      },
     },
   },
   runtimeConfig: {

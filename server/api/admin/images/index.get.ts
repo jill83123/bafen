@@ -51,11 +51,20 @@ export default defineEventHandler(async (event) => {
 
   const totalPages = Math.ceil(countSummary!.total / pageSize);
 
+  const MAX_SIZE_BYTES = 10 * 1024 ** 3;
   const totalSize = Number(sizeSummary?.total ?? 0);
-  const totalSizeText =
-    totalSize >= 1024 ** 3
-      ? `${(totalSize / 1024 ** 3).toFixed(2)} GB`
-      : `${(totalSize / 1024 ** 2).toFixed(2)} MB`;
+  const usedPercent = totalSize ? Math.round((totalSize / MAX_SIZE_BYTES) * 100) : 0;
+
+  const formatSize = (bytes: number) => {
+    const gb = bytes / 1024 ** 3;
+    if (gb >= 1) return Number.isInteger(gb) ? `${gb} GB` : `${gb.toFixed(2)} GB`;
+
+    const mb = bytes / 1024 ** 2;
+    return Number.isInteger(mb) ? `${mb} MB` : `${mb.toFixed(2)} MB`;
+  };
+
+  const totalSizeText = formatSize(totalSize);
+  const maxSizeText = formatSize(MAX_SIZE_BYTES);
 
   return {
     images,
@@ -66,6 +75,7 @@ export default defineEventHandler(async (event) => {
       hasNextPage: currentPage < totalPages,
     },
     totalSizeText,
-    maxSizeText: '10 GB',
+    maxSizeText,
+    usedPercent,
   };
 });

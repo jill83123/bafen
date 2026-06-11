@@ -36,7 +36,7 @@ export default defineAppConfig({
         {
           color: 'primary',
           variant: 'solid',
-          class: tw`hover:bg-brand-hover active:bg-brand-hover`,
+          class: tw`hover:bg-brand-hover active:bg-brand-hover disabled:bg-disabled`,
         },
         {
           color: 'neutral',

@@ -27,6 +27,7 @@
     "@nuxthub/core": "^0.10.7",
     "@unhead/vue": "^2.1.15",
     "@vee-validate/nuxt": "^5.0.0-beta.1",
+    "@vueuse/nuxt": "^14.3.0",
     "browser-image-compression": "^2.0.2",
     "drizzle-orm": "^0.45.2",
     "eslint": "^10.4.0",
