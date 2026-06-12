@@ -1,3 +1,4 @@
+@import '@fancyapps/ui/dist/fancybox/fancybox.css';
 @import 'tailwindcss';
 @import '@nuxt/ui';
 @import 'theme.css';

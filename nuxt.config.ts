@@ -54,6 +54,7 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
+        '@fancyapps/ui',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'browser-image-compression',

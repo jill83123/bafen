@@ -1,6 +1,7 @@
 <template>
   <UModal
-    v-model:open="isOpenModal"
+    v-model:open="isModalOpen"
+    :dismissible="false"
     :ui="{
       content: 'h-full max-h-[calc(100dvh-24px)] w-[calc(100%-24px)] max-w-5xl md:max-h-[75dvh]',
       body: 'relative overflow-hidden',
@@ -70,9 +71,11 @@
               v-for="image in imageList"
               :key="image.id"
               role="button"
+              tabindex="0"
               class="group aspect-square cursor-pointer ring-inset"
               :class="{ 'ring-primary p-1.5 ring-2': isSelected(image.id) }"
               @click="toggleSelectImage(image)"
+              @keyup.enter="toggleSelectImage(image)"
             >
               <div class="relative h-full w-full">
                 <!-- 圖片本體 -->
@@ -95,8 +98,8 @@
 
                 <!-- 圖片操作按鈕 -->
                 <div
-                  class="absolute inset-x-0 bottom-0 opacity-0 transition-opacity group-hover:opacity-100"
-                  :class="{ 'opacity-100': isSelected(image.id) }"
+                  class="absolute inset-x-0 bottom-0 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100"
+                  :class="isSelected(image.id) ? 'visible opacity-100' : 'invisible'"
                 >
                   <div class="flex w-full opacity-70">
                     <UButton
@@ -104,6 +107,7 @@
                       variant="solid"
                       size="xs"
                       class="hover:bg-ink active:bg-ink grow justify-center p-1 text-sm leading-4 transition-opacity hover:opacity-85 active:opacity-85"
+                      @click.stop="openPreview(image.path)"
                     >
                       預覽
                     </UButton>
@@ -168,7 +172,7 @@
           color="neutral"
           variant="link"
           size="sm"
-          @click="isOpenModal = false"
+          @click="isModalOpen = false"
         />
         <UButton
           label="確認"
@@ -191,7 +195,7 @@ type ImageItem = {
   path: string;
 };
 
-const isOpenModal = defineModel<boolean>('open', { default: false });
+const isModalOpen = defineModel<boolean>('open', { default: false });
 
 const props = withDefaults(
   defineProps<{
@@ -267,7 +271,7 @@ watch(error, (newError) => {
 
 const isFirstOpen = ref(true);
 
-watch(isOpenModal, (open) => {
+watch(isModalOpen, (open) => {
   if (!open) {
     tempSelectedImages.value = [];
     return;
@@ -363,10 +367,19 @@ const toggleSelectImage = (image: ImageItem) => {
 
 const confirmSelection = () => {
   emit('select', tempSelectedImages.value);
-  isOpenModal.value = false;
+  isModalOpen.value = false;
+};
+
+// =============== 圖片操作 ===============
+// 預覽
+const { openLightbox } = useLightbox();
+
+const openPreview = (path: string) => {
+  const slides = [{ type: 'image', src: path }];
+  openLightbox({ slides });
 };
 </script>
 
 <style scoped></style>
 
-// TODO: 做預覽和刪除圖片功能
+// TODO: 做刪除圖片功能
