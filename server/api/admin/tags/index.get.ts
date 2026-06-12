@@ -1,5 +1,6 @@
-import { tagTable, workToTagTable } from '#server/db/schema';
 import { PaginationShape } from '#server/schema';
+import { db } from '@nuxthub/db';
+import { tagTable, workToTagTable } from '@nuxthub/db/schema';
 import { count, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -16,7 +17,7 @@ export default defineEventHandler(async (event) => {
   const pageSize = queryParseResult.data.page_size;
   const offset = (currentPage - 1) * pageSize;
 
-  const [tags, [countSummary]] = await Promise.all([
+  const [tags, countSummary] = await Promise.all([
     db
       .select({
         id: tagTable.id,
@@ -30,20 +31,21 @@ export default defineEventHandler(async (event) => {
       .limit(pageSize)
       .offset(offset),
 
-    db.select({ total: count(tagTable.id) }).from(tagTable),
+    db
+      .select({ total: count(tagTable.id) })
+      .from(tagTable)
+      .get(),
   ]);
 
-  const totalPages = Math.ceil(countSummary.total / pageSize);
+  const totalPages = Math.ceil(countSummary!.total / pageSize);
 
   return {
-    data: {
-      tags,
-      pagination: {
-        currentPage,
-        totalPages,
-        hasPrePage: currentPage > 1,
-        hasNextPage: currentPage < totalPages,
-      },
+    tags,
+    pagination: {
+      currentPage,
+      totalPages,
+      hasPrePage: currentPage > 1,
+      hasNextPage: currentPage < totalPages,
     },
   };
 });

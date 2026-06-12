@@ -1,6 +1,7 @@
-import { tagTable, workTable, workToTagTable } from '#server/db/schema';
 import type { WorkCategory } from '#shared/constants/workCategory';
 import { workCategories } from '#shared/constants/workCategory';
+import { db } from '@nuxthub/db';
+import { tagTable, workTable, workToTagTable } from '@nuxthub/db/schema';
 import { and, count, desc, eq } from 'drizzle-orm';
 
 type TagItem = {
@@ -32,7 +33,6 @@ export default defineEventHandler(async () => {
   }, {} as TagsByCategory);
 
   for (const tag of rawTags) {
-    if (!workCategories.includes(tag.category)) continue;
     tagsByCategory[tag.category as WorkCategory].push({
       id: tag.id,
       name: tag.name,
@@ -41,6 +41,6 @@ export default defineEventHandler(async () => {
   }
 
   return {
-    data: tagsByCategory,
+    ...tagsByCategory,
   };
 });

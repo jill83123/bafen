@@ -1,5 +1,6 @@
-import { imageTable, workTable, workToImageTable } from '#server/db/schema';
 import { UuidV4Schema } from '#server/schema';
+import { db } from '@nuxthub/db';
+import { imageTable, workTable, workToImageTable } from '@nuxthub/db/schema';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 

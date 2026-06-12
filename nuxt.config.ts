@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxthub/core',
     'nuxt-security',
+    '@vueuse/nuxt',
     '@nuxt/ui',
     '@nuxt/image',
     '@vee-validate/nuxt',
@@ -53,10 +54,10 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
+        '@fancyapps/ui',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'browser-image-compression',
-        'clsx',
         'vue3-google-login',
         'zod',
       ],
@@ -65,6 +66,15 @@ export default defineNuxtConfig({
   nitro: {
     routeRules: {
       '/admin/**': { ssr: false },
+      '/admin/dashboard/**': { appLayout: 'admin-dashboard' },
+      '/images/**': {
+        security: {
+          rateLimiter: {
+            tokensPerInterval: 200,
+            interval: '10s',
+          },
+        },
+      },
     },
   },
   runtimeConfig: {

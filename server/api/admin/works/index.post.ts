@@ -1,11 +1,12 @@
+import { WorkFormSchema } from '#shared/schema';
+import { db } from '@nuxthub/db';
 import {
   imageTable,
   tagTable,
   workTable,
   workToImageTable,
   workToTagTable,
-} from '#server/db/schema';
-import { WorkFormSchema } from '#shared/schema';
+} from '@nuxthub/db/schema';
 import { eq, inArray } from 'drizzle-orm';
 
 const BodySchema = WorkFormSchema;
@@ -39,8 +40,8 @@ export default defineEventHandler(async (event) => {
   const missingImageIds = imageIdsToCheck.filter((imageId) => !existingImageIds.has(imageId));
   if (missingImageIds.length) throw createError({ statusCode: 404, message: '圖片不存在' });
 
-  await db.transaction(async (tx: typeof db) => {
-    const [createdWork] = await tx
+  await db.transaction(async (tx) => {
+    const createdWork = await tx
       .insert(workTable)
       .values({
         title: workData.title,
@@ -49,7 +50,8 @@ export default defineEventHandler(async (event) => {
         coverId: workData.coverId,
         isPublic: workData.isPublic,
       })
-      .returning({ id: workTable.id });
+      .returning({ id: workTable.id })
+      .get();
 
     await tx.insert(workToImageTable).values(
       imageIds.map((imageId, index) => ({

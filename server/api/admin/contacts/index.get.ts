@@ -1,5 +1,6 @@
-import { contactTable } from '#server/db/schema';
 import { PaginationShape } from '#server/schema';
+import { db } from '@nuxthub/db';
+import { contactTable } from '@nuxthub/db/schema';
 import { count, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -16,7 +17,7 @@ export default defineEventHandler(async (event) => {
   const pageSize = queryParseResult.data.page_size;
   const offset = (currentPage - 1) * pageSize;
 
-  const [contacts, [countSummary]] = await Promise.all([
+  const [contacts, countSummary] = await Promise.all([
     db
       .select()
       .from(contactTable)
@@ -24,20 +25,21 @@ export default defineEventHandler(async (event) => {
       .limit(pageSize)
       .offset(offset),
 
-    db.select({ total: count(contactTable.id) }).from(contactTable),
+    db
+      .select({ total: count(contactTable.id) })
+      .from(contactTable)
+      .get(),
   ]);
 
-  const totalPages = Math.ceil(countSummary.total / pageSize);
+  const totalPages = Math.ceil(countSummary!.total / pageSize);
 
   return {
-    data: {
-      contacts,
-      pagination: {
-        currentPage,
-        totalPages,
-        hasPrePage: currentPage > 1,
-        hasNextPage: currentPage < totalPages,
-      },
+    contacts,
+    pagination: {
+      currentPage,
+      totalPages,
+      hasPrePage: currentPage > 1,
+      hasNextPage: currentPage < totalPages,
     },
   };
 });

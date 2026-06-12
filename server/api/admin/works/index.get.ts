@@ -1,12 +1,13 @@
+import { PaginationShape } from '#server/schema';
+import { workCategories } from '#shared/constants/workCategory';
+import { db } from '@nuxthub/db';
 import {
   imageTable,
   tagTable,
   workTable,
   workToImageTable,
   workToTagTable,
-} from '#server/db/schema';
-import { PaginationShape } from '#server/schema';
-import { workCategories } from '#shared/constants/workCategory';
+} from '@nuxthub/db/schema';
 import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -41,7 +42,7 @@ export default defineEventHandler(async (event) => {
   const whereClause = whereConditions.length ? and(...whereConditions) : undefined;
 
   // 取得原始資料和計算總數
-  const [rawWorks, [countSummary]] = await Promise.all([
+  const [rawWorks, countSummary] = await Promise.all([
     db
       .select({
         id: workTable.id,
@@ -64,10 +65,11 @@ export default defineEventHandler(async (event) => {
     db
       .select({ total: count(workTable.id) })
       .from(workTable)
-      .where(whereClause),
+      .where(whereClause)
+      .get(),
   ]);
 
-  const totalPages = Math.ceil(countSummary.total / pageSize);
+  const totalPages = Math.ceil(countSummary!.total / pageSize);
 
   // 取得該頁作品的標籤和圖片
   type RawWork = (typeof rawWorks)[number];
@@ -108,14 +110,12 @@ export default defineEventHandler(async (event) => {
 
   for (const tag of workTags) {
     const workId = tag.workId;
-    if (!tagsByWorkId[workId]) tagsByWorkId[workId] = [];
-    tagsByWorkId[workId].push({ id: tag.id, name: tag.name });
+    (tagsByWorkId[workId] ??= []).push({ id: tag.id, name: tag.name });
   }
 
   for (const image of workImages) {
     const workId = image.workId;
-    if (!imagesByWorkId[workId]) imagesByWorkId[workId] = [];
-    imagesByWorkId[workId].push({ id: image.id, path: image.path });
+    (imagesByWorkId[workId] ??= []).push({ id: image.id, path: image.path });
   }
 
   // 最終資料結構
@@ -136,14 +136,12 @@ export default defineEventHandler(async (event) => {
   }));
 
   return {
-    data: {
-      works,
-      pagination: {
-        currentPage,
-        totalPages,
-        hasPrePage: currentPage > 1,
-        hasNextPage: currentPage < totalPages,
-      },
+    works,
+    pagination: {
+      currentPage,
+      totalPages,
+      hasPrePage: currentPage > 1,
+      hasNextPage: currentPage < totalPages,
     },
   };
 });

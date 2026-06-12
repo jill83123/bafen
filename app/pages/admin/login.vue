@@ -4,9 +4,9 @@
       <UPageCard class="w-full max-w-md p-1">
         <UAuthForm
           icon="i-ri-admin-line"
-          title="八分室內裝修｜後台登入"
+          title="八分｜後台登入"
           :providers="providers"
-          :ui="{ title: 'font-medium' }"
+          :ui="{ title: 'font-serif text-2xl font-medium' }"
         >
           <template #footer>
             <NuxtLink to="/" class="text-brand-main hover:text-brand-hover -my-2 p-2 font-medium">
@@ -16,9 +16,16 @@
         </UAuthForm>
       </UPageCard>
 
-      <p v-show="errorMessage" class="text-error mt-7 flex items-center gap-1">
-        <Icon name="i-material-symbols-error-outline" />{{ errorMessage }}
-      </p>
+      <UAlert
+        v-show="errorMessage"
+        :title="errorMessage"
+        icon="i-material-symbols-error-outline"
+        color="error"
+        variant="soft"
+        :ui="{
+          root: 'mt-7 max-w-md',
+        }"
+      />
     </div>
   </main>
 </template>

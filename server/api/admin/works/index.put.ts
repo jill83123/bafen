@@ -1,12 +1,13 @@
+import { UuidV4Schema } from '#server/schema';
+import { WorkFormSchema } from '#shared/schema';
+import { db } from '@nuxthub/db';
 import {
   imageTable,
   tagTable,
   workTable,
   workToImageTable,
   workToTagTable,
-} from '#server/db/schema';
-import { UuidV4Schema } from '#server/schema';
-import { WorkFormSchema } from '#shared/schema';
+} from '@nuxthub/db/schema';
 import { and, eq, inArray, ne, notExists } from 'drizzle-orm';
 
 const BodySchema = WorkFormSchema.extend({
@@ -52,7 +53,7 @@ export default defineEventHandler(async (event) => {
   const missingImageIds = imageIdsToCheck.filter((imageId) => !existingImageIds.has(imageId));
   if (missingImageIds.length) throw createError({ statusCode: 404, message: '圖片不存在' });
 
-  await db.transaction(async (tx: typeof db) => {
+  await db.transaction(async (tx) => {
     await tx
       .update(workTable)
       .set({
