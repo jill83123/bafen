@@ -1,5 +1,5 @@
 import { PaginationShape } from '#server/schema';
-import { workCategories } from '#shared/constants/workCategory';
+import { categories } from '#shared/constants/work';
 import { db } from '@nuxthub/db';
 import {
   imageTable,
@@ -14,7 +14,7 @@ import { z } from 'zod';
 const QuerySchema = z.object({
   ...PaginationShape,
   category: z
-    .enum(['all', ...workCategories, ''])
+    .enum(['all', ...categories, ''])
     .optional()
     .transform((value) => value || 'all'),
   is_public: z.enum(['true', 'false', '']).optional().default(''),
