@@ -119,6 +119,7 @@
                       size="xs"
                       icon="i-lucide-trash-2"
                       class="px-1.5 py-0.5"
+                      @click.stop="handleDelete(image)"
                     />
                   </div>
                 </div>
@@ -378,8 +379,29 @@ const openPreview = (path: string) => {
   const slides = [{ type: 'image', src: path }];
   openLightbox({ slides });
 };
+
+// 刪除
+const confirmDelete = useDeleteModal();
+
+const handleDelete = async (image: ImageItem) => {
+  const confirmed = await confirmDelete({
+    itemTypeName: '圖片',
+    itemImage: image.path,
+  });
+
+  if (!confirmed) return;
+
+  try {
+    await $fetch(`/api/admin/images/${image.id}`, {
+      method: 'DELETE',
+    });
+    toast.success('圖片刪除成功');
+    reloadData();
+    tempSelectedImages.value = tempSelectedImages.value.filter((item) => item.id !== image.id);
+  } catch (error) {
+    toast.error(getErrorMessage(error, '圖片刪除失敗，請稍後再試'));
+  }
+};
 </script>
 
 <style scoped></style>
-
-// TODO: 做刪除圖片功能
