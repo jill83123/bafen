@@ -189,12 +189,8 @@
 </template>
 
 <script lang="ts" setup>
+import type { ImageItem } from '@/types/work';
 import type { TabsItem } from '@nuxt/ui';
-
-type ImageItem = {
-  id: string;
-  path: string;
-};
 
 const isModalOpen = defineModel<boolean>('open', { default: false });
 
@@ -216,6 +212,7 @@ const emit = defineEmits<{
 const toast = useAppToast();
 
 const usageFilterTabItems: TabsItem[] = [
+  { label: '當前選擇', value: 'current' },
   { label: '未使用', value: 'false' },
   { label: '已使用', value: 'true' },
 ];
@@ -224,7 +221,7 @@ const usageFilterTabItems: TabsItem[] = [
 const PAGE_SIZE = 20;
 
 const currentPage = ref(1);
-const usageFilter = ref<'true' | 'false'>('false');
+const usageFilter = ref<'true' | 'false' | 'current'>('false');
 
 const imageList = ref<ImageItem[]>([]); // 真正拿來渲染的資料
 
@@ -253,6 +250,10 @@ const reloadData = () => {
 };
 
 watch(usageFilter, () => {
+  if (usageFilter.value === 'current') {
+    imageList.value = tempSelectedImages.value;
+    return;
+  }
   reloadData();
 });
 
@@ -279,6 +280,12 @@ watch(isModalOpen, (open) => {
   }
 
   tempSelectedImages.value = props.selectedImages ? [...props.selectedImages] : [];
+
+  if (props.selectedImages.length > 0) {
+    usageFilter.value = 'current';
+    imageList.value = props.selectedImages;
+    return;
+  }
 
   if (isFirstOpen.value) {
     isFirstOpen.value = false;

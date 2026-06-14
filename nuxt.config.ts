@@ -12,7 +12,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/ui',
     '@nuxt/image',
-    '@vee-validate/nuxt',
     '@nuxt/scripts',
     '@nuxt/a11y',
     '@nuxt/eslint',
@@ -37,15 +36,6 @@ export default defineNuxtConfig({
       { name: 'Chiron Hei HK', provider: 'google' },
       { name: 'Noto Serif TC', provider: 'google' },
     ],
-  },
-  veeValidate: {
-    autoImports: true,
-    componentNames: {
-      Form: 'VeeForm',
-      Field: 'VeeField',
-      FieldArray: 'VeeFieldArray',
-      ErrorMessage: 'VeeErrorMessage',
-    },
   },
 
   css: ['./app/assets/css/main.css'],
