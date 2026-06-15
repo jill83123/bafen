@@ -58,7 +58,7 @@
         </div>
 
         <UFormField name="coverId" label="封面圖片" required>
-          <div class="grid grid-cols-7 gap-1">
+          <div class="grid grid-cols-3 gap-1 sm:grid-cols-5 lg:grid-cols-7">
             <div
               role="button"
               tabindex="0"
@@ -85,7 +85,10 @@
 
         <UFormField name="imageIds" label="內文圖片" required>
           <div class="text-sub mb-2 text-xs">可拖曳調整順序</div>
-          <div class="grid grid-cols-7 gap-1">
+          <div
+            ref="imagesSortableContainer"
+            class="grid grid-cols-3 gap-1 sm:grid-cols-5 lg:grid-cols-7"
+          >
             <div
               v-if="selectedImages.length === 0"
               role="button"
@@ -100,18 +103,12 @@
 
             <template v-if="selectedImages.length > 0">
               <div
-                v-for="(image, index) in selectedImages"
+                v-for="image in selectedImages"
                 :key="image.id"
                 role="button"
                 tabindex="0"
-                draggable="true"
-                class="group aspect-square cursor-move transition-[scale,opacity] select-none hover:opacity-75"
-                :class="{ 'scale-90 opacity-50': draggedImagesIndex === index }"
+                class="sortable-item group aspect-square cursor-grab transition-[scale,opacity] select-none hover:opacity-75"
                 @click="handleImagesClick"
-                @dragstart="handleImageDragStart(index)"
-                @dragover.prevent
-                @drop="handleImageDrop(index)"
-                @dragend="handleImageDragEnd"
               >
                 <img
                   :src="image.path"
@@ -159,7 +156,6 @@
           label="確認"
           color="primary"
           variant="solid"
-          type="submit"
           :loading="isSubmitting"
           size="sm"
           @click="form?.submit()"
@@ -175,6 +171,9 @@ import type { WorkForm } from '#shared/schema';
 import { WorkFormSchema } from '#shared/schema';
 import type { ImageItem } from '@/types/work';
 import type { SelectItem } from '@nuxt/ui';
+import type { UseSortableOptions } from '@vueuse/integrations/useSortable';
+import { moveArrayElement, useSortable } from '@vueuse/integrations/useSortable';
+import type { SortableEvent } from 'sortablejs';
 
 type ImagePickerTarget = 'cover' | 'images';
 
@@ -242,9 +241,9 @@ const selectedCover = ref<ImageItem | null>(null);
 const selectedImages = ref<ImageItem[]>([]);
 
 const isImagePickerOpen = ref(false);
-const imagePickerTarget = ref<ImagePickerTarget | null>(null);
 const imagePickerMode = ref<'single' | 'multiple'>('single');
 const imagePickerSelection = ref<ImageItem[]>([]);
+let imagePickerTarget: ImagePickerTarget | null = null;
 
 const openImagePicker = (target: ImagePickerTarget) => {
   if (target === 'cover') {
@@ -257,62 +256,66 @@ const openImagePicker = (target: ImagePickerTarget) => {
     imagePickerSelection.value = selectedImages.value;
   }
 
-  imagePickerTarget.value = target;
+  imagePickerTarget = target;
   isImagePickerOpen.value = true;
 };
 
 const handleImageSelect = (images: ImageItem[]) => {
-  if (imagePickerTarget.value === 'cover') {
+  if (imagePickerTarget === 'cover') {
     const [image] = images;
     formState.coverId = image?.id ?? '';
     selectedCover.value = image ?? null;
     return;
   }
 
-  if (imagePickerTarget.value === 'images') {
+  if (imagePickerTarget === 'images') {
     formState.imageIds = images.map((image) => image.id);
     selectedImages.value = images;
     return;
   }
 };
 
-// 內文圖片拖曳
-const draggedImagesIndex = ref<number | null>(null);
-const shouldIgnoreImagesClick = ref(false);
+// 內文圖片拖曳排序
+const imagesSortableContainer = useTemplateRef('imagesSortableContainer');
+let stopSortableImages: (() => void) | null = null;
+let shouldIgnoreImagesClick = false;
 
-const handleImageDragStart = (index: number) => {
-  draggedImagesIndex.value = index;
-};
+watch(imagesSortableContainer, (el) => {
+  stopSortableImages?.();
+  stopSortableImages = null;
 
-const handleImageDragEnd = () => {
-  draggedImagesIndex.value = null;
-  shouldIgnoreImagesClick.value = true;
-  nextTick(() => {
-    shouldIgnoreImagesClick.value = false;
-  });
-};
+  if (!el) return;
 
-const handleImageDrop = (dropIndex: number) => {
-  if (draggedImagesIndex.value === null) return;
+  const { stop } = useSortable(imagesSortableContainer, selectedImages, {
+    animation: 200,
+    draggable: '.sortable-item',
+    ghostClass: 'opacity-50',
+    onStart: () => {
+      shouldIgnoreImagesClick = true;
+    },
+    onEnd: async () => {
+      await nextTick();
+      shouldIgnoreImagesClick = false;
+    },
+    onUpdate: async (event: SortableEvent) => {
+      const { oldIndex, newIndex } = event;
+      if (oldIndex === undefined || newIndex === undefined) return;
 
-  if (draggedImagesIndex.value === dropIndex) {
-    draggedImagesIndex.value = null;
-    return;
-  }
+      moveArrayElement(selectedImages, oldIndex, newIndex);
+      await nextTick();
+      formState.imageIds = selectedImages.value.map((image) => image.id);
+    },
+  } as UseSortableOptions);
 
-  const orderedImages = [...selectedImages.value];
-  const draggedImage = orderedImages[draggedImagesIndex.value]!;
-  orderedImages.splice(draggedImagesIndex.value, 1);
-  orderedImages.splice(dropIndex, 0, draggedImage);
+  stopSortableImages = stop;
+});
 
-  selectedImages.value = orderedImages;
-  formState.imageIds = orderedImages.map((image) => image.id);
-
-  draggedImagesIndex.value = null;
-};
+onUnmounted(() => {
+  stopSortableImages?.();
+});
 
 const handleImagesClick = () => {
-  if (shouldIgnoreImagesClick.value) return;
+  if (shouldIgnoreImagesClick) return;
   openImagePicker('images');
 };
 

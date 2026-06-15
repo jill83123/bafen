@@ -47,6 +47,7 @@ export default defineNuxtConfig({
         '@fancyapps/ui',
         '@vue/devtools-core',
         '@vue/devtools-kit',
+        '@vueuse/integrations',
         'browser-image-compression',
         'vue3-google-login',
         'zod',
