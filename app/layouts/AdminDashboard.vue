@@ -58,24 +58,28 @@
       </template>
     </UDashboardSidebar>
 
-    <div class="w-full">
-      <header>
-        <UDashboardNavbar
-          toggle-side="right"
-          :ui="{
-            root: 'h-auto p-6',
-            toggle: '-m-2',
-          }"
-        >
-          <template #left>
-            <h1 class="font-serif text-2xl leading-none font-medium">
-              {{ props.pageTitle }}
-            </h1>
-          </template>
-        </UDashboardNavbar>
+    <div class="w-full overflow-y-scroll">
+      <header
+        class="border-default bg-default/75 sticky inset-x-0 top-0 z-10 border-b backdrop-blur"
+      >
+        <div class="container max-w-7xl">
+          <UDashboardNavbar
+            toggle-side="right"
+            :ui="{
+              root: 'h-auto border-0 px-3! py-6',
+              toggle: '-m-2',
+            }"
+          >
+            <template #left>
+              <h1 class="font-serif text-2xl leading-none font-medium">
+                {{ props.pageTitle }}
+              </h1>
+            </template>
+          </UDashboardNavbar>
+        </div>
       </header>
 
-      <main class="p-6">
+      <main class="container flex min-h-[calc(100vh-73px)] max-w-7xl flex-col p-6">
         <slot />
       </main>
     </div>
@@ -107,11 +111,6 @@ const items: NavigationMenuItem[][] = [
       label: '作品管理',
       icon: 'i-material-symbols-folder-outline-sharp',
       to: '/admin/dashboard/work',
-    },
-    {
-      label: '標籤管理',
-      icon: 'i-material-symbols-tag',
-      to: '/admin/dashboard/tag',
     },
   ],
   [
