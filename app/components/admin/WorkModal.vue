@@ -169,7 +169,7 @@
 import { categoryOptions } from '#shared/constants/work';
 import type { WorkForm } from '#shared/schema';
 import { WorkFormSchema } from '#shared/schema';
-import type { ImageItem } from '@/types/work';
+import type { ImageItem } from '#shared/types/work';
 import type { SelectItem } from '@nuxt/ui';
 import type { UseSortableOptions } from '@vueuse/integrations/useSortable';
 import { moveArrayElement, useSortable } from '@vueuse/integrations/useSortable';
@@ -211,9 +211,6 @@ watch(isModalOpen, (isOpen) => {
 const toast = useAppToast();
 
 // =============== 表單相關 ===============
-const form = useTemplateRef('form');
-const isSubmitting = ref(false);
-
 const createInitialFormState = (): WorkForm => ({
   title: '',
   slug: '',
@@ -224,19 +221,20 @@ const createInitialFormState = (): WorkForm => ({
   isPublic: false,
 });
 
+const form = useTemplateRef('form');
 const formState = reactive<WorkForm>(createInitialFormState());
+const isSubmitting = ref(false);
 
 const categorySelectItems = ref<SelectItem[]>([categoryOptions]);
 
 // 建立新標籤
 const tagsSearchTerm = ref('');
-
 const onCreateTagItem = () => {
   formState.tags.push(tagsSearchTerm.value);
   tagsSearchTerm.value = '';
 };
 
-// 封面、內文圖片選擇
+// 選擇封面、內文圖片
 const selectedCover = ref<ImageItem | null>(null);
 const selectedImages = ref<ImageItem[]>([]);
 
@@ -319,7 +317,7 @@ const handleImagesClick = () => {
   openImagePicker('images');
 };
 
-// 表單送出
+// 送出資料
 const onSubmit = async (event: { data: WorkForm }) => {
   isSubmitting.value = true;
 
@@ -328,6 +326,7 @@ const onSubmit = async (event: { data: WorkForm }) => {
       method: 'POST',
       body: event.data,
     });
+
     emit('save');
     isModalOpen.value = false;
     toast.success(`作品${modeLabel.value}成功`);

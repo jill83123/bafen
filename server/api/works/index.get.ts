@@ -1,5 +1,6 @@
 import { PaginationShape } from '#server/schema';
 import { categories } from '#shared/constants/work';
+import type { ImageItem, TagItem, WorkItem } from '#shared/types/work';
 import { db } from '@nuxthub/db';
 import {
   imageTable,
@@ -109,11 +110,8 @@ export default defineEventHandler(async (event) => {
       ])
     : [[], []];
 
-  type TagInfo = { id: number; name: string };
-  type ImageInfo = { id: string; path: string };
-
-  const tagsByWorkId: Record<string, TagInfo[]> = {};
-  const imagesByWorkId: Record<string, ImageInfo[]> = {};
+  const tagsByWorkId: Record<string, TagItem[]> = {};
+  const imagesByWorkId: Record<string, ImageItem[]> = {};
 
   for (const tag of workTags) {
     const workId = tag.workId;
@@ -126,7 +124,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // 最終資料結構
-  const works = rawWorks.map((work) => ({
+  const works: WorkItem[] = rawWorks.map((work) => ({
     id: work.id,
     title: work.title,
     slug: work.slug,
@@ -137,8 +135,8 @@ export default defineEventHandler(async (event) => {
       path: work.coverPath,
     },
     images: imagesByWorkId[work.id] || [],
-    createdAt: work.createdAt,
-    updatedAt: work.updatedAt,
+    createdAt: work.createdAt.toISOString(),
+    updatedAt: work.updatedAt.toISOString(),
   }));
 
   return {

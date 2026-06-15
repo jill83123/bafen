@@ -189,7 +189,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ImageItem } from '@/types/work';
+import type { ImageItem } from '#shared/types/work';
 import type { TabsItem } from '@nuxt/ui';
 
 const isModalOpen = defineModel<boolean>('open', { default: false });
@@ -218,11 +218,9 @@ const usageFilterTabItems: TabsItem[] = [
 ];
 
 // =============== 取得圖片 ===============
-const PAGE_SIZE = 20;
-
 const currentPage = ref(1);
+const PAGE_SIZE = 20;
 const usageFilter = ref<'true' | 'false' | 'current'>('false');
-
 const imageList = ref<ImageItem[]>([]); // 真正拿來渲染的資料
 
 const {
@@ -271,7 +269,7 @@ watch(error, (newError) => {
   if (newError) toast.error(newError.data.message || '資料取得失敗，請稍後再試');
 });
 
-const isFirstOpen = ref(true);
+let isFirstOpen = true;
 
 watch(isModalOpen, (open) => {
   if (!open) {
@@ -287,8 +285,8 @@ watch(isModalOpen, (open) => {
     return;
   }
 
-  if (isFirstOpen.value) {
-    isFirstOpen.value = false;
+  if (isFirstOpen) {
+    isFirstOpen = false;
     getData();
     return;
   }
