@@ -1,4 +1,4 @@
-import type { CarouselSlide, FancyboxOptions } from '@fancyapps/ui';
+import type { CarouselSlide } from '@fancyapps/ui';
 import { Fancybox } from '@fancyapps/ui';
 
 type OpenLightboxOptions = {
@@ -9,7 +9,7 @@ export const useLightbox = () => {
   const openLightbox = async ({ slides }: OpenLightboxOptions) => {
     if (import.meta.server || slides.length === 0) return;
 
-    const options: Partial<FancyboxOptions> = {
+    Fancybox.show(slides, {
       Carousel: {
         Toolbar: {
           display: {
@@ -19,10 +19,19 @@ export const useLightbox = () => {
           },
         },
       },
-    };
+      on: {
+        destroy: () => {
+          document.body.style.pointerEvents = '';
+        },
+      },
+    });
 
-    Fancybox.show(slides, { ...options });
     document.body.style.pointerEvents = 'auto'; // 確保滑鼠能夠放大與拖曳 slide 等操作
+
+    onUnmounted(() => {
+      Fancybox.close();
+      document.body.style.pointerEvents = '';
+    });
   };
 
   return { openLightbox };

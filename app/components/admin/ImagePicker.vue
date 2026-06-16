@@ -16,7 +16,7 @@
     </template>
 
     <template #body>
-      <!-- 頂部操作按鈕 -->
+      <!-- 頂部操作列 -->
       <div class="mb-6 flex items-end justify-between gap-3">
         <div class="flex items-center gap-3">
           <UTabs
@@ -58,7 +58,7 @@
           class="grid grid-cols-2 content-start gap-1 md:grid-cols-4 lg:grid-cols-5"
           :class="{
             'w-0': !data && imageList.length === 0,
-            'w-full': shouldShowSkeleton,
+            'w-full': shouldShowSkeleton || imageList.length > 0,
           }"
         >
           <!-- 骨架屏 -->
@@ -119,6 +119,7 @@
                       size="xs"
                       icon="i-lucide-trash-2"
                       class="px-1.5 py-0.5"
+                      @click.stop="handleDelete(image)"
                     />
                   </div>
                 </div>
@@ -128,7 +129,7 @@
         </div>
 
         <div
-          v-if="!data?.images.length && !shouldShowSkeleton"
+          v-if="imageList.length === 0 && !shouldShowSkeleton"
           class="text-sub flex w-full flex-col items-center gap-1 self-center py-6 text-sm"
         >
           <Icon name="i-ix-no-image" />
@@ -188,12 +189,8 @@
 </template>
 
 <script lang="ts" setup>
+import type { ImageItem } from '#shared/types/work';
 import type { TabsItem } from '@nuxt/ui';
-
-type ImageItem = {
-  id: string;
-  path: string;
-};
 
 const isModalOpen = defineModel<boolean>('open', { default: false });
 
@@ -215,21 +212,20 @@ const emit = defineEmits<{
 const toast = useAppToast();
 
 const usageFilterTabItems: TabsItem[] = [
+  { label: '當前選擇', value: 'current' },
   { label: '未使用', value: 'false' },
   { label: '已使用', value: 'true' },
 ];
 
 // =============== 取得圖片 ===============
-const PAGE_SIZE = 20;
-
 const currentPage = ref(1);
-const usageFilter = ref<'true' | 'false'>('false');
-
+const PAGE_SIZE = 20;
+const usageFilter = ref<'true' | 'false' | 'current'>('false');
 const imageList = ref<ImageItem[]>([]); // 真正拿來渲染的資料
 
 const {
   data,
-  refresh: getData,
+  refresh: refreshData,
   error,
   pending: isLoading,
 } = useLazyFetch('/api/admin/images', {
@@ -247,16 +243,20 @@ const shouldShowSkeleton = useDelayedDisplay(isLoading);
 const reloadData = () => {
   scrollContainer.value?.scrollTo(0, 0);
   resetInfiniteScroll();
-  if (currentPage.value === 1) getData();
+  if (currentPage.value === 1) refreshData();
   else currentPage.value = 1; // 由 currentPage 的 watch 取資料
 };
 
 watch(usageFilter, () => {
+  if (usageFilter.value === 'current') {
+    imageList.value = tempSelectedImages.value;
+    return;
+  }
   reloadData();
 });
 
 watch(currentPage, () => {
-  getData();
+  refreshData();
 });
 
 watch(data, async (newData) => {
@@ -269,7 +269,7 @@ watch(error, (newError) => {
   if (newError) toast.error(newError.data.message || '資料取得失敗，請稍後再試');
 });
 
-const isFirstOpen = ref(true);
+let isFirstOpen = true;
 
 watch(isModalOpen, (open) => {
   if (!open) {
@@ -279,9 +279,16 @@ watch(isModalOpen, (open) => {
 
   tempSelectedImages.value = props.selectedImages ? [...props.selectedImages] : [];
 
-  if (isFirstOpen.value) {
-    isFirstOpen.value = false;
-    getData();
+  if (props.selectedImages.length > 0) {
+    usageFilter.value = 'current';
+    imageList.value = props.selectedImages;
+    shouldShowSkeleton.value = false;
+    return;
+  }
+
+  if (isFirstOpen) {
+    isFirstOpen = false;
+    refreshData();
     return;
   }
 
@@ -378,8 +385,29 @@ const openPreview = (path: string) => {
   const slides = [{ type: 'image', src: path }];
   openLightbox({ slides });
 };
+
+// 刪除
+const confirmDelete = useDeleteModal();
+
+const handleDelete = async (image: ImageItem) => {
+  const confirmed = await confirmDelete({
+    itemTypeName: '圖片',
+    itemImage: image.path,
+  });
+
+  if (!confirmed) return;
+
+  try {
+    await $fetch(`/api/admin/images/${image.id}`, {
+      method: 'DELETE',
+    });
+    toast.success('圖片刪除成功');
+    reloadData();
+    tempSelectedImages.value = tempSelectedImages.value.filter((item) => item.id !== image.id);
+  } catch (error) {
+    toast.error(getErrorMessage(error, '圖片刪除失敗，請稍後再試'));
+  }
+};
 </script>
 
 <style scoped></style>
-
-// TODO: 做刪除圖片功能

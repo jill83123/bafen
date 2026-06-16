@@ -1,8 +1,9 @@
-import type { WorkCategory } from '#shared/constants/workCategory';
-import { workCategories } from '#shared/constants/workCategory';
+import { categories } from '#shared/constants/work';
 import { db } from '@nuxthub/db';
 import { tagTable, workTable, workToTagTable } from '@nuxthub/db/schema';
 import { and, count, desc, eq } from 'drizzle-orm';
+
+type Category = (typeof categories)[number];
 
 type TagItem = {
   id: number;
@@ -10,7 +11,7 @@ type TagItem = {
   workUsageCount: number;
 };
 
-type TagsByCategory = Record<WorkCategory, TagItem[]>;
+type TagsByCategory = Record<Category, TagItem[]>;
 
 export default defineEventHandler(async () => {
   const rawTags = await db
@@ -27,13 +28,13 @@ export default defineEventHandler(async () => {
     .groupBy(tagTable.id, tagTable.name, workTable.category)
     .orderBy(desc(count(workToTagTable.workId)));
 
-  const tagsByCategory = workCategories.reduce((grouped, category) => {
+  const tagsByCategory = categories.reduce((grouped, category) => {
     grouped[category] = [];
     return grouped;
   }, {} as TagsByCategory);
 
   for (const tag of rawTags) {
-    tagsByCategory[tag.category as WorkCategory].push({
+    tagsByCategory[tag.category as Category].push({
       id: tag.id,
       name: tag.name,
       workUsageCount: tag.workUsageCount,

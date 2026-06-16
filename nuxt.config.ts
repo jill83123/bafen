@@ -12,7 +12,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/ui',
     '@nuxt/image',
-    '@vee-validate/nuxt',
     '@nuxt/scripts',
     '@nuxt/a11y',
     '@nuxt/eslint',
@@ -38,15 +37,6 @@ export default defineNuxtConfig({
       { name: 'Noto Serif TC', provider: 'google' },
     ],
   },
-  veeValidate: {
-    autoImports: true,
-    componentNames: {
-      Form: 'VeeForm',
-      Field: 'VeeField',
-      FieldArray: 'VeeFieldArray',
-      ErrorMessage: 'VeeErrorMessage',
-    },
-  },
 
   css: ['./app/assets/css/main.css'],
 
@@ -57,6 +47,7 @@ export default defineNuxtConfig({
         '@fancyapps/ui',
         '@vue/devtools-core',
         '@vue/devtools-kit',
+        '@vueuse/integrations',
         'browser-image-compression',
         'vue3-google-login',
         'zod',

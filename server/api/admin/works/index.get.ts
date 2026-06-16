@@ -1,5 +1,6 @@
 import { PaginationShape } from '#server/schema';
-import { workCategories } from '#shared/constants/workCategory';
+import { categories } from '#shared/constants/work';
+import type { AdminWorkItem, ImageItem, TagItem } from '#shared/types/work';
 import { db } from '@nuxthub/db';
 import {
   imageTable,
@@ -14,7 +15,7 @@ import { z } from 'zod';
 const QuerySchema = z.object({
   ...PaginationShape,
   category: z
-    .enum(['all', ...workCategories, ''])
+    .enum(['all', ...categories, ''])
     .optional()
     .transform((value) => value || 'all'),
   is_public: z.enum(['true', 'false', '']).optional().default(''),
@@ -102,11 +103,8 @@ export default defineEventHandler(async (event) => {
       ])
     : [[], []];
 
-  type TagInfo = { id: number; name: string };
-  type ImageInfo = { id: string; path: string };
-
-  const tagsByWorkId: Record<string, TagInfo[]> = {};
-  const imagesByWorkId: Record<string, ImageInfo[]> = {};
+  const tagsByWorkId: Record<string, TagItem[]> = {};
+  const imagesByWorkId: Record<string, ImageItem[]> = {};
 
   for (const tag of workTags) {
     const workId = tag.workId;
@@ -119,7 +117,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // 最終資料結構
-  const works = rawWorks.map((work: RawWork) => ({
+  const works: AdminWorkItem[] = rawWorks.map((work: RawWork) => ({
     id: work.id,
     title: work.title,
     slug: work.slug,
@@ -131,8 +129,8 @@ export default defineEventHandler(async (event) => {
     },
     images: imagesByWorkId[work.id] || [],
     isPublic: work.isPublic,
-    createdAt: work.createdAt,
-    updatedAt: work.updatedAt,
+    createdAt: work.createdAt.toISOString(),
+    updatedAt: work.updatedAt.toISOString(),
   }));
 
   return {

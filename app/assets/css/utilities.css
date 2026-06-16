@@ -23,3 +23,7 @@
 @utility radius-4xl {
   border-radius: var(--radius-4xl);
 }
+
+@utility container {
+  @apply mx-auto px-3;
+}

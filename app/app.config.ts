@@ -112,12 +112,12 @@ export default defineAppConfig({
     input: {
       slots: {
         root: tw`w-full`,
-        base: tw`placeholder:text-sub disabled:bg-canvas read-only:focus-visible:ring-line-light`,
+        base: tw`disabled:bg-canvas read-only:focus-visible:ring-line-light`,
       },
       variants: {
         size: {
           md: {
-            base: tw`px-4 py-3 text-base!`,
+            base: tw`p-3 text-base!`,
           },
         },
       },
@@ -126,6 +126,39 @@ export default defineAppConfig({
           color: 'neutral',
           variant: 'outline',
           class: tw`focus-visible:ring-1`,
+        },
+      ],
+      defaultVariants: {
+        size: 'md',
+        color: 'neutral',
+        variant: 'outline',
+      },
+    },
+
+    inputMenu: {
+      slots: {
+        base: tw`disabled:bg-canvas read-only:focus-visible:ring-line-light`,
+        trailingIcon: tw`text-ink`,
+        content: tw`ring-ink shadow-none ring-inset`,
+        group: tw`p-0`,
+        tagsInput: tw`min-w-0`,
+      },
+      variants: {
+        size: {
+          md: {
+            base: tw`p-3 text-base!`,
+            trailingIcon: tw`size-5`,
+            item: tw`items-center px-4 py-3 text-base`,
+            itemTrailingIcon: tw`size-4.5`,
+            tagsItem: tw`text-sm font-normal`,
+          },
+        },
+      },
+      compoundVariants: [
+        {
+          color: 'neutral',
+          variant: 'outline',
+          class: tw`has-focus-visible:ring-1`,
         },
       ],
       defaultVariants: {
@@ -169,12 +202,12 @@ export default defineAppConfig({
 
     textarea: {
       slots: {
-        base: tw`placeholder:text-sub disabled:bg-canvas read-only:focus-visible:ring-line-light`,
+        base: tw`disabled:bg-canvas read-only:focus-visible:ring-line-light`,
       },
       variants: {
         size: {
           md: {
-            base: tw`px-4 py-3 text-base!`,
+            base: tw`p-3 text-base!`,
           },
         },
       },
@@ -189,6 +222,15 @@ export default defineAppConfig({
         size: 'md',
         color: 'neutral',
         variant: 'outline',
+      },
+    },
+
+    table: {
+      slots: {
+        tbody: tw`[&>tr:not(:has(td[colspan]))]:hover:bg-canvas/50 [&>tr:not(:has(td[colspan]))]:active:bg-canvas/50`,
+        tr: tw`transition-colors`,
+        th: tw`text-ink truncate px-4 py-3 text-base font-medium`,
+        td: tw`text-ink px-4 py-3 text-base`,
       },
     },
 
