@@ -29,9 +29,7 @@ export default defineEventHandler(async (event) => {
   }));
 
   try {
-    await db.transaction(async (tx) => {
-      await tx.insert(imageTable).values(recordsToInsert);
-    });
+    await db.insert(imageTable).values(recordsToInsert);
   } catch {
     // DB 寫入失敗時，清掉已上傳檔案以避免殘留 orphan files
     await Promise.allSettled(uploadResults.map((file) => blob.del(file.pathname)));

@@ -53,8 +53,8 @@ export default defineEventHandler(async (event) => {
   const missingImageIds = imageIdsToCheck.filter((imageId) => !existingImageIds.has(imageId));
   if (missingImageIds.length) throw createError({ statusCode: 404, message: '圖片不存在' });
 
-  await db.transaction(async (tx) => {
-    await tx
+  await db.batch([
+    db
       .update(workTable)
       .set({
         title: workData.title,
@@ -64,57 +64,59 @@ export default defineEventHandler(async (event) => {
         isPublic: workData.isPublic,
         updatedAt: new Date(),
       })
-      .where(eq(workTable.id, workId));
+      .where(eq(workTable.id, workId)),
 
-    await tx.delete(workToImageTable).where(eq(workToImageTable.workId, workId));
+    db.delete(workToImageTable).where(eq(workToImageTable.workId, workId)),
+  ]);
 
-    await tx.insert(workToImageTable).values(
-      imageIds.map((imageId, index) => ({
-        workId,
-        imageId,
-        sortOrder: index,
-      })),
-    );
+  await db.insert(workToImageTable).values(
+    imageIds.map((imageId, index) => ({
+      workId,
+      imageId,
+      sortOrder: index,
+    })),
+  );
 
-    await tx.delete(workToTagTable).where(eq(workToTagTable.workId, workId));
+  await db.delete(workToTagTable).where(eq(workToTagTable.workId, workId));
 
-    if (tagNames.length) {
-      const existingTags = await tx
-        .select({ id: tagTable.id, name: tagTable.name })
-        .from(tagTable)
-        .where(inArray(tagTable.name, tagNames));
+  if (tagNames.length) {
+    const existingTags = await db
+      .select({ id: tagTable.id, name: tagTable.name })
+      .from(tagTable)
+      .where(inArray(tagTable.name, tagNames));
 
-      const existingTagNames = new Set(existingTags.map((tag: { name: string }) => tag.name));
-      const missingTagNames = tagNames.filter((tagName) => !existingTagNames.has(tagName));
+    const existingTagNames = new Set(existingTags.map((tag: { name: string }) => tag.name));
+    const missingTagNames = tagNames.filter((tagName) => !existingTagNames.has(tagName));
 
-      // 標籤若不存在則新增
-      if (missingTagNames.length) {
-        await tx
-          .insert(tagTable)
-          .values(missingTagNames.map((name) => ({ name })))
-          .onConflictDoNothing();
-      }
+    // 標籤若不存在則新增
+    if (missingTagNames.length) {
+      await db
+        .insert(tagTable)
+        .values(missingTagNames.map((name) => ({ name })))
+        .onConflictDoNothing();
+    }
 
-      const tags = await tx
-        .select({ id: tagTable.id })
-        .from(tagTable)
-        .where(inArray(tagTable.name, tagNames));
+    const tags = await db
+      .select({ id: tagTable.id })
+      .from(tagTable)
+      .where(inArray(tagTable.name, tagNames));
 
-      await tx.insert(workToTagTable).values(
+    if (tags.length) {
+      await db.insert(workToTagTable).values(
         tags.map((tag: { id: number }) => ({
           workId,
           tagId: tag.id,
         })),
       );
     }
+  }
 
-    // 清理未使用的標籤
-    await tx
-      .delete(tagTable)
-      .where(
-        notExists(tx.select().from(workToTagTable).where(eq(workToTagTable.tagId, tagTable.id))),
-      );
-  });
+  // 清理未使用的標籤
+  await db
+    .delete(tagTable)
+    .where(
+      notExists(db.select().from(workToTagTable).where(eq(workToTagTable.tagId, tagTable.id))),
+    );
 
   return {};
 });

@@ -40,30 +40,28 @@ export default defineEventHandler(async (event) => {
   const missingImageIds = imageIdsToCheck.filter((imageId) => !existingImageIds.has(imageId));
   if (missingImageIds.length) throw createError({ statusCode: 404, message: '圖片不存在' });
 
-  await db.transaction(async (tx) => {
-    const createdWork = await tx
-      .insert(workTable)
-      .values({
-        title: workData.title,
-        slug: workData.slug,
-        category: workData.category,
-        coverId: workData.coverId,
-        isPublic: workData.isPublic,
-      })
-      .returning({ id: workTable.id })
-      .get();
+  const createdWork = await db
+    .insert(workTable)
+    .values({
+      title: workData.title,
+      slug: workData.slug,
+      category: workData.category,
+      coverId: workData.coverId,
+      isPublic: workData.isPublic,
+    })
+    .returning({ id: workTable.id })
+    .get();
 
-    await tx.insert(workToImageTable).values(
-      imageIds.map((imageId, index) => ({
-        workId: createdWork.id,
-        imageId,
-        sortOrder: index,
-      })),
-    );
+  await db.insert(workToImageTable).values(
+    imageIds.map((imageId, index) => ({
+      workId: createdWork.id,
+      imageId,
+      sortOrder: index,
+    })),
+  );
 
-    if (!tagNames.length) return;
-
-    const existingTags = await tx
+  if (tagNames.length) {
+    const existingTags = await db
       .select({ id: tagTable.id, name: tagTable.name })
       .from(tagTable)
       .where(inArray(tagTable.name, tagNames));
@@ -73,26 +71,26 @@ export default defineEventHandler(async (event) => {
 
     // 標籤若不存在則新增
     if (missingTagNames.length) {
-      await tx
+      await db
         .insert(tagTable)
         .values(missingTagNames.map((name) => ({ name })))
         .onConflictDoNothing();
     }
 
-    const tags = await tx
+    const tags = await db
       .select({ id: tagTable.id })
       .from(tagTable)
       .where(inArray(tagTable.name, tagNames));
 
     if (tags.length) {
-      await tx.insert(workToTagTable).values(
+      await db.insert(workToTagTable).values(
         tags.map((tag: { id: number }) => ({
           workId: createdWork.id,
           tagId: tag.id,
         })),
       );
     }
-  });
+  }
 
   return {};
 });
