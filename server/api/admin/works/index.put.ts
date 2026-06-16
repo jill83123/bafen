@@ -67,17 +67,17 @@ export default defineEventHandler(async (event) => {
       .where(eq(workTable.id, workId)),
 
     db.delete(workToImageTable).where(eq(workToImageTable.workId, workId)),
+
+    db.insert(workToImageTable).values(
+      imageIds.map((imageId, index) => ({
+        workId,
+        imageId,
+        sortOrder: index,
+      })),
+    ),
+
+    db.delete(workToTagTable).where(eq(workToTagTable.workId, workId)),
   ]);
-
-  await db.insert(workToImageTable).values(
-    imageIds.map((imageId, index) => ({
-      workId,
-      imageId,
-      sortOrder: index,
-    })),
-  );
-
-  await db.delete(workToTagTable).where(eq(workToTagTable.workId, workId));
 
   if (tagNames.length) {
     const existingTags = await db
