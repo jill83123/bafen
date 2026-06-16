@@ -1,7 +1,7 @@
 <template>
   <UModal
     v-model:open="isModalOpen"
-    :title="modeLabel"
+    :title="`${modeLabel}作品`"
     scrollable
     :dismissible="false"
     :ui="{
@@ -47,7 +47,7 @@
               placeholder="輸入後按 Enter"
               :items="props.tagsMenu"
               multiple
-              create-item
+              create-item="always"
               :ui="{
                 base: 'ring-default w-full',
                 content: 'ring-default',
@@ -166,10 +166,11 @@
 </template>
 
 <script lang="ts" setup>
+import type { categories } from '#shared/constants/work';
 import { categoryOptions } from '#shared/constants/work';
 import type { WorkForm } from '#shared/schema';
 import { WorkFormSchema } from '#shared/schema';
-import type { ImageItem } from '#shared/types/work';
+import type { AdminWorkItem, ImageItem } from '#shared/types/work';
 import type { SelectItem } from '@nuxt/ui';
 import type { UseSortableOptions } from '@vueuse/integrations/useSortable';
 import { moveArrayElement, useSortable } from '@vueuse/integrations/useSortable';
@@ -180,10 +181,12 @@ type ImagePickerTarget = 'cover' | 'images';
 const props = withDefaults(
   defineProps<{
     mode?: 'add' | 'edit';
+    data?: AdminWorkItem | null;
     tagsMenu?: string[];
   }>(),
   {
     mode: 'add',
+    data: null,
     tagsMenu: () => [],
   },
 );
@@ -199,14 +202,29 @@ const modeLabel = computed(() => {
 });
 
 watch(isModalOpen, (isOpen) => {
-  if (isOpen) return;
+  if (!isOpen) resetForm();
+  else if (props.data) initializeFormWithData(props.data);
+});
 
+const initializeFormWithData = (data: AdminWorkItem) => {
+  const { id, cover, images, createdAt, updatedAt, ...rest } = data;
+  formState.value = {
+    ...rest,
+    category: rest.category as (typeof categories)[number],
+    tags: rest.tags.map((tag) => tag.name),
+    coverId: cover.id,
+    imageIds: images.map((img) => img.id),
+  };
+  selectedCover.value = cover;
+  selectedImages.value = images;
+};
+
+const resetForm = () => {
   form.value?.clear(); // 清除錯誤訊息
-  Object.assign(formState, createInitialFormState());
-
+  formState.value = createInitialFormState();
   selectedCover.value = null;
   selectedImages.value = [];
-});
+};
 
 const toast = useAppToast();
 
@@ -222,7 +240,7 @@ const createInitialFormState = (): WorkForm => ({
 });
 
 const form = useTemplateRef('form');
-const formState = reactive<WorkForm>(createInitialFormState());
+const formState = ref<WorkForm>(createInitialFormState());
 const isSubmitting = ref(false);
 
 const categorySelectItems = ref<SelectItem[]>([categoryOptions]);
@@ -230,7 +248,7 @@ const categorySelectItems = ref<SelectItem[]>([categoryOptions]);
 // 建立新標籤
 const tagsSearchTerm = ref('');
 const onCreateTagItem = () => {
-  formState.tags.push(tagsSearchTerm.value);
+  formState.value.tags.push(tagsSearchTerm.value);
   tagsSearchTerm.value = '';
 };
 
@@ -261,13 +279,13 @@ const openImagePicker = (target: ImagePickerTarget) => {
 const handleImageSelect = (images: ImageItem[]) => {
   if (imagePickerTarget === 'cover') {
     const [image] = images;
-    formState.coverId = image?.id ?? '';
+    formState.value.coverId = image?.id ?? '';
     selectedCover.value = image ?? null;
     return;
   }
 
   if (imagePickerTarget === 'images') {
-    formState.imageIds = images.map((image) => image.id);
+    formState.value.imageIds = images.map((image) => image.id);
     selectedImages.value = images;
     return;
   }
@@ -301,7 +319,7 @@ watch(imagesSortableContainer, (el) => {
 
       moveArrayElement(selectedImages, oldIndex, newIndex);
       await nextTick();
-      formState.imageIds = selectedImages.value.map((image) => image.id);
+      formState.value.imageIds = selectedImages.value.map((image) => image.id);
     },
   } as UseSortableOptions);
 
@@ -322,10 +340,9 @@ const onSubmit = async (event: { data: WorkForm }) => {
   isSubmitting.value = true;
 
   try {
-    await $fetch('/api/admin/works', {
-      method: 'POST',
-      body: event.data,
-    });
+    const method = props.mode === 'add' ? 'POST' : 'PUT';
+    const body = props.mode === 'add' ? event.data : { id: props.data?.id, ...event.data };
+    await $fetch('/api/admin/works', { method, body });
 
     emit('save');
     isModalOpen.value = false;

@@ -16,7 +16,7 @@
     </template>
 
     <template #body>
-      <!-- 頂部操作按鈕 -->
+      <!-- 頂部操作列 -->
       <div class="mb-6 flex items-end justify-between gap-3">
         <div class="flex items-center gap-3">
           <UTabs
@@ -58,7 +58,7 @@
           class="grid grid-cols-2 content-start gap-1 md:grid-cols-4 lg:grid-cols-5"
           :class="{
             'w-0': !data && imageList.length === 0,
-            'w-full': shouldShowSkeleton,
+            'w-full': shouldShowSkeleton || imageList.length > 0,
           }"
         >
           <!-- 骨架屏 -->
@@ -129,7 +129,7 @@
         </div>
 
         <div
-          v-if="!data?.images.length && !shouldShowSkeleton"
+          v-if="imageList.length === 0 && !shouldShowSkeleton"
           class="text-sub flex w-full flex-col items-center gap-1 self-center py-6 text-sm"
         >
           <Icon name="i-ix-no-image" />
@@ -225,7 +225,7 @@ const imageList = ref<ImageItem[]>([]); // 真正拿來渲染的資料
 
 const {
   data,
-  refresh: getData,
+  refresh: refreshData,
   error,
   pending: isLoading,
 } = useLazyFetch('/api/admin/images', {
@@ -243,7 +243,7 @@ const shouldShowSkeleton = useDelayedDisplay(isLoading);
 const reloadData = () => {
   scrollContainer.value?.scrollTo(0, 0);
   resetInfiniteScroll();
-  if (currentPage.value === 1) getData();
+  if (currentPage.value === 1) refreshData();
   else currentPage.value = 1; // 由 currentPage 的 watch 取資料
 };
 
@@ -256,7 +256,7 @@ watch(usageFilter, () => {
 });
 
 watch(currentPage, () => {
-  getData();
+  refreshData();
 });
 
 watch(data, async (newData) => {
@@ -282,12 +282,13 @@ watch(isModalOpen, (open) => {
   if (props.selectedImages.length > 0) {
     usageFilter.value = 'current';
     imageList.value = props.selectedImages;
+    shouldShowSkeleton.value = false;
     return;
   }
 
   if (isFirstOpen) {
     isFirstOpen = false;
-    getData();
+    refreshData();
     return;
   }
 

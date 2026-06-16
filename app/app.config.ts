@@ -225,6 +225,15 @@ export default defineAppConfig({
       },
     },
 
+    table: {
+      slots: {
+        tbody: tw`[&>tr:not(:has(td[colspan]))]:hover:bg-canvas/50 [&>tr:not(:has(td[colspan]))]:active:bg-canvas/50`,
+        tr: tw`transition-colors`,
+        th: tw`text-ink truncate px-4 py-3 text-base font-medium`,
+        td: tw`text-ink px-4 py-3 text-base`,
+      },
+    },
+
     navigationMenu: {
       compoundVariants: [
         {
