@@ -62,6 +62,7 @@ export default defineEventHandler(async (event) => {
         category: workData.category,
         coverId: workData.coverId,
         isPublic: workData.isPublic,
+        updatedAt: new Date(),
       })
       .where(eq(workTable.id, workId));
 

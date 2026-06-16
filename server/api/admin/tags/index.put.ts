@@ -33,7 +33,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: '標籤已存在，請輸入其他名稱' });
   }
 
-  await db.update(tagTable).set({ name: tagName }).where(eq(tagTable.id, tagId));
+  await db
+    .update(tagTable)
+    .set({
+      name: tagName,
+      updatedAt: new Date(),
+    })
+    .where(eq(tagTable.id, tagId));
 
   return {};
 });
