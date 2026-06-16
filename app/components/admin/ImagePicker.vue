@@ -299,7 +299,7 @@ watch(isModalOpen, (open) => {
 });
 
 const uploadImageCallback = () => {
-  if (usageFilter.value === 'true') usageFilter.value = 'false';
+  if (usageFilter.value !== 'false') usageFilter.value = 'false';
   else reloadData();
 };
 
