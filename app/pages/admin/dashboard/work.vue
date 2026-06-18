@@ -175,7 +175,7 @@ watch(currentCategory, () => {
   refreshWorkData();
 });
 
-const handleEditDeleteWorkRefresh = () => {
+const refreshWorkOrGoPrevPage = () => {
   const { works, pagination } = workData.value ?? {};
   const totalPages = pagination?.totalPages ?? 0;
   const shouldBackToPrevPage = works?.length === 1 && totalPages > 1;
@@ -226,7 +226,7 @@ const handleWorkDelete = async (work: AdminWorkItem) => {
       method: 'DELETE',
     });
     toast.success('作品刪除成功');
-    handleEditDeleteWorkRefresh();
+    refreshWorkOrGoPrevPage();
     refreshTagData();
   } catch (error) {
     toast.error(getErrorMessage(error, '作品刪除失敗，請稍後再試'));
@@ -250,7 +250,7 @@ const handleWorkModalSave = () => {
     else if (currentPage.value !== 1) currentPage.value = 1;
     else refreshWorkData();
   } else if (workModalMode.value === 'edit') {
-    handleEditDeleteWorkRefresh();
+    refreshWorkOrGoPrevPage();
   }
   refreshTagData();
 };

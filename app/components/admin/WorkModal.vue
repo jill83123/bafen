@@ -139,7 +139,7 @@
         v-model:open="isImagePickerOpen"
         :mode="imagePickerMode"
         :selected-images="imagePickerSelection"
-        @select="handleImageSelect"
+        @select="handleImagePickerSelect"
       />
     </template>
 
@@ -287,7 +287,7 @@ const openImagePicker = (target: ImagePickerTarget) => {
   isImagePickerOpen.value = true;
 };
 
-const handleImageSelect = (images: ImageItem[]) => {
+const handleImagePickerSelect = (images: ImageItem[]) => {
   if (imagePickerTarget === 'cover') {
     const [image] = images;
     formState.value.coverId = image?.id ?? '';

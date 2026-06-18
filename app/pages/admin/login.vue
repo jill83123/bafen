@@ -31,8 +31,8 @@
 </template>
 
 <script lang="ts" setup>
-import { googleTokenLogin } from 'vue3-google-login';
 import type { ButtonProps } from '@nuxt/ui';
+import { googleTokenLogin } from 'vue3-google-login';
 
 const runtimeConfig = useRuntimeConfig();
 const { googleClientId: GOOGLE_CLIENT_ID } = runtimeConfig.public;
@@ -46,9 +46,7 @@ const providers = ref<ButtonProps[]>([
     color: 'neutral',
     variant: 'soft',
     ui: { base: 'gap-2' },
-    onClick: () => {
-      handleLogin();
-    },
+    onClick: () => handleLogin(),
   },
 ]);
 

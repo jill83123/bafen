@@ -95,16 +95,6 @@ const props = defineProps<{
 
 const toast = useAppToast();
 
-const handleLogout = async () => {
-  try {
-    await $fetch('/api/admin/logout', { method: 'POST' });
-    toast.success('登出成功');
-    navigateTo('/');
-  } catch (error) {
-    toast.error(getErrorMessage(error, '登出失敗，請稍後再試'));
-  }
-};
-
 const items: NavigationMenuItem[][] = [
   [
     {
@@ -117,12 +107,20 @@ const items: NavigationMenuItem[][] = [
     {
       label: '登出',
       icon: 'i-ri-logout-box-line',
-      onSelect: async () => {
-        await handleLogout();
-      },
+      onSelect: () => handleLogout(),
     },
   ],
 ];
+
+const handleLogout = async () => {
+  try {
+    await $fetch('/api/admin/logout', { method: 'POST' });
+    toast.success('登出成功');
+    navigateTo('/');
+  } catch (error) {
+    toast.error(getErrorMessage(error, '登出失敗，請稍後再試'));
+  }
+};
 </script>
 
 <style scoped></style>

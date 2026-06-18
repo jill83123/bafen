@@ -46,7 +46,7 @@
           />
         </div>
 
-        <AdminImageUploader @success="uploadImageCallback" />
+        <AdminImageUploader @success="handleUploadSuccess" />
       </div>
 
       <!-- 圖片列表 -->
@@ -298,7 +298,7 @@ watch(isModalOpen, (open) => {
   }
 });
 
-const uploadImageCallback = () => {
+const handleUploadSuccess = () => {
   if (usageFilter.value !== 'false') usageFilter.value = 'false';
   else reloadData();
 };
