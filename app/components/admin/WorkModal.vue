@@ -2,6 +2,7 @@
   <UModal
     v-model:open="isModalOpen"
     :title="`${modeLabel}作品`"
+    :content="{ onCloseAutoFocus: resetForm }"
     scrollable
     :dismissible="false"
     :ui="{
@@ -16,7 +17,7 @@
         class="space-y-5"
         @submit="onSubmit"
       >
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <UFormField name="title" label="作品名稱" required>
             <UInput v-model="formState.title" placeholder="請輸入作品名稱" />
           </UFormField>
@@ -26,7 +27,7 @@
           </UFormField>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <UFormField name="category" label="分類" required>
             <USelect
               v-model="formState.category"
@@ -45,14 +46,14 @@
               v-model="formState.tags"
               v-model:search-term="tagsSearchTerm"
               placeholder="輸入後按 Enter"
-              :items="props.tagsMenu"
+              :items="props.tagMenu"
               multiple
               create-item="always"
               :ui="{
                 base: 'ring-default w-full',
                 content: 'ring-default',
               }"
-              @create="onCreateTagItem"
+              @create="onCreateNewTag"
             />
           </UFormField>
         </div>
@@ -84,7 +85,7 @@
         </UFormField>
 
         <UFormField name="imageIds" label="內文圖片" required>
-          <div class="text-sub mb-2 text-xs">可拖曳調整順序</div>
+          <div class="text-sub -mt-1 mb-2 text-xs">可拖曳調整順序</div>
           <div
             ref="imagesSortableContainer"
             class="grid grid-cols-3 gap-1 sm:grid-cols-5 lg:grid-cols-7"
@@ -139,7 +140,7 @@
         v-model:open="isImagePickerOpen"
         :mode="imagePickerMode"
         :selected-images="imagePickerSelection"
-        @select="handleImageSelect"
+        @select="handleImagePickerSelect"
       />
     </template>
 
@@ -182,12 +183,12 @@ const props = withDefaults(
   defineProps<{
     mode?: 'add' | 'edit';
     data?: AdminWorkItem | null;
-    tagsMenu?: string[];
+    tagMenu?: string[];
   }>(),
   {
     mode: 'add',
     data: null,
-    tagsMenu: () => [],
+    tagMenu: () => [],
   },
 );
 
@@ -202,11 +203,10 @@ const modeLabel = computed(() => {
 });
 
 watch(isModalOpen, (isOpen) => {
-  if (!isOpen) resetForm();
-  else if (props.data) initializeFormWithData(props.data);
+  if (isOpen && props.data) initFormWithData(props.data);
 });
 
-const initializeFormWithData = (data: AdminWorkItem) => {
+const initFormWithData = (data: AdminWorkItem) => {
   const { id, cover, images, createdAt, updatedAt, ...rest } = data;
   formState.value = {
     ...rest,
@@ -217,13 +217,6 @@ const initializeFormWithData = (data: AdminWorkItem) => {
   };
   selectedCover.value = cover;
   selectedImages.value = images;
-};
-
-const resetForm = () => {
-  form.value?.clear(); // 清除錯誤訊息
-  formState.value = createInitialFormState();
-  selectedCover.value = null;
-  selectedImages.value = [];
 };
 
 const toast = useAppToast();
@@ -247,8 +240,19 @@ const categorySelectItems = ref<SelectItem[]>([categoryOptions]);
 
 // 建立新標籤
 const tagsSearchTerm = ref('');
-const onCreateTagItem = () => {
-  formState.value.tags.push(tagsSearchTerm.value);
+const onCreateNewTag = async (tagName: string) => {
+  const newTag = tagName.trim();
+  const isExist = formState.value.tags.includes(newTag);
+
+  if (isExist) {
+    // 元件會把已存在的 toggle（取消），這裡在下一個 tick 補回來
+    await nextTick();
+    const isExist = formState.value.tags.includes(newTag);
+    if (!isExist) formState.value.tags.push(newTag);
+  } else {
+    formState.value.tags.push(newTag);
+  }
+
   tagsSearchTerm.value = '';
 };
 
@@ -276,7 +280,7 @@ const openImagePicker = (target: ImagePickerTarget) => {
   isImagePickerOpen.value = true;
 };
 
-const handleImageSelect = (images: ImageItem[]) => {
+const handleImagePickerSelect = (images: ImageItem[]) => {
   if (imagePickerTarget === 'cover') {
     const [image] = images;
     formState.value.coverId = image?.id ?? '';
@@ -352,5 +356,12 @@ const onSubmit = async (event: { data: WorkForm }) => {
   } finally {
     isSubmitting.value = false;
   }
+};
+
+const resetForm = () => {
+  form.value?.clear(); // 清除錯誤訊息
+  formState.value = createInitialFormState();
+  selectedCover.value = null;
+  selectedImages.value = [];
 };
 </script>

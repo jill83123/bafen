@@ -40,6 +40,20 @@
         </template>
 
         <!-- 標籤 -->
+        <template #tags-header="{ column }">
+          <div class="flex items-center gap-2">
+            <span>{{ column.columnDef.header }}</span>
+            <UButton
+              title="編輯標籤"
+              variant="link"
+              size="sm"
+              icon="i-uil-setting"
+              class="-m-1.5 -mt-2"
+              @click="isTagEditorOpen = true"
+            />
+          </div>
+        </template>
+
         <template #tags-cell="{ row }">
           <USkeleton v-if="shouldShowSkeleton" class="h-4.5 w-36" />
           <span v-else>{{ row.original.tags?.map((tag) => tag.name).join('、') || '' }}</span>
@@ -80,7 +94,7 @@
                 variant="link"
                 icon="i-lucide-trash-2"
                 class="p-2"
-                @click="handleDelete(row.original)"
+                @click="handleWorkDelete(row.original)"
               />
             </template>
           </div>
@@ -101,9 +115,11 @@
       v-model:open="isWorkModalOpen"
       :mode="workModalMode"
       :data="tempWorkData"
-      :tags-menu="tagsMenu"
+      :tag-menu="tagMenu"
       @save="handleWorkModalSave"
     />
+
+    <AdminTagEditor v-model:open="isTagEditorOpen" :tags="tags" @save="handleTagEditorSave" />
   </div>
 </template>
 
@@ -159,7 +175,7 @@ watch(currentCategory, () => {
   refreshWorkData();
 });
 
-const handleEditDeleteWorkRefresh = () => {
+const refreshWorkOrGoPrevPage = () => {
   const { works, pagination } = workData.value ?? {};
   const totalPages = pagination?.totalPages ?? 0;
   const shouldBackToPrevPage = works?.length === 1 && totalPages > 1;
@@ -169,12 +185,12 @@ const handleEditDeleteWorkRefresh = () => {
 
 // 標籤
 const {
-  data: tagData,
+  data: tags,
   error: tagError,
   refresh: refreshTagData,
 } = await useFetch('/api/admin/tags/all');
 
-const tagsMenu = computed(() => tagData.value?.map((tag) => tag.name));
+const tagMenu = computed(() => tags.value?.map((tag) => tag.name));
 
 watch([workError, tagError], ([newWorkError, newTagError]) => {
   const err = newWorkError ?? newTagError;
@@ -194,30 +210,30 @@ const columns: TableColumn<AdminWorkItem>[] = [
 const skeletonData = Array(PAGE_SIZE) as unknown as AdminWorkItem[];
 const shouldShowSkeleton = useDelayedDisplay(isWorkDataLoading);
 
-// 刪除
+// 刪除作品
 const confirmDelete = useDeleteModal();
-
-const handleDelete = async (work: AdminWorkItem) => {
-  const confirmed = await confirmDelete({
+const handleWorkDelete = (work: AdminWorkItem) => {
+  confirmDelete({
     itemTypeName: '作品',
     itemTitle: work.title,
+    onConfirm: () => deleteWork(work.id),
   });
+};
 
-  if (!confirmed) return;
-
+const deleteWork = async (id: string) => {
   try {
-    await $fetch(`/api/admin/works/${work.id}`, {
+    await $fetch(`/api/admin/works/${id}`, {
       method: 'DELETE',
     });
-    toast.success('作品刪除成功');
-    handleEditDeleteWorkRefresh();
+    refreshWorkOrGoPrevPage();
     refreshTagData();
+    toast.success('作品刪除成功');
   } catch (error) {
     toast.error(getErrorMessage(error, '作品刪除失敗，請稍後再試'));
   }
 };
 
-// 新增編輯
+// 新增編輯作品
 const isWorkModalOpen = ref(false);
 const workModalMode = ref<WorkModalMode>('add');
 const tempWorkData = ref<AdminWorkItem | null>(null);
@@ -234,9 +250,17 @@ const handleWorkModalSave = () => {
     else if (currentPage.value !== 1) currentPage.value = 1;
     else refreshWorkData();
   } else if (workModalMode.value === 'edit') {
-    handleEditDeleteWorkRefresh();
+    refreshWorkOrGoPrevPage();
   }
   refreshTagData();
+};
+
+// 編輯標籤
+const isTagEditorOpen = ref(false);
+
+const handleTagEditorSave = () => {
+  refreshTagData();
+  refreshWorkData();
 };
 </script>
 

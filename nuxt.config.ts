@@ -56,7 +56,10 @@ export default defineNuxtConfig({
   },
   nitro: {
     routeRules: {
-      '/admin/**': { ssr: false },
+      '/admin/**': {
+        ssr: false,
+        appMiddleware: ['admin-auth'],
+      },
       '/admin/dashboard/**': { appLayout: 'admin-dashboard' },
       '/images/**': {
         security: {

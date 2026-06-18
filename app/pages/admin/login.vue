@@ -31,13 +31,20 @@
 </template>
 
 <script lang="ts" setup>
-import { googleTokenLogin } from 'vue3-google-login';
 import type { ButtonProps } from '@nuxt/ui';
+import { googleTokenLogin } from 'vue3-google-login';
 
 const runtimeConfig = useRuntimeConfig();
 const { googleClientId: GOOGLE_CLIENT_ID } = runtimeConfig.public;
 
 const toast = useAppToast();
+
+const adminAuthError = useState('adminAuthError');
+onMounted(() => {
+  if (!adminAuthError.value) return;
+  toast.error(getErrorMessage(adminAuthError.value, '身分驗證失敗，請重新登入'));
+  adminAuthError.value = null;
+});
 
 const providers = ref<ButtonProps[]>([
   {
@@ -46,9 +53,7 @@ const providers = ref<ButtonProps[]>([
     color: 'neutral',
     variant: 'soft',
     ui: { base: 'gap-2' },
-    onClick: () => {
-      handleLogin();
-    },
+    onClick: () => handleLogin(),
   },
 ]);
 

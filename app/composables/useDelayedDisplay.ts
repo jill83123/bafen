@@ -1,4 +1,4 @@
-export const useDelayedDisplay = (pendingRef: Ref<boolean>, delay = 150) => {
+export const useDelayedDisplay = (pendingRef: Ref<boolean>, delay = 300) => {
   const shouldShow = ref(false);
 
   const { start, stop } = useTimeoutFn(
