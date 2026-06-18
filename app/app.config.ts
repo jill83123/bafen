@@ -67,14 +67,14 @@ export default defineAppConfig({
           square: false,
           leading: true,
           class: {
-            leadingIcon: tw`-ml-0.5`,
+            leadingIcon: tw`-mt-0.5 -ml-0.5`,
           },
         },
         {
           square: false,
           trailing: true,
           class: {
-            trailingIcon: tw`-mr-0.5`,
+            trailingIcon: tw`-mt-0.5 -mr-0.5`,
           },
         },
       ],

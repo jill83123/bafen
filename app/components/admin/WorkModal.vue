@@ -16,7 +16,7 @@
         class="space-y-5"
         @submit="onSubmit"
       >
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <UFormField name="title" label="作品名稱" required>
             <UInput v-model="formState.title" placeholder="請輸入作品名稱" />
           </UFormField>
@@ -26,7 +26,7 @@
           </UFormField>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <UFormField name="category" label="分類" required>
             <USelect
               v-model="formState.category"
@@ -84,7 +84,7 @@
         </UFormField>
 
         <UFormField name="imageIds" label="內文圖片" required>
-          <div class="text-sub mb-2 text-xs">可拖曳調整順序</div>
+          <div class="text-sub -mt-1 mb-2 text-xs">可拖曳調整順序</div>
           <div
             ref="imagesSortableContainer"
             class="grid grid-cols-3 gap-1 sm:grid-cols-5 lg:grid-cols-7"
