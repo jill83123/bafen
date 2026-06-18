@@ -39,6 +39,13 @@ const { googleClientId: GOOGLE_CLIENT_ID } = runtimeConfig.public;
 
 const toast = useAppToast();
 
+const adminAuthError = useState('adminAuthError');
+onMounted(() => {
+  if (!adminAuthError.value) return;
+  toast.error(getErrorMessage(adminAuthError.value, '身分驗證失敗，請重新登入'));
+  adminAuthError.value = null;
+});
+
 const providers = ref<ButtonProps[]>([
   {
     label: '使用 Google 繼續',
