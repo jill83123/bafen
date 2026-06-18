@@ -45,7 +45,7 @@
               v-model="formState.tags"
               v-model:search-term="tagsSearchTerm"
               placeholder="輸入後按 Enter"
-              :items="props.tagsMenu"
+              :items="props.tagMenu"
               multiple
               create-item="always"
               :ui="{
@@ -182,12 +182,12 @@ const props = withDefaults(
   defineProps<{
     mode?: 'add' | 'edit';
     data?: AdminWorkItem | null;
-    tagsMenu?: string[];
+    tagMenu?: string[];
   }>(),
   {
     mode: 'add',
     data: null,
-    tagsMenu: () => [],
+    tagMenu: () => [],
   },
 );
 
