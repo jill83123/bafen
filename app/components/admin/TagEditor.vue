@@ -7,22 +7,25 @@
     :ui="{ content: 'w-full max-w-xl' }"
   >
     <template #body>
-      <div class="text-sub mb-2 text-sm">請選擇要編輯的標籤</div>
-      <div class="flex flex-wrap gap-2">
-        <UButton
-          v-for="tag in props.tags"
-          :key="tag.id"
-          :label="tag.name"
-          color="neutral"
-          variant="outline"
-          size="sm"
-          leading-icon="i-material-symbols-tag"
-          @click="startEditTag(tag)"
-        />
+      <div v-if="tags.length">
+        <div class="text-sub mb-2 text-sm">請選擇要編輯的標籤</div>
+        <div class="flex flex-wrap gap-2">
+          <UButton
+            v-for="tag in props.tags"
+            :key="tag.id"
+            :label="tag.name"
+            color="neutral"
+            variant="outline"
+            size="sm"
+            leading-icon="i-material-symbols-tag"
+            @click="startEditTag(tag)"
+          />
+        </div>
       </div>
+      <div v-else class="text-sub text-center text-sm">沒有標籤</div>
 
       <!-- 編輯區塊 -->
-      <div v-if="selectedTag" class="mt-6 flex gap-3">
+      <div v-if="selectedTag" class="mt-4 flex gap-3">
         <UInput v-model="editingTagName" placeholder="請輸入新名稱" :ui="{ base: 'pr-12' }">
           <template #trailing>
             <UButton
