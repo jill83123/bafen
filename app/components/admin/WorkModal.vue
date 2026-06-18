@@ -2,6 +2,7 @@
   <UModal
     v-model:open="isModalOpen"
     :title="`${modeLabel}作品`"
+    :content="{ onCloseAutoFocus: resetForm }"
     scrollable
     :dismissible="false"
     :ui="{
@@ -202,11 +203,10 @@ const modeLabel = computed(() => {
 });
 
 watch(isModalOpen, (isOpen) => {
-  if (!isOpen) resetForm();
-  else if (props.data) initializeFormWithData(props.data);
+  if (isOpen && props.data) initFormWithData(props.data);
 });
 
-const initializeFormWithData = (data: AdminWorkItem) => {
+const initFormWithData = (data: AdminWorkItem) => {
   const { id, cover, images, createdAt, updatedAt, ...rest } = data;
   formState.value = {
     ...rest,
@@ -217,13 +217,6 @@ const initializeFormWithData = (data: AdminWorkItem) => {
   };
   selectedCover.value = cover;
   selectedImages.value = images;
-};
-
-const resetForm = () => {
-  form.value?.clear(); // 清除錯誤訊息
-  formState.value = createInitialFormState();
-  selectedCover.value = null;
-  selectedImages.value = [];
 };
 
 const toast = useAppToast();
@@ -363,5 +356,12 @@ const onSubmit = async (event: { data: WorkForm }) => {
   } finally {
     isSubmitting.value = false;
   }
+};
+
+const resetForm = () => {
+  form.value?.clear(); // 清除錯誤訊息
+  formState.value = createInitialFormState();
+  selectedCover.value = null;
+  selectedImages.value = [];
 };
 </script>
