@@ -77,6 +77,7 @@ const startEditTag = (tag: TagItem) => {
   editingTagName.value = tag.name;
 };
 
+// 更新
 const updateTag = async () => {
   if (!selectedTag.value) return;
 
@@ -96,18 +97,19 @@ const updateTag = async () => {
   }
 };
 
+// 刪除
 const confirmDelete = useDeleteModal();
-
-const handleDelete = async (tag: TagItem) => {
-  const confirmed = await confirmDelete({
+const handleDelete = (tag: TagItem) => {
+  confirmDelete({
     itemTypeName: '標籤',
     itemTitle: tag.name,
+    onConfirm: () => deleteTag(tag.id),
   });
+};
 
-  if (!confirmed) return;
-
+const deleteTag = async (id: number) => {
   try {
-    await $fetch(`/api/admin/tags/${tag.id}`, {
+    await $fetch(`/api/admin/tags/${id}`, {
       method: 'DELETE',
     });
     emit('save');
@@ -118,6 +120,7 @@ const handleDelete = async (tag: TagItem) => {
   }
 };
 
+// 重置
 const resetSelection = () => {
   selectedTag.value = null;
   editingTagName.value = '';

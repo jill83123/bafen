@@ -388,22 +388,22 @@ const openPreview = (path: string) => {
 
 // 刪除
 const confirmDelete = useDeleteModal();
-
-const handleDelete = async (image: ImageItem) => {
-  const confirmed = await confirmDelete({
+const handleDelete = (image: ImageItem) => {
+  confirmDelete({
     itemTypeName: '圖片',
     itemImage: image.path,
+    onConfirm: () => deleteImage(image.id),
   });
+};
 
-  if (!confirmed) return;
-
+const deleteImage = async (id: string) => {
   try {
-    await $fetch(`/api/admin/images/${image.id}`, {
+    await $fetch(`/api/admin/images/${id}`, {
       method: 'DELETE',
     });
-    toast.success('圖片刪除成功');
     reloadData();
-    tempSelectedImages.value = tempSelectedImages.value.filter((item) => item.id !== image.id);
+    tempSelectedImages.value = tempSelectedImages.value.filter((item) => item.id !== id);
+    toast.success('圖片刪除成功');
   } catch (error) {
     toast.error(getErrorMessage(error, '圖片刪除失敗，請稍後再試'));
   }

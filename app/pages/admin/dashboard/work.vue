@@ -212,22 +212,22 @@ const shouldShowSkeleton = useDelayedDisplay(isWorkDataLoading);
 
 // 刪除作品
 const confirmDelete = useDeleteModal();
-
-const handleWorkDelete = async (work: AdminWorkItem) => {
-  const confirmed = await confirmDelete({
+const handleWorkDelete = (work: AdminWorkItem) => {
+  confirmDelete({
     itemTypeName: '作品',
     itemTitle: work.title,
+    onConfirm: () => deleteWork(work.id),
   });
+};
 
-  if (!confirmed) return;
-
+const deleteWork = async (id: string) => {
   try {
-    await $fetch(`/api/admin/works/${work.id}`, {
+    await $fetch(`/api/admin/works/${id}`, {
       method: 'DELETE',
     });
-    toast.success('作品刪除成功');
     refreshWorkOrGoPrevPage();
     refreshTagData();
+    toast.success('作品刪除成功');
   } catch (error) {
     toast.error(getErrorMessage(error, '作品刪除失敗，請稍後再試'));
   }
