@@ -52,7 +52,7 @@
                 base: 'ring-default w-full',
                 content: 'ring-default',
               }"
-              @create="onCreateTagItem"
+              @create="onCreateNewTag"
             />
           </UFormField>
         </div>
@@ -247,8 +247,19 @@ const categorySelectItems = ref<SelectItem[]>([categoryOptions]);
 
 // 建立新標籤
 const tagsSearchTerm = ref('');
-const onCreateTagItem = () => {
-  formState.value.tags.push(tagsSearchTerm.value);
+const onCreateNewTag = async (tagName: string) => {
+  const newTag = tagName.trim();
+  const isExist = formState.value.tags.includes(newTag);
+
+  if (isExist) {
+    // 元件會把已存在的 toggle（取消），這裡在下一個 tick 補回來
+    await nextTick();
+    const isExist = formState.value.tags.includes(newTag);
+    if (!isExist) formState.value.tags.push(newTag);
+  } else {
+    formState.value.tags.push(newTag);
+  }
+
   tagsSearchTerm.value = '';
 };
 
