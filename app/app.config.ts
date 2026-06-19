@@ -240,7 +240,7 @@ export default defineAppConfig({
           color: 'primary',
           variant: 'pill',
           class: {
-            link: tw`hover:before:bg-canvas gap-2 p-6 text-base leading-none`,
+            link: tw`hover:before:bg-canvas gap-3 p-6 text-base leading-none`,
           },
         },
         {

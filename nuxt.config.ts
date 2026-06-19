@@ -59,8 +59,11 @@ export default defineNuxtConfig({
       '/admin/**': {
         ssr: false,
         appMiddleware: ['admin-auth'],
+        appLayout: false,
       },
-      '/admin/dashboard/**': { appLayout: 'admin-dashboard' },
+      '/admin/dashboard/**': {
+        appLayout: 'admin-dashboard',
+      },
       '/images/**': {
         security: {
           rateLimiter: {
