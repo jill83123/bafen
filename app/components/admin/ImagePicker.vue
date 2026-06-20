@@ -5,7 +5,7 @@
     :ui="{
       content: 'h-full max-h-[calc(100dvh-24px)] w-[calc(100%-24px)] max-w-5xl md:max-h-[75dvh]',
       body: 'relative overflow-hidden',
-      footer: 'flex items-center justify-between gap-3',
+      footer: 'flex items-center gap-3',
     }"
   >
     <template #title>
@@ -154,6 +154,7 @@
 
     <template #footer>
       <div
+        v-if="data"
         title="儲存空間"
         class="flex flex-col items-start gap-1 text-xs sm:flex-row sm:items-center sm:gap-3 sm:text-sm"
       >
@@ -167,7 +168,7 @@
         />
       </div>
 
-      <div class="flex gap-3">
+      <div class="ml-auto flex gap-3">
         <UButton
           label="取消"
           color="neutral"
@@ -382,7 +383,7 @@ const confirmSelection = () => {
 const { openLightbox } = useLightbox();
 
 const openPreview = (path: string) => {
-  const slides = [{ type: 'image', src: path }];
+  const slides = [{ src: path }];
   openLightbox({ slides });
 };
 
