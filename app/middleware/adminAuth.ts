@@ -11,8 +11,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
     isAdminVerified.value = true;
     return;
   } catch (error) {
-    const adminAuthError = useState('adminAuthError');
-    adminAuthError.value = error;
+    const authErrorMessage = useState('authErrorMessage');
+    authErrorMessage.value = getErrorMessage(error, '身分驗證失敗，請重新登入');
     return navigateTo('/admin/login');
   }
 });

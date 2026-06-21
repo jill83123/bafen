@@ -23,7 +23,8 @@
         color="error"
         variant="soft"
         :ui="{
-          root: 'mt-7 max-w-md',
+          root: 'mt-7 max-w-md justify-center',
+          wrapper: 'block flex-none pr-2',
         }"
       />
     </div>
@@ -38,12 +39,12 @@ const runtimeConfig = useRuntimeConfig();
 const { googleClientId: GOOGLE_CLIENT_ID } = runtimeConfig.public;
 
 const toast = useAppToast();
+const authErrorMessage = useState('authErrorMessage');
 
-const adminAuthError = useState('adminAuthError');
 onMounted(() => {
-  if (!adminAuthError.value) return;
-  toast.error(getErrorMessage(adminAuthError.value, '身分驗證失敗，請重新登入'));
-  adminAuthError.value = null;
+  if (!authErrorMessage.value) return;
+  toast.error(authErrorMessage.value);
+  authErrorMessage.value = null;
 });
 
 const providers = ref<ButtonProps[]>([
