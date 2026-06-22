@@ -1,6 +1,7 @@
 <template>
   <UDashboardGroup storage="local" storage-key="admin-dashboard" unit="px">
     <UDashboardSidebar
+      v-model:open="isNavMenuOpen"
       mode="slideover"
       toggle-side="right"
       :default-size="300"
@@ -44,12 +45,17 @@
       </template>
 
       <template #default="{ collapsed }">
-        <UNavigationMenu :items="items[0]" orientation="vertical" :collapsed="collapsed" tooltip />
+        <UNavigationMenu
+          :items="navMenu[0]"
+          orientation="vertical"
+          :collapsed="collapsed"
+          tooltip
+        />
       </template>
 
       <template #footer="{ collapsed }">
         <UNavigationMenu
-          :items="items[1]"
+          :items="navMenu[1]"
           orientation="vertical"
           :collapsed="collapsed"
           tooltip
@@ -72,7 +78,7 @@
           >
             <template #left>
               <h1 class="font-serif text-2xl leading-none font-medium">
-                {{ props.pageTitle }}
+                {{ title }}
               </h1>
             </template>
           </UDashboardNavbar>
@@ -89,18 +95,32 @@
 <script lang="ts" setup>
 import type { NavigationMenuItem } from '@nuxt/ui';
 
-const props = defineProps<{
-  pageTitle?: string;
-}>();
-
+const route = useRoute();
+const router = useRouter();
 const toast = useAppToast();
 
-const items: NavigationMenuItem[][] = [
+const isNavMenuOpen = defineModel<boolean>();
+
+router.beforeEach(() => {
+  isNavMenuOpen.value = false;
+});
+
+const navMenu: NavigationMenuItem[][] = [
   [
     {
+      label: '資訊主頁',
+      icon: 'i-material-symbols-dashboard-outline',
+      to: '/admin/dashboard',
+    },
+    {
       label: '作品管理',
-      icon: 'i-material-symbols-folder-outline-sharp',
+      icon: 'i-nrk-gallery',
       to: '/admin/dashboard/work',
+    },
+    {
+      label: '聯絡記錄',
+      icon: 'i-material-symbols-mail-outline-sharp',
+      to: '/admin/dashboard/contact',
     },
   ],
   [
@@ -111,6 +131,12 @@ const items: NavigationMenuItem[][] = [
     },
   ],
 ];
+
+const title = computed(() => {
+  const flatItems = navMenu.flat();
+  const currentItem = flatItems.find((item) => item.to === route.path);
+  return currentItem ? currentItem.label : '後台管理';
+});
 
 const handleLogout = async () => {
   try {

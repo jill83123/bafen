@@ -129,14 +129,6 @@ import type { SelectItem, TableColumn } from '@nuxt/ui';
 
 type WorkModalMode = 'add' | 'edit';
 
-definePageMeta({
-  layout: {
-    props: {
-      pageTitle: '作品管理',
-    },
-  },
-});
-
 const toast = useAppToast();
 
 const categorySelectItems = ref<SelectItem[]>([
