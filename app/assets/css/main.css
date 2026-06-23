@@ -1,6 +1,12 @@
-@import '@fancyapps/ui/dist/fancybox/fancybox.css';
+@import 'photoswipe/style.css';
+
+@import 'swiper/css';
+@import 'swiper/css/effect-fade';
+@import 'swiper/css/pagination';
+
 @import 'tailwindcss';
 @import '@nuxt/ui';
+
 @import 'theme.css';
 @import 'base.css';
 @import 'components.css';

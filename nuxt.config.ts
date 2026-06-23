@@ -39,16 +39,23 @@ export default defineNuxtConfig({
   },
 
   css: ['./app/assets/css/main.css'],
+  colorMode: {
+    preference: 'light', // TODO: 深色模式待做
+  },
 
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        '@fancyapps/ui',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         '@vueuse/integrations',
+        '@vueuse/integrations/useSortable',
         'browser-image-compression',
+        'photoswipe',
+        'photoswipe/lightbox',
+        'swiper/modules',
+        'swiper/vue',
         'vue3-google-login',
         'zod',
       ],
@@ -59,8 +66,11 @@ export default defineNuxtConfig({
       '/admin/**': {
         ssr: false,
         appMiddleware: ['admin-auth'],
+        appLayout: false,
       },
-      '/admin/dashboard/**': { appLayout: 'admin-dashboard' },
+      '/admin/dashboard/**': {
+        appLayout: 'admin-dashboard',
+      },
       '/images/**': {
         security: {
           rateLimiter: {
