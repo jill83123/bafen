@@ -5,29 +5,47 @@
         class="border-sub bg-canvas relative mr-8 h-[70%] border-r border-b lg:mr-0 lg:h-full lg:w-[68%] xl:w-[72%] 2xl:w-[76%]"
       >
         <!-- 輪播本體 -->
-        <Swiper
-          :modules="[Autoplay, EffectFade, Pagination]"
-          :loop="true"
-          :slides-per-view="1"
-          :space-between="0"
-          :effect="'fade'"
-          :fade-effect="{ crossFade: true }"
-          :speed="600"
-          :autoplay="{ delay: 3000, disableOnInteraction: false }"
-          :pagination="paginationOptions"
-        >
-          <SwiperSlide v-for="(image, index) in images" :key="index">
+        <ClientOnly>
+          <Swiper
+            :modules="[Autoplay, EffectFade, Pagination]"
+            :loop="true"
+            :slides-per-view="1"
+            :space-between="0"
+            :effect="'fade'"
+            :fade-effect="{ crossFade: true }"
+            :speed="600"
+            :autoplay="{ delay: 3000, disableOnInteraction: false }"
+            :pagination="paginationOptions"
+          >
+            <SwiperSlide v-for="(image, index) in images" :key="index">
+              <img
+                :src="image"
+                width="1446"
+                height="714"
+                alt="主視覺圖片"
+                :fetchpriority="image === firstImage ? 'high' : 'auto'"
+                :loading="image === firstImage ? 'eager' : 'lazy'"
+                class="kenburns h-full w-full object-cover"
+              />
+            </SwiperSlide>
+          </Swiper>
+
+          <template #fallback>
             <img
-              :src="image"
+              v-if="firstImage"
+              :src="firstImage"
+              width="1446"
+              height="714"
               alt="主視覺圖片"
               fetchpriority="high"
-              class="kenburns h-full w-full object-cover"
+              loading="eager"
+              class="h-full w-full object-cover"
             />
-          </SwiperSlide>
-        </Swiper>
+          </template>
 
-        <!-- 輪播分頁 -->
-        <div class="custom-pagination absolute -bottom-10! z-10 flex w-fit gap-3 p-3" />
+          <!-- 輪播分頁 -->
+          <div class="custom-pagination absolute -bottom-10! z-10 flex w-fit gap-3 p-3" />
+        </ClientOnly>
 
         <!-- 手機版：灰色裝飾背景 -->
         <div
@@ -83,7 +101,25 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 const imageModules = import.meta.glob<{ default: string }>('../assets/images/index/header_*.webp', {
   eager: true,
 });
-const images = Object.values(imageModules).map((module) => module.default);
+
+const images = Object.entries(imageModules)
+  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB))
+  .map(([_, module]) => module.default);
+
+const firstImage = images[0];
+
+// 讓瀏覽器更早開始下載首圖，改善 LCP
+useHead(() => ({
+  link: [
+    {
+      rel: 'preload',
+      as: 'image',
+      href: firstImage,
+      type: 'image/webp',
+      fetchpriority: 'high',
+    },
+  ],
+}));
 
 const paginationOptions = {
   el: '.custom-pagination',

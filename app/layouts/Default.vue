@@ -76,6 +76,7 @@
         height="400"
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
+        title="Google 地圖"
         class="w-full"
       />
 

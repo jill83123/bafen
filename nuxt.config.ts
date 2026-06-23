@@ -39,6 +39,9 @@ export default defineNuxtConfig({
   },
 
   css: ['./app/assets/css/main.css'],
+  colorMode: {
+    preference: 'light', // TODO: 深色模式待做
+  },
 
   vite: {
     plugins: [tailwindcss()],
