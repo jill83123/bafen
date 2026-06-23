@@ -1,63 +1,68 @@
 <template>
   <div>
     <!-- header -->
-    <UHeader
-      mode="slideover"
-      :ui="{
-        root: 'h-auto',
-        container: 'max-w-[auto] pr-0! pl-6!',
-        title: 'flex items-end gap-1 font-normal',
-        toggle: 'border-default m-0 border-l p-6 md:hidden',
-        content:
-          'bg-ink/90 w-full max-w-full data-[state=closed]:animate-[slide-fade-out-to-right_300ms_ease-in-out] data-[state=open]:animate-[slide-fade-in-from-right_300ms_ease-in-out] md:hidden',
-        header: 'hidden',
-      }"
-    >
-      <template #title>
-        <span class="font-serif text-3xl">八分</span>
-        <span class="text-sm">室內裝修</span>
-      </template>
+    <header>
+      <!-- 導覽列 -->
+      <UHeader
+        as="div"
+        mode="slideover"
+        :ui="{
+          root: 'border-sub h-auto',
+          container: 'max-w-[auto] pr-0! pl-3!',
+          title: 'flex items-end gap-1 font-serif font-normal',
+          toggle: 'border-sub m-0 border-l p-6 lg:hidden',
+          content:
+            'bg-ink/90 w-full max-w-full data-[state=closed]:animate-[slide-fade-out-to-right_300ms_ease-in-out] data-[state=open]:animate-[slide-fade-in-from-right_300ms_ease-in-out] lg:hidden',
+          header: 'hidden',
+        }"
+      >
+        <template #title>
+          <span class="text-3xl">八分</span>
+          <span class="text-sm">室內裝修</span>
+        </template>
 
-      <!-- 電腦版選單 -->
-      <template #right>
-        <UNavigationMenu
-          :items="navMenu"
-          :ui="{
-            root: 'hidden md:flex',
-            item: 'p-0',
-            link: 'data-active:text-brand-main leading-5 before:inset-y-0',
-          }"
-        />
-      </template>
-
-      <!-- 手機版選單 -->
-      <template #content="{ close }">
-        <div class="flex h-full flex-col gap-6">
-          <div class="flex">
-            <UButton
-              color="neutral"
-              variant="soft"
-              icon="i-lucide-x"
-              class="ml-auto bg-white p-6"
-              @click="close"
-            />
-          </div>
-
+        <!-- 電腦版選單 -->
+        <template #right>
           <UNavigationMenu
-            v-model:open="isNavMenuOpen"
             :items="navMenu"
-            orientation="vertical"
             :ui="{
-              root: 'grow overflow-y-scroll px-6',
-              list: 'flex w-full flex-col gap-4',
-              link: 'data-active:text-brand-main text-white',
+              root: 'hidden lg:flex',
+              item: 'p-0',
+              link: 'data-active:text-brand-main leading-5 before:inset-0',
             }"
           />
-        </div>
-      </template>
+        </template>
 
-      <slot name="header" />
-    </UHeader>
+        <!-- 手機版選單 -->
+        <template #content="{ close }">
+          <div class="flex h-full flex-col gap-6">
+            <div class="flex">
+              <UButton
+                color="neutral"
+                variant="soft"
+                icon="i-lucide-x"
+                class="ml-auto bg-white p-6"
+                @click="close"
+              />
+            </div>
+
+            <UNavigationMenu
+              v-model:open="isNavMenuOpen"
+              :items="navMenu"
+              orientation="vertical"
+              :ui="{
+                root: 'grow overflow-y-scroll px-6',
+                list: 'flex w-full flex-col gap-4',
+                link: 'data-active:text-brand-main text-white',
+              }"
+            />
+          </div>
+        </template>
+      </UHeader>
+
+      <!-- header 其他要插入的內容 -->
+      <component :is="headerComponent" v-if="headerComponent" />
+    </header>
 
     <!-- 頁面內容 -->
     <main>
@@ -110,7 +115,9 @@ import type { NavigationMenuItem } from '@nuxt/ui';
 const route = useRoute();
 const router = useRouter();
 
+// 導覽列
 const isNavMenuOpen = defineModel<boolean>();
+
 router.beforeEach(() => {
   isNavMenuOpen.value = false;
 });
@@ -149,11 +156,30 @@ const navMenu = computed<NavigationMenuItem[]>(() => [
     icon: 'i-material-symbols-mail-outline-sharp',
     to: '/contact',
     ui: {
-      link: tw`md:bg-brand-main hover:md:bg-brand-hover data-active:text-brand-main border-default data-active:border-brand-main data-active:md:border-default mt-4 border text-white before:inset-y-0 data-active:bg-transparent md:mt-0 md:border-0 md:border-l md:border-transparent hover:md:text-white`,
+      link: tw`lg:bg-brand-main hover:lg:bg-brand-hover data-active:text-brand-main border-default data-active:border-brand-main data-active:lg:border-sub mt-4 border text-white before:inset-y-0 data-active:bg-transparent lg:mt-0 lg:border-0 lg:border-l lg:border-transparent hover:lg:text-white`,
       linkLeadingIcon: tw`text-inherit`,
     },
   },
 ]);
+
+// header 其他要插入的內容
+const headerModules = import.meta.glob<{ default: Component }>('@/components/*Header.vue', {
+  eager: true,
+});
+
+const headerComponentMap: Record<string, Component> = Object.fromEntries(
+  Object.entries(headerModules).map(([path, module]) => {
+    const fileName = path.split('/').pop()?.replace('.vue', '') ?? ''; // e.g. 'IndexHeader'
+    const key = fileName.replace(/Header$/, ''); // 'Index'
+    const routeKey = key.charAt(0).toLowerCase() + key.slice(1); // 'index'
+    return [routeKey, module.default];
+  }),
+);
+
+const headerComponent = computed(() => {
+  const key = route.name as string | undefined;
+  return key ? headerComponentMap[key] : null;
+});
 </script>
 
 <style scoped></style>

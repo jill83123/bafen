@@ -44,11 +44,15 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        '@fancyapps/ui',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         '@vueuse/integrations',
+        '@vueuse/integrations/useSortable',
         'browser-image-compression',
+        'photoswipe',
+        'photoswipe/lightbox',
+        'swiper/modules',
+        'swiper/vue',
         'vue3-google-login',
         'zod',
       ],
