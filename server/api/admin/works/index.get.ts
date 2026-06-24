@@ -1,6 +1,5 @@
 import { PaginationShape } from '#server/schema';
 import { categories } from '#shared/constants/work';
-import type { AdminWorkItem, ImageItem, TagItem } from '#shared/types/work';
 import { db } from '@nuxthub/db';
 import {
   imageTable,

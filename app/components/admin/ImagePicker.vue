@@ -190,7 +190,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { ImageItem } from '#shared/types/work';
 import type { TabsItem } from '@nuxt/ui';
 
 const isModalOpen = defineModel<boolean>('open', { default: false });

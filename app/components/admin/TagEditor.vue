@@ -52,8 +52,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { TagItem } from '#shared/types/work';
-
 const props = withDefaults(
   defineProps<{
     tags?: TagItem[];
