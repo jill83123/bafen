@@ -7,8 +7,8 @@
         as="div"
         mode="slideover"
         :ui="{
-          root: 'border-sub h-auto',
-          container: 'max-w-[auto] pr-0! pl-3!',
+          root: 'border-sub fixed inset-x-0 top-0 h-auto',
+          container: 'max-w-[auto] pr-0! pl-3! lg:pl-6!',
           title: 'flex items-end gap-1 font-serif font-normal',
           toggle: 'border-sub m-0 border-l p-6 lg:hidden',
           content:
@@ -61,11 +61,11 @@
       </UHeader>
 
       <!-- header 其他要插入的內容 -->
-      <component :is="headerComponent" v-if="headerComponent" />
+      <component :is="headerComponent" v-if="headerComponent" class="mt-17" />
     </header>
 
     <!-- 頁面內容 -->
-    <main>
+    <main :class="{ 'mt-17': !headerComponent }">
       <slot />
     </main>
 
@@ -123,7 +123,7 @@ router.beforeEach(() => {
   isNavMenuOpen.value = false;
 });
 
-const navMenu = computed<NavigationMenuItem[]>(() => [
+const navMenu = ref<NavigationMenuItem[]>([
   {
     label: '作品展示',
     to: '/works',
@@ -134,7 +134,7 @@ const navMenu = computed<NavigationMenuItem[]>(() => [
       path: '/',
       hash: '#about',
     },
-    active: route.hash === '#about',
+    active: false,
   },
   {
     label: '服務項目',
@@ -142,7 +142,7 @@ const navMenu = computed<NavigationMenuItem[]>(() => [
       path: '/',
       hash: '#services',
     },
-    active: route.hash === '#services',
+    active: false,
   },
   {
     label: '服務流程',
@@ -150,7 +150,7 @@ const navMenu = computed<NavigationMenuItem[]>(() => [
       path: '/',
       hash: '#process',
     },
-    active: route.hash === '#process',
+    active: false,
   },
   {
     label: '聯絡我們',
@@ -162,6 +162,70 @@ const navMenu = computed<NavigationMenuItem[]>(() => [
     },
   },
 ]);
+
+const setActiveHash = (activeHash: string) => {
+  navMenu.value = navMenu.value.map((item) => {
+    if (item.to && typeof item.to === 'object' && 'hash' in item.to) {
+      return {
+        ...item,
+        active: item.to.hash === activeHash,
+      };
+    }
+    return item;
+  });
+};
+
+let observer: IntersectionObserver | null = null;
+const intersectingMap = new Map<string, boolean>();
+const SECTION_IDS = ['about', 'services', 'process'] as const;
+
+const initObserver = () => {
+  if (route.path !== '/') {
+    setActiveHash('');
+    if (observer) observer.disconnect();
+    return;
+  }
+
+  intersectingMap.clear();
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        intersectingMap.set(entry.target.id, entry.isIntersecting);
+      });
+      const activeId = SECTION_IDS.find((id) => intersectingMap.get(id));
+      setActiveHash(activeId ? `#${activeId}` : '');
+    },
+    { rootMargin: '-20% 0px -60% 0px' },
+  );
+
+  SECTION_IDS.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && observer) observer.observe(el);
+  });
+};
+
+onMounted(() => {
+  initObserver();
+});
+
+watch(
+  () => route.path,
+  (newPath) => {
+    if (newPath !== '/') {
+      setActiveHash('');
+      if (observer) observer.disconnect();
+    } else {
+      nextTick(() => {
+        initObserver();
+      });
+    }
+  },
+);
+
+onUnmounted(() => {
+  if (observer) observer.disconnect();
+});
 
 // header 其他要插入的內容
 const headerModules = import.meta.glob<{ default: Component }>('@/components/*Header.vue', {
