@@ -61,7 +61,14 @@ export default defineAppConfig({
         {
           size: 'lg',
           square: false,
-          class: tw`px-12 py-4`,
+          class: tw`px-10 py-4 sm:px-12`,
+        },
+        {
+          size: 'lg',
+          square: true,
+          class: {
+            leadingIcon: tw`size-6`,
+          },
         },
         {
           square: false,
