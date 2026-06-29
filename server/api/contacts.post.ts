@@ -5,11 +5,7 @@ import { contactTable } from '@nuxthub/db/schema';
 const BodySchema = ContactFormSchema;
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const bodyParseResult = BodySchema.safeParse(body);
-  if (!bodyParseResult.success) throw createError({ statusCode: 400 });
-
-  const contactData = bodyParseResult.data;
+  const contactData = await validateBody(event, BodySchema);
 
   // 存入資料表
   await db.insert(contactTable).values(contactData);

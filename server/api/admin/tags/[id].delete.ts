@@ -11,11 +11,7 @@ const ParamSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const param = getRouterParams(event);
-  const paramParseResult = ParamSchema.safeParse(param);
-  if (!paramParseResult.success) throw createError({ statusCode: 400 });
-
-  const { id: tagId } = paramParseResult.data;
+  const { id: tagId } = await validateParams(event, ParamSchema);
 
   // 檢查標籤是否存在
   const [existingTagById] = await db

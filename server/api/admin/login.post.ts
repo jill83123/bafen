@@ -10,11 +10,7 @@ const BodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const bodyParseResult = BodySchema.safeParse(body);
-  if (!bodyParseResult.success) throw createError({ statusCode: 400 });
-
-  const { token } = bodyParseResult.data;
+  const { token } = await validateBody(event, BodySchema);
 
   // 驗證 Google Access Token
   const userInfo = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {

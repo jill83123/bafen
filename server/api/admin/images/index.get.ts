@@ -10,14 +10,13 @@ const QuerySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);
-  const queryParseResult = QuerySchema.safeParse(query);
-  if (!queryParseResult.success) throw createError({ statusCode: 400 });
+  const {
+    page: currentPage,
+    page_size: pageSize,
+    is_used: isUsed,
+  } = await validateQuery(event, QuerySchema);
 
-  const currentPage = queryParseResult.data.page;
-  const pageSize = queryParseResult.data.page_size;
   const offset = (currentPage - 1) * pageSize;
-  const isUsed = queryParseResult.data.is_used;
 
   const whereConditions = [];
   if (isUsed === 'true') whereConditions.push(isNotNull(workToImageTable.imageId));

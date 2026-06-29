@@ -15,11 +15,7 @@ const BodySchema = WorkFormSchema.extend({
 });
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const bodyParseResult = BodySchema.safeParse(body);
-  if (!bodyParseResult.success) throw createError({ statusCode: 400 });
-
-  const { id: workId, ...workData } = bodyParseResult.data;
+  const { id: workId, ...workData } = await validateBody(event, BodySchema);
 
   const imageIds = [...new Set(workData.imageIds)];
   const imageIdsToCheck = [...new Set([workData.coverId, ...imageIds])];

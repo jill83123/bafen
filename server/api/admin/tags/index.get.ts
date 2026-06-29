@@ -9,12 +9,7 @@ const QuerySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);
-  const queryParseResult = QuerySchema.safeParse(query);
-  if (!queryParseResult.success) throw createError({ statusCode: 400 });
-
-  const currentPage = queryParseResult.data.page;
-  const pageSize = queryParseResult.data.page_size;
+  const { page: currentPage, page_size: pageSize } = await validateQuery(event, QuerySchema);
   const offset = (currentPage - 1) * pageSize;
 
   const [tags, countSummary] = await Promise.all([

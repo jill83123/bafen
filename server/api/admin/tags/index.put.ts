@@ -9,11 +9,7 @@ const BodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const bodyParseResult = BodySchema.safeParse(body);
-  if (!bodyParseResult.success) throw createError({ statusCode: 400 });
-
-  const { id: tagId, name: tagName } = bodyParseResult.data;
+  const { id: tagId, name: tagName } = await validateBody(event, BodySchema);
 
   // 檢查標籤是否存在
   const [existingTagById] = await db

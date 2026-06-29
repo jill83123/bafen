@@ -21,16 +21,14 @@ const QuerySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);
-  const queryParseResult = QuerySchema.safeParse(query);
-  if (!queryParseResult.success) throw createError({ statusCode: 400 });
+  const {
+    page: currentPage,
+    page_size: pageSize,
+    category: currentCategory,
+    is_public: isPublic,
+  } = await validateQuery(event, QuerySchema);
 
-  const currentPage = queryParseResult.data.page;
-  const pageSize = queryParseResult.data.page_size;
   const offset = (currentPage - 1) * pageSize;
-
-  const currentCategory = queryParseResult.data.category;
-  const isPublic = queryParseResult.data.is_public;
 
   const whereConditions = [];
 
