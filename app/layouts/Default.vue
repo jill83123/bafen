@@ -7,7 +7,7 @@
         as="div"
         mode="slideover"
         :ui="{
-          root: 'border-sub fixed inset-x-0 top-0 h-auto',
+          root: 'border-sub bg-default fixed inset-x-0 top-0 h-auto backdrop-filter-none',
           container: 'max-w-[auto] pr-0! pl-3! lg:pl-6!',
           title: 'flex items-end gap-1 font-serif font-normal',
           toggle: 'border-sub m-0 border-l p-6 lg:hidden',

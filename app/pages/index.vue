@@ -7,7 +7,7 @@
           <div class="mb-6 flex items-end justify-between lg:mb-10">
             <!-- 標題 -->
             <div>
-              <div class="section-overline">RECENTLY WORK</div>
+              <div class="section-overline">RECENTLY WORKS</div>
               <h2 class="section-title">近期作品</h2>
             </div>
 
@@ -74,6 +74,7 @@
         variant="outline"
         size="lg"
         trailing-icon="i-lucide-arrow-up-right"
+        to="/works"
         class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2"
       />
     </section>

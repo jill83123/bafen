@@ -3,7 +3,11 @@
     @apply font-serif text-4xl font-medium tracking-wider lg:text-5xl;
   }
   .section-overline {
-    @apply text-sub mb-1 pl-1 text-sm font-bold tracking-widest lg:text-base;
+    @apply text-sub mb-1 pl-1 text-xs font-bold tracking-widest lg:text-sm;
+  }
+
+  .one-content-page {
+    @apply py-15 sm:py-20 lg:py-25;
   }
 }
 

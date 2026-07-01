@@ -95,7 +95,7 @@ export default defineAppConfig({
     checkbox: {
       slots: {
         root: tw`items-center`,
-        label: tw`text-base font-normal`,
+        label: tw`cursor-pointer text-base font-normal`,
       },
       defaultVariants: {
         size: 'md',
