@@ -14,11 +14,7 @@ const ParamSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const param = getRouterParams(event);
-  const paramParseResult = ParamSchema.safeParse(param);
-  if (!paramParseResult.success) throw createError({ statusCode: 400 });
-
-  const { slug: currentSlug } = paramParseResult.data;
+  const { slug: currentSlug } = await validateParams(event, ParamSchema);
 
   const [workData] = await db
     .select({

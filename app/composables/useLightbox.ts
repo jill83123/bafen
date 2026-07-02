@@ -4,6 +4,7 @@ import PhotoSwipeLightbox from 'photoswipe/lightbox';
 
 type OpenLightboxOptions = {
   slides: { src: string }[];
+  index?: number;
 };
 
 const getImageSize = (src: string) => {
@@ -41,7 +42,7 @@ export const useLightbox = () => {
     lightbox = null;
   };
 
-  const openLightbox = async ({ slides }: OpenLightboxOptions) => {
+  const openLightbox = async ({ slides, index = 0 }: OpenLightboxOptions) => {
     if (import.meta.server || slides.length === 0) return;
 
     destroyLightbox();
@@ -56,12 +57,13 @@ export const useLightbox = () => {
     lightbox = new PhotoSwipeLightbox({
       dataSource,
       secondaryZoomLevel: 2,
+      loop: false,
       pswpModule: () => import('photoswipe'),
       paddingFn: (viewportSize) => ({
-        top: viewportSize.y * 0.1,
-        bottom: viewportSize.y * 0.1,
-        left: viewportSize.x * 0.1,
-        right: viewportSize.x * 0.1,
+        top: viewportSize.y * 0.05,
+        bottom: viewportSize.y * 0.05,
+        left: viewportSize.x * 0.05,
+        right: viewportSize.x * 0.05,
       }),
     });
 
@@ -79,7 +81,7 @@ export const useLightbox = () => {
     });
 
     lightbox.init();
-    lightbox.loadAndOpen(0);
+    lightbox.loadAndOpen(index);
   };
 
   onUnmounted(() => destroyLightbox());

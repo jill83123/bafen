@@ -174,7 +174,11 @@
           color="neutral"
           variant="link"
           size="sm"
-          @click="isModalOpen = false"
+          @click="
+            () => {
+              isModalOpen = false;
+            }
+          "
         />
         <UButton
           label="確認"
@@ -190,7 +194,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { ImageItem } from '#shared/types/work';
 import type { TabsItem } from '@nuxt/ui';
 
 const isModalOpen = defineModel<boolean>('open', { default: false });

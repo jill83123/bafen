@@ -1,6 +1,5 @@
 import { PaginationShape } from '#server/schema';
 import { categories } from '#shared/constants/work';
-import type { ImageItem, TagItem, WorkItem } from '#shared/types/work';
 import { db } from '@nuxthub/db';
 import {
   imageTable,
@@ -9,7 +8,7 @@ import {
   workToImageTable,
   workToTagTable,
 } from '@nuxthub/db/schema';
-import { and, asc, count, desc, eq, inArray, max } from 'drizzle-orm';
+import { and, asc, countDistinct, desc, eq, exists, inArray, max } from 'drizzle-orm';
 import { z } from 'zod';
 
 const QuerySchema = z.object({
@@ -26,16 +25,12 @@ const QuerySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);
-  const queryParseResult = QuerySchema.safeParse(query);
-  if (!queryParseResult.success) throw createError({ statusCode: 400 });
-
   const {
     page: currentPage,
     page_size: pageSize,
     category: currentCategory,
     tags: currentTags,
-  } = queryParseResult.data;
+  } = await validateQuery(event, QuerySchema);
 
   const offset = (currentPage - 1) * pageSize;
 
@@ -43,7 +38,17 @@ export default defineEventHandler(async (event) => {
   const whereConditions = [eq(workTable.isPublic, true)];
 
   if (currentCategory !== 'all') whereConditions.push(eq(workTable.category, currentCategory));
-  if (currentTags.length) whereConditions.push(inArray(workToTagTable.tagId, currentTags));
+
+  whereConditions.push(
+    ...currentTags.map((tagId) =>
+      exists(
+        db
+          .select()
+          .from(workToTagTable)
+          .where(and(eq(workToTagTable.workId, workTable.id), eq(workToTagTable.tagId, tagId))),
+      ),
+    ),
+  );
 
   const whereClause = whereConditions.length ? and(...whereConditions) : undefined;
 
@@ -71,7 +76,7 @@ export default defineEventHandler(async (event) => {
 
     db
       .select({
-        total: count(workTable.id),
+        total: countDistinct(workTable.id), // work、tag 為多對多，故使用 countDistinct
         latestUpdatedAt: max(workTable.updatedAt),
       })
       .from(workTable)

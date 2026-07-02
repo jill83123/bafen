@@ -151,7 +151,11 @@
           color="neutral"
           variant="link"
           size="sm"
-          @click="isModalOpen = false"
+          @click="
+            () => {
+              isModalOpen = false;
+            }
+          "
         />
         <UButton
           label="確認"
@@ -171,7 +175,6 @@ import type { categories } from '#shared/constants/work';
 import { categoryOptions } from '#shared/constants/work';
 import type { WorkForm } from '#shared/schema';
 import { WorkFormSchema } from '#shared/schema';
-import type { AdminWorkItem, ImageItem } from '#shared/types/work';
 import type { SelectItem } from '@nuxt/ui';
 import type { UseSortableOptions } from '@vueuse/integrations/useSortable';
 import { moveArrayElement, useSortable } from '@vueuse/integrations/useSortable';

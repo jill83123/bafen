@@ -12,11 +12,7 @@ import { eq, inArray } from 'drizzle-orm';
 const BodySchema = WorkFormSchema;
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const bodyParseResult = BodySchema.safeParse(body);
-  if (!bodyParseResult.success) throw createError({ statusCode: 400 });
-
-  const workData = bodyParseResult.data;
+  const workData = await validateBody(event, BodySchema);
 
   const imageIds = [...new Set(workData.imageIds)];
   const imageIdsToCheck = [...new Set([workData.coverId, ...imageIds])];

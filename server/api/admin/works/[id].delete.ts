@@ -9,11 +9,7 @@ const ParamSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const param = getRouterParams(event);
-  const paramParseResult = ParamSchema.safeParse(param);
-  if (!paramParseResult.success) throw createError({ statusCode: 400 });
-
-  const { id: workId } = paramParseResult.data;
+  const { id: workId } = await validateParams(event, ParamSchema);
 
   // 檢查作品是否存在
   const [work] = await db

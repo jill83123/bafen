@@ -1,5 +1,17 @@
-/* @layer components {} */
+@layer components {
+  .section-title {
+    @apply font-serif text-4xl font-medium tracking-wider lg:text-5xl;
+  }
+  .section-overline {
+    @apply text-sub mb-1 pl-1 text-xs font-bold tracking-widest lg:text-sm;
+  }
 
+  .one-content-page {
+    @apply py-15 sm:py-20 lg:py-25;
+  }
+}
+
+/* 導覽列 */
 @keyframes slide-fade-in-from-right {
   from {
     opacity: 0;
@@ -10,7 +22,6 @@
     transform: translateX(0);
   }
 }
-
 @keyframes slide-fade-out-to-right {
   from {
     opacity: 1;
@@ -20,4 +31,9 @@
     opacity: 0;
     transform: translateX(100%);
   }
+}
+
+/* 燈箱 */
+.pswp__button--arrow:disabled {
+  display: block;
 }
