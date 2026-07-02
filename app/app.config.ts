@@ -209,7 +209,8 @@ export default defineAppConfig({
 
     textarea: {
       slots: {
-        base: tw`disabled:bg-canvas read-only:focus-visible:ring-line-light`,
+        root: tw`w-full`,
+        base: tw`disabled:bg-canvas read-only:focus-visible:ring-line-light resize-none`,
       },
       variants: {
         size: {
