@@ -151,7 +151,11 @@
           color="neutral"
           variant="link"
           size="sm"
-          @click="isModalOpen = false"
+          @click="
+            () => {
+              isModalOpen = false;
+            }
+          "
         />
         <UButton
           label="確認"

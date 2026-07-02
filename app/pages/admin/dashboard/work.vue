@@ -49,7 +49,11 @@
               size="sm"
               icon="i-uil-setting"
               class="-m-1.5 -mt-2"
-              @click="isTagEditorOpen = true"
+              @click="
+                () => {
+                  isTagEditorOpen = true;
+                }
+              "
             />
           </div>
         </template>

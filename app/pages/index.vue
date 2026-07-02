@@ -21,7 +21,11 @@
                   square
                   icon="i-lsicon-left-filled"
                   :disabled="slideState.isBeginning"
-                  @click="swiperInstance?.slidePrev()"
+                  @click="
+                    () => {
+                      swiperInstance?.slidePrev();
+                    }
+                  "
                 />
                 <UButton
                   color="neutral"
@@ -30,7 +34,11 @@
                   square
                   icon="i-lsicon-right-filled"
                   :disabled="slideState.isEnd"
-                  @click="swiperInstance?.slideNext()"
+                  @click="
+                    () => {
+                      swiperInstance?.slideNext();
+                    }
+                  "
                 />
               </div>
             </ClientOnly>
