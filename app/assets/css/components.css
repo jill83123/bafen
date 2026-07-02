@@ -11,6 +11,7 @@
   }
 }
 
+/* 導覽列 */
 @keyframes slide-fade-in-from-right {
   from {
     opacity: 0;
@@ -21,7 +22,6 @@
     transform: translateX(0);
   }
 }
-
 @keyframes slide-fade-out-to-right {
   from {
     opacity: 1;
@@ -31,4 +31,9 @@
     opacity: 0;
     transform: translateX(100%);
   }
+}
+
+/* 燈箱 */
+.pswp__button--arrow:disabled {
+  display: block;
 }
