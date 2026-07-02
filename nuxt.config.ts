@@ -25,9 +25,7 @@ export default defineNuxtConfig({
   security: {
     headers: {
       crossOriginOpenerPolicy: 'same-origin-allow-popups',
-      contentSecurityPolicy: {
-        'frame-src': ["'self'", 'https://www.google.com'],
-      },
+      crossOriginEmbedderPolicy: false,
     },
   },
   icon: {

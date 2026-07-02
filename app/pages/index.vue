@@ -309,7 +309,7 @@ import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
 // =============== 近期作品 ===============
-const { data: workData, pending: isWorkDataLoading } = await useLazyFetch('/api/admin/works');
+const { data: workData, pending: isWorkDataLoading } = await useLazyFetch('/api/works');
 
 const swiperInstance = ref<SwiperType | null>(null);
 const slideState = ref({ isBeginning: true, isEnd: false });
