@@ -1,11 +1,38 @@
 import { ContactFormSchema } from '#shared/schema';
 import { db } from '@nuxthub/db';
 import { contactTable } from '@nuxthub/db/schema';
+import { z } from 'zod';
 
-const BodySchema = ContactFormSchema;
+const BodySchema = ContactFormSchema.extend({
+  recaptchaToken: z.string().min(1),
+});
 
 export default defineEventHandler(async (event) => {
   const contactData = await validateBody(event, BodySchema);
+
+  // 先驗證 recaptcha
+  const recaptchaSecret =
+    process.env.NODE_ENV === 'production'
+      ? process.env.NUXT_RECAPTCHA_SECRET
+      : '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'; // 官方測試金鑰
+
+  const verifyResponse = await $fetch<{ success: boolean; score: number }>(
+    'https://www.google.com/recaptcha/api/siteverify',
+    {
+      method: 'POST',
+      body: new URLSearchParams({
+        secret: recaptchaSecret!,
+        response: contactData.recaptchaToken,
+      }),
+    },
+  );
+
+  if (!verifyResponse.success || verifyResponse.score < 0.5) {
+    throw createError({
+      statusCode: 403,
+      message: '驗證失敗，若您使用 VPN 或無痕模式，請關閉後再試',
+    });
+  }
 
   // 存入資料表
   await db.insert(contactTable).values(contactData);

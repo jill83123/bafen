@@ -122,9 +122,14 @@
     </div>
 
     <!-- 送出成功 Modal -->
-    <UModal v-model:open="isSuccessOpen" title="送出成功" :dismissible="true">
+    <UModal
+      v-model:open="isSuccessOpen"
+      title="送出成功"
+      :dismissible="true"
+      :ui="{ content: 'max-w-90' }"
+    >
       <template #body>
-        <p class="text-center">表單已送出，我們會盡快與您聯繫，謝謝！</p>
+        <p>表單已送出，我們會盡快與您聯繫，謝謝！</p>
       </template>
 
       <template #footer>
@@ -169,6 +174,8 @@ const infos = [
 ];
 
 // =============== 表單相關 ===============
+const { execute: executeRecaptcha } = useRecaptcha();
+
 const form = useTemplateRef('form');
 const isSubmitting = ref(false);
 const isSuccessOpen = ref(false);
@@ -192,7 +199,21 @@ const onSubmit = async (event: { data: ContactForm }) => {
   isSubmitting.value = true;
 
   try {
-    await $fetch('/api/contacts', { method: 'POST', body: event.data });
+    const token = await executeRecaptcha('contact_form');
+
+    if (!token) {
+      toast.error('表單送出失敗，若您使用 VPN 或無痕模式，請關閉後再試');
+      return;
+    }
+
+    await $fetch('/api/contacts', {
+      method: 'POST',
+      body: {
+        ...event.data,
+        recaptchaToken: token,
+      },
+    });
+
     isSuccessOpen.value = true;
     resetForm();
   } catch (error) {
@@ -201,8 +222,6 @@ const onSubmit = async (event: { data: ContactForm }) => {
     isSubmitting.value = false;
   }
 };
-
-// TODO: 加上 GOOGLE CAPTCHA
 </script>
 
 <style scoped></style>
