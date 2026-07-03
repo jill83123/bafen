@@ -188,10 +188,7 @@ const {
 
 const tagMenu = computed(() => tags.value?.map((tag) => tag.name));
 
-watch([workError, tagError], ([newWorkError, newTagError]) => {
-  const err = newWorkError ?? newTagError;
-  if (err) toast.error(getErrorMessage(err, '資料取得失敗，請稍後再試'));
-});
+useErrorToast([workError, tagError]);
 
 // =============== 表格相關 ===============
 const columns: TableColumn<AdminWorkItem>[] = [

@@ -101,7 +101,6 @@ type Category = (typeof categories)[number];
 
 const route = useRoute();
 const router = useRouter();
-const toast = useAppToast();
 
 const categoryFilterItems: TabsItem[] = [{ label: '全部分類', value: 'all' }, ...categoryOptions];
 const currentCategory = ref<'all' | Category>('all');
@@ -213,10 +212,7 @@ watch(
   },
 );
 
-watch([workError, tagError], ([newWorkError, newTagError]) => {
-  const err = newWorkError ?? newTagError;
-  if (err) toast.error(getErrorMessage(err, '資料取得失敗，請稍後再試'));
-});
+useErrorToast([workError, tagError]);
 </script>
 
 <style scoped></style>

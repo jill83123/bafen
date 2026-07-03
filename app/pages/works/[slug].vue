@@ -68,11 +68,13 @@ const route = useRoute();
 const router = useRouter();
 
 const slug = route.params.slug;
-const { data } = await useFetch(`/api/works/${slug}`);
+const { data, error } = await useFetch(`/api/works/${slug}`);
 
 const images = computed(() => data.value?.images || []);
 const leftColumnImages = computed(() => images.value.filter((_, i) => i % 2 === 0)); // 偶數 index：1、3、5...
 const rightColumnImages = computed(() => images.value.filter((_, i) => i % 2 === 1)); // 奇數 index：2、4、6...
+
+useErrorToast([error]);
 
 // 燈箱
 const { openLightbox } = useLightbox();
