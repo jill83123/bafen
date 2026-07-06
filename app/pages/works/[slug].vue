@@ -64,15 +64,15 @@
 <script lang="ts" setup>
 import { categoryLabels } from '#shared/constants/work';
 
-useHead({
-  title: () => data.value?.title,
-});
-
 const route = useRoute();
 const router = useRouter();
 
 const slug = route.params.slug;
 const { data, error } = await useFetch(`/api/works/${slug}`);
+
+useHead({
+  title: () => data.value?.title,
+});
 
 const images = computed(() => data.value?.images || []);
 const leftColumnImages = computed(() => images.value.filter((_, i) => i % 2 === 0)); // 偶數 index：1、3、5...
