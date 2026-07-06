@@ -44,5 +44,6 @@ export default defineEventHandler(async (event) => {
     blob.del(image.storageKey),
   ]);
 
-  return {};
+  setResponseStatus(event, 204);
+  return null;
 });

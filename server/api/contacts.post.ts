@@ -48,7 +48,10 @@ export default defineEventHandler(async (event) => {
   } = runtimeConfig;
   const { googleClientId: GOOGLE_CLIENT_ID } = runtimeConfig.public;
 
-  if (!IS_EMAIL_SENDER_ENABLED) return {};
+  if (!IS_EMAIL_SENDER_ENABLED) {
+    setResponseStatus(event, 204);
+    return null;
+  }
 
   const tokenResponse = await $fetch<{ access_token: string }>(
     'https://oauth2.googleapis.com/token',
@@ -90,5 +93,6 @@ export default defineEventHandler(async (event) => {
     body: { raw: encodedEmail },
   });
 
-  return {};
+  setResponseStatus(event, 204);
+  return null;
 });

@@ -37,5 +37,6 @@ export default defineEventHandler(async (event) => {
     })
     .where(eq(tagTable.id, tagId));
 
-  return {};
+  setResponseStatus(event, 204);
+  return null;
 });

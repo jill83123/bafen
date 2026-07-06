@@ -52,5 +52,6 @@ export default defineEventHandler(async (event) => {
     sameSite: 'lax',
   });
 
-  return {};
+  setResponseStatus(event, 204);
+  return null;
 });

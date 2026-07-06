@@ -1,4 +1,5 @@
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
   // 由 middleware 處理驗證
-  return {};
+  setResponseStatus(event, 204);
+  return null;
 });
