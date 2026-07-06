@@ -125,7 +125,7 @@
     <UModal
       v-model:open="isSuccessOpen"
       title="送出成功"
-      :dismissible="true"
+      :dismissible="false"
       :ui="{ content: 'max-w-90' }"
     >
       <template #body>

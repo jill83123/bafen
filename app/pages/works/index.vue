@@ -1,53 +1,56 @@
 <template>
   <div class="one-content-page container flex min-h-[calc(100dvh-68px)] flex-col">
-    <!-- 標題 -->
-    <div class="mb-6 flex flex-col lg:mb-10 lg:flex-row-reverse lg:items-end lg:justify-between">
-      <div class="section-overline">WORKS SHOWCASE</div>
-      <h1 class="section-title">作品展示</h1>
-    </div>
+    <header>
+      <!-- 標題 -->
+      <div class="mb-6 flex flex-col lg:mb-10 lg:flex-row-reverse lg:items-end lg:justify-between">
+        <div class="section-overline">WORKS SHOWCASE</div>
+        <h1 class="section-title">作品展示</h1>
+      </div>
 
-    <!-- 篩選 -->
-    <div class="mb-6 lg:mb-10">
-      <!-- 分類 -->
-      <UTabs
-        v-model="currentCategory"
-        :items="categoryFilterItems"
-        color="primary"
-        variant="link"
-        :content="false"
-        :ui="{
-          list: 'gap-4 border-0 p-0 lg:gap-6',
-          indicator: 'hidden!',
-          trigger: 'px-0 py-0 text-base font-normal after:hidden! data-[state=active]:font-medium',
-        }"
-      />
+      <!-- 篩選 -->
+      <div class="mb-6 lg:mb-10">
+        <!-- 分類 -->
+        <UTabs
+          v-model="currentCategory"
+          :items="categoryFilterItems"
+          color="primary"
+          variant="link"
+          :content="false"
+          :ui="{
+            list: 'gap-4 border-0 p-0 lg:gap-6',
+            indicator: 'hidden!',
+            trigger:
+              'px-0 py-0 text-base font-normal after:hidden! data-[state=active]:font-medium',
+          }"
+        />
 
-      <!-- 標籤 -->
-      <ul
-        v-if="tagFilterItems.length > 0"
-        class="mt-4 flex flex-wrap gap-x-4 gap-y-3 lg:mt-6 lg:gap-x-6"
-      >
-        <li v-for="tag in tagFilterItems" :key="tag.id">
-          <LazyUCheckbox
-            :id="`tag-${tag.id}`"
-            :aria-label="`${tag.name}(${tag.workUsageCount})`"
-            :model-value="currentTagIds.includes(tag.id)"
-            :ui="{
-              label: 'flex items-center gap-0.5',
-            }"
-            @update:model-value="(checked: boolean) => toggleTagFilter(tag.id, checked)"
-          >
-            <template #label>
-              <span class="leading-none">{{ tag.name }}</span>
-              <span class="text-sub text-sm leading-none">({{ tag.workUsageCount }})</span>
-            </template>
-          </LazyUCheckbox>
-        </li>
-      </ul>
+        <!-- 標籤 -->
+        <ul
+          v-if="tagFilterItems.length > 0"
+          class="mt-4 flex flex-wrap gap-x-4 gap-y-3 lg:mt-6 lg:gap-x-6"
+        >
+          <li v-for="tag in tagFilterItems" :key="tag.id">
+            <LazyUCheckbox
+              :id="`tag-${tag.id}`"
+              :aria-label="`${tag.name}(${tag.workUsageCount})`"
+              :model-value="currentTagIds.includes(tag.id)"
+              :ui="{
+                label: 'flex items-center gap-0.5',
+              }"
+              @update:model-value="(checked: boolean) => toggleTagFilter(tag.id, checked)"
+            >
+              <template #label>
+                <span class="leading-none">{{ tag.name }}</span>
+                <span class="text-sub text-sm leading-none">({{ tag.workUsageCount }})</span>
+              </template>
+            </LazyUCheckbox>
+          </li>
+        </ul>
 
-      <!-- 預留空間 -->
-      <div v-else class="mt-4 h-5 lg:mt-6" />
-    </div>
+        <!-- 預留空間 -->
+        <div v-else class="mt-4 h-5 lg:mt-6" />
+      </div>
+    </header>
 
     <!-- 作品列表 -->
     <div
@@ -64,7 +67,7 @@
       <WorkCard v-for="work in workData?.works" :key="work.id" :work="work" title-tag="h2" />
     </div>
 
-    <div v-else class="flex grow flex-col items-center justify-center">
+    <div v-else-if="!isWorkDataLoading" class="flex grow flex-col items-center justify-center">
       <span>找不到作品</span>
       <UButton
         label="重置篩選條件"
@@ -187,7 +190,12 @@ watch(currentTagIds, () => {
   currentPage.value = 1;
 });
 
-// 改變篩選或分頁時，只調整網址 query，由下方的 watch 觸發請求
+// 切換分頁時，畫面回到頂部
+watch(currentPage, () => {
+  window.scrollTo({ top: 0 });
+});
+
+// 切換篩選或分頁時，只調整網址 query，由下方的 watch 觸發請求
 watch([currentCategory, currentTagIds, currentPage], () => {
   if (isSyncingFromRoute.value) return;
 

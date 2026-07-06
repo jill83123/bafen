@@ -81,8 +81,8 @@
         <template #actions-cell="{ row }">
           <div class="flex items-center gap-3">
             <template v-if="shouldShowSkeleton">
-              <USkeleton class="h-9 w-9" />
-              <USkeleton class="h-9 w-9" />
+              <USkeleton class="m-2 h-5 w-5" />
+              <USkeleton class="m-2 h-5 w-5" />
             </template>
 
             <template v-else>
@@ -155,7 +155,7 @@ const {
   pending: isWorkDataLoading,
   error: workError,
   refresh: refreshWorkData,
-} = await useFetch('/api/admin/works', {
+} = await useLazyFetch('/api/admin/works', {
   query: {
     page: currentPage,
     page_size: PAGE_SIZE,
