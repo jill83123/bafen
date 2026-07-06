@@ -118,7 +118,7 @@ const navMenu: NavigationMenuItem[][] = [
       to: '/admin/dashboard/work',
     },
     {
-      label: '聯絡記錄',
+      label: '聯絡紀錄',
       icon: 'i-material-symbols-mail-outline-sharp',
       to: '/admin/dashboard/contact',
     },

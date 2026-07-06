@@ -129,6 +129,10 @@
 <script lang="ts" setup>
 import type { TableColumn } from '@nuxt/ui';
 
+useHead({
+  title: '聯絡紀錄',
+});
+
 type AdminContactItem = {
   id: number;
   name: string;

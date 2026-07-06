@@ -131,6 +131,10 @@
 import { categoryLabels, categoryOptions } from '#shared/constants/work';
 import type { SelectItem, TableColumn } from '@nuxt/ui';
 
+useHead({
+  title: '作品管理',
+});
+
 type WorkModalMode = 'add' | 'edit';
 
 const toast = useAppToast();

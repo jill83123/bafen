@@ -308,6 +308,10 @@ import type { Swiper as SwiperType } from 'swiper';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
+useHead({
+  title: '首頁',
+});
+
 // =============== 近期作品 ===============
 const { data: workData, pending: isWorkDataLoading } = await useLazyFetch('/api/works');
 

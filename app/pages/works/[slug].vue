@@ -64,6 +64,10 @@
 <script lang="ts" setup>
 import { categoryLabels } from '#shared/constants/work';
 
+useHead({
+  title: () => data.value?.title,
+});
+
 const route = useRoute();
 const router = useRouter();
 

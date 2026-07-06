@@ -155,6 +155,10 @@ import type { ContactForm } from '#shared/schema';
 import { ContactFormSchema } from '#shared/schema';
 import contactImage from '@/assets/images/contact_bg.webp';
 
+useHead({
+  title: '聯絡我們',
+});
+
 const toast = useAppToast();
 
 const infos = [

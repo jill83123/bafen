@@ -97,6 +97,10 @@ import type { categories } from '#shared/constants/work';
 import { categoryOptions } from '#shared/constants/work';
 import type { TabsItem } from '@nuxt/ui';
 
+useHead({
+  title: '作品展示',
+});
+
 type Category = (typeof categories)[number];
 
 const route = useRoute();

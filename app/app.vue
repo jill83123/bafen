@@ -12,6 +12,8 @@ useHead({
   htmlAttrs: {
     lang: 'zh-Hant-TW',
   },
-  title: '八分室內裝修', // TODO: 需再調整
+  titleTemplate: (titleChunk) => {
+    return `${titleChunk ? `${titleChunk}｜` : ''}八分室內裝修`;
+  },
 });
 </script>
