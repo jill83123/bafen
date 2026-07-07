@@ -95,6 +95,10 @@ export default defineNuxtConfig({
     googleClientSecret: process.env.NUXT_GOOGLE_CLIENT_SECRET,
     recaptchaSecret: process.env.NUXT_RECAPTCHA_SECRET,
 
+    gaClientEmail: process.env.NUXT_GA_CLIENT_EMAIL,
+    gaPrivateKey: process.env.NUXT_GA_PRIVATE_KEY,
+    gaPropertyId: process.env.NUXT_GA_PROPERTY_ID, // 資源 ID
+
     public: {
       googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
       recaptchaSiteKey: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY,
