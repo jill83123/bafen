@@ -98,6 +98,7 @@ export default defineNuxtConfig({
     public: {
       googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
       recaptchaSiteKey: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY,
+      gaMeasurementId: process.env.NUXT_PUBLIC_GA_MEASUREMENT_ID,
     },
   },
 });

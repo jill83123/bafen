@@ -115,6 +115,7 @@ import type { NavigationMenuItem } from '@nuxt/ui';
 
 const route = useRoute();
 const router = useRouter();
+const runtimeConfig = useRuntimeConfig();
 
 // 導覽列
 const isNavMenuOpen = defineModel<boolean>();
@@ -244,6 +245,27 @@ const headerComponentMap: Record<string, Component> = Object.fromEntries(
 const headerComponent = computed(() => {
   const key = route.name as string | undefined;
   return key ? headerComponentMap[key] : null;
+});
+
+// =============== GA4 ===============
+const measurementId = runtimeConfig.public.gaMeasurementId;
+
+const { proxy } = useScriptGoogleAnalytics({ id: measurementId });
+proxy.gtag('config', measurementId, { send_page_view: false }); // 關閉自動追蹤，改成手動控制
+
+const trackPageView = (path: string) => {
+  proxy.gtag('event', 'page_view', {
+    page_path: path,
+    page_title: document.title,
+  });
+};
+
+onMounted(() => {
+  trackPageView(router.currentRoute.value.fullPath);
+});
+
+router.afterEach((to) => {
+  trackPageView(to.fullPath);
 });
 </script>
 
