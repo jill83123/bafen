@@ -107,6 +107,18 @@
         </div>
       </div>
     </footer>
+
+    <UButton
+      v-show="isTopButtonVisible"
+      title="回到頂部"
+      color="primary"
+      variant="outline"
+      size="lg"
+      square
+      leading-icon="i-ic-baseline-arrow-upward"
+      class="bg-default/80! active:bg-default! fixed right-3 bottom-3 z-10 ring-2 sm:right-6 sm:bottom-6"
+      @click="scrollToTop"
+    />
   </div>
 </template>
 
@@ -266,6 +278,26 @@ onMounted(() => {
 
 router.afterEach((to) => {
   trackPageView(to.fullPath);
+});
+
+// =============== 回到頂部按鈕 ===============
+const isTopButtonVisible = ref(false);
+
+const handleScroll = () => {
+  isTopButtonVisible.value = window.scrollY > 300;
+};
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
 });
 </script>
 
