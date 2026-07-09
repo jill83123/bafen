@@ -21,7 +21,7 @@
         :data="shouldShowSkeleton ? skeletonData : (workData?.works ?? [])"
         :columns="columns"
         sticky
-        :empty="'沒有資料'"
+        :empty="'尚無資料'"
         :ui="{
           thead: 'after:hidden',
           tr: `${shouldShowSkeleton ? 'hover:bg-transparent!' : ''}`,
