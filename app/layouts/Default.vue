@@ -92,12 +92,12 @@
             <span class="hidden px-1 sm:inline">｜</span>
           </li>
           <li class="flex items-center gap-2">
-            <Icon name="i-ic-outline-phone" size="18" class="text-white/80" />
+            <Icon name="i-mdi-phone-outline" size="18" class="text-white/80" />
             <a href="tel:+04-2565-2603" class="hover:text-white/80">04-2565-2603</a>
             <span class="hidden px-1 sm:inline">｜</span>
           </li>
           <li class="flex items-center gap-2">
-            <Icon name="i-icon-park-outline-local-two" size="18" class="text-white/80" />
+            <Icon name="i-custom-boxicons-location" size="18" class="text-white/80" />
             <address class="not-italic">台中市大雅區前村路 382 巷 40 之 1 號</address>
           </li>
         </ul>
@@ -115,7 +115,7 @@
       variant="outline"
       size="lg"
       square
-      leading-icon="i-ic-baseline-arrow-upward"
+      leading-icon="i-mdi-arrow-up"
       class="bg-default/80! active:bg-default! fixed right-3 bottom-3 z-10 ring-2 sm:right-6 sm:bottom-6"
       @click="scrollToTop"
     />

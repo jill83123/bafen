@@ -7,7 +7,7 @@
   >
     <template #body>
       <Icon
-        name="i-material-symbols-delete-outline"
+        name="i-lucide-trash-2"
         size="44"
         mode="svg"
         class="text-error bg-error-100 mx-auto rounded-full p-2"

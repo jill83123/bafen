@@ -30,6 +30,8 @@ export default defineNuxtConfig({
   },
   icon: {
     size: '20px',
+    clientBundle: { scan: true },
+    customCollections: [{ prefix: 'custom', dir: './app/assets/icons' }],
   },
   fonts: {
     families: [
@@ -48,6 +50,7 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
+        '@unovis/vue',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         '@vueuse/integrations',

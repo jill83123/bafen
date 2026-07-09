@@ -170,7 +170,7 @@ const infos = [
     value: [
       {
         title: 'Facebook',
-        icon: 'i-uil-facebook',
+        icon: 'i-ri-facebook-box-fill',
         href: 'https://www.facebook.com/profile.php?id=61570960919834',
       },
     ],

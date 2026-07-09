@@ -12,7 +12,7 @@
       color="neutral"
       variant="outline"
       size="sm"
-      :leading-icon="isUploading ? 'i-tdesign-loading' : 'i-material-symbols-upload-sharp'"
+      :leading-icon="isUploading ? 'i-mdi-loading' : 'i-material-symbols-upload-sharp'"
       :disabled="isUploading"
       :ui="{
         leadingIcon: `${isUploading ? 'animate-spin' : ''}`,

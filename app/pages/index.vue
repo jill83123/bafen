@@ -188,7 +188,7 @@
       <!-- 星星 -->
       <div class="absolute top-0 left-1/2">
         <Icon
-          name="i-iconoir-spark-solid"
+          name="i-custom-iconoir-spark-solid"
           class="text-brand-decor absolute top-full left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl! lg:text-[40px]!"
         />
       </div>
@@ -342,7 +342,7 @@ const getCategoryImage = (filename: string) => {
 // =============== 服務項目 ===============
 const serviceItems = [
   {
-    icon: 'i-clarity-ruler-pencil-line',
+    icon: 'i-custom-clarity-ruler-pencil-line',
     title: '新成屋規劃',
     description:
       '依現場實際狀況，針對客戶需求和風格偏好來設計規劃，量身訂製為您帶來舒適、時尚的居住體驗。',
@@ -353,13 +353,13 @@ const serviceItems = [
     description: '為老屋／中古屋注入新生，改善室內空間、提升居住品質，打造舒適宜居的居家空間。',
   },
   {
-    icon: 'i-cil-building',
+    icon: 'i-custom-boxicons-buildings',
     title: '商辦空間設計',
     description:
       '專業的商辦空間設計裝修服務，致力於為您打造一個優雅、實用的工作環境，提升您的企業形象，吸引更多客戶和合作夥伴。',
   },
   {
-    icon: 'i-boxicons-paint',
+    icon: 'i-custom-boxicons-paint',
     title: '油漆工程',
     description:
       '擁有經驗豐富的油漆工程團隊，專注於提供高品質、精密度極高的油漆施工，讓您的牆面焕然一新，散發出獨特的風格和氛圍。',

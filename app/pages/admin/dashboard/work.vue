@@ -47,7 +47,7 @@
               title="編輯標籤"
               variant="link"
               size="sm"
-              icon="i-uil-setting"
+              icon="i-mdi-settings-outline"
               class="-m-1.5 -mt-2"
               @click="
                 () => {
