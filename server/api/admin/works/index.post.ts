@@ -88,6 +88,6 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  setResponseStatus(event, 204);
+  setResponseStatus(event, 201);
   return null;
 });

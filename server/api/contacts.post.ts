@@ -93,6 +93,6 @@ export default defineEventHandler(async (event) => {
     body: { raw: encodedEmail },
   });
 
-  setResponseStatus(event, 204);
+  setResponseStatus(event, 201);
   return null;
 });

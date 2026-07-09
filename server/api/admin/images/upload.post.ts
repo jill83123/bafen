@@ -38,6 +38,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, message: '伺服器錯誤，請稍後再試' });
   }
 
+  setResponseStatus(event, 201);
   return {
     count: uploadResults.length,
   };
