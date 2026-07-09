@@ -11,7 +11,6 @@ export default defineNuxtConfig({
     'nuxt-security',
     '@vueuse/nuxt',
     '@nuxt/ui',
-    '@nuxt/image',
     '@nuxt/scripts',
     '@nuxt/a11y',
     '@nuxt/eslint',
