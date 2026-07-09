@@ -8,12 +8,33 @@
 </template>
 
 <script lang="ts" setup>
+import ogImage from '@/assets/images/index/header_1.webp';
+
+const site = useSiteConfig();
+
 useHead({
   htmlAttrs: {
     lang: 'zh-Hant-TW',
   },
   titleTemplate: (titleChunk) => {
-    return `${titleChunk ? `${titleChunk}｜` : ''}八分室內裝修`;
+    return `${titleChunk ? `${titleChunk}｜` : ''}${site.name}`;
   },
+  link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+});
+
+useSeoMeta({
+  title: site.name,
+  description: site.description,
+  keywords: '八分,室內設計,住宅設計,室內裝修,空間規劃,裝修設計,居家設計,客製化設計',
+
+  ogUrl: site.url,
+  ogTitle: site.name,
+  ogDescription: site.description,
+  ogImage: ogImage,
+
+  twitterCard: 'summary_large_image',
+  twitterTitle: site.name,
+  twitterDescription: site.description,
+  twitterImage: ogImage,
 });
 </script>

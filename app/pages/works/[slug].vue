@@ -66,6 +66,7 @@ import { categoryLabels } from '#shared/constants/work';
 
 const route = useRoute();
 const router = useRouter();
+const site = useSiteConfig();
 
 const slug = route.params.slug;
 const { data, error } = await useFetch(`/api/works/${slug}`);
@@ -73,6 +74,29 @@ const { data, error } = await useFetch(`/api/works/${slug}`);
 useHead({
   title: () => data.value?.title,
 });
+
+useSeoMeta({
+  ogImage: data.value?.cover.path,
+  twitterImage: data.value?.cover.path,
+});
+
+useSchemaOrg([
+  {
+    '@type': 'CreativeWork',
+    name: data.value?.title,
+    genre: data.value?.category,
+    image: data.value?.cover.path ? new URL(data.value.cover.path, site.url).href : undefined,
+    dateCreated: data.value?.createdAt,
+    dateModified: data.value?.updatedAt,
+    creator: { '@type': 'Organization', name: site.name },
+    inLanguage: 'zh-TW',
+  },
+  ...(data.value?.images.map((img) =>
+    defineImage({
+      url: new URL(img.path, site.url).href,
+    }),
+  ) ?? []),
+]);
 
 const images = computed(() => data.value?.images || []);
 const leftColumnImages = computed(() => images.value.filter((_, i) => i % 2 === 0)); // 偶數 index：1、3、5...

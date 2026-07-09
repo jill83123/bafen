@@ -15,7 +15,23 @@ export default defineNuxtConfig({
     '@nuxt/a11y',
     '@nuxt/eslint',
     '@nuxt/hints',
+    '@nuxtjs/robots',
+    '@nuxtjs/sitemap',
+    'nuxt-schema-org',
   ],
+  robots: {
+    disallow: '/admin/',
+  },
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL,
+    name: process.env.NUXT_PUBLIC_SITE_NAME,
+    description: process.env.NUXT_PUBLIC_SITE_DESCRIPTION,
+  },
+  sitemap: {
+    exclude: ['/admin/**'],
+    sources: ['/api/__sitemap__/urls'],
+    autoLastmod: true,
+  },
   hub: {
     blob: true,
     db: 'sqlite',
@@ -42,13 +58,14 @@ export default defineNuxtConfig({
 
   css: ['./app/assets/css/main.css'],
   colorMode: {
-    preference: 'light', // TODO: 深色模式待做
+    preference: 'light', // TODO: 深色模式
   },
 
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
+        '@unhead/schema-org/vue',
         '@unovis/vue',
         '@vue/devtools-core',
         '@vue/devtools-kit',
@@ -70,9 +87,11 @@ export default defineNuxtConfig({
         ssr: false,
         appMiddleware: ['admin-auth'],
         appLayout: false,
+        robots: false,
       },
       '/admin/dashboard/**': {
         appLayout: 'admin-dashboard',
+        robots: false,
       },
       '/images/**': {
         security: {
