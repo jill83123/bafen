@@ -93,8 +93,17 @@ export default defineNuxtConfig({
       '/images/**': {
         security: {
           rateLimiter: {
-            tokensPerInterval: 200,
-            interval: '10s',
+            tokensPerInterval: 100,
+            interval: 10000, // 10s
+          },
+        },
+      },
+      '/api/contacts': {
+        security: {
+          rateLimiter: {
+            tokensPerInterval: 10,
+            interval: 600000, // 10m
+            headers: true,
           },
         },
       },

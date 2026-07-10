@@ -8,12 +8,13 @@ const BodySchema = ContactFormSchema.extend({
 });
 
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig();
   const contactData = await validateBody(event, BodySchema);
 
   // 先驗證 recaptcha
   const recaptchaSecret =
     process.env.NODE_ENV === 'production'
-      ? process.env.NUXT_RECAPTCHA_SECRET
+      ? config.recaptchaSecret
       : '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'; // 官方測試金鑰
 
   const verifyResponse = await $fetch<{ success: boolean; score: number }>(

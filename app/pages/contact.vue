@@ -154,6 +154,7 @@
 import type { ContactForm } from '#shared/schema';
 import { ContactFormSchema } from '#shared/schema';
 import contactImage from '@/assets/images/contact_bg.webp';
+import { FetchError } from 'ofetch';
 
 useHead({
   title: '聯絡我們',
@@ -178,8 +179,6 @@ const infos = [
 ];
 
 // =============== 表單相關 ===============
-const { execute: executeRecaptcha } = useRecaptcha();
-
 const form = useTemplateRef('form');
 const isSubmitting = ref(false);
 const isSuccessOpen = ref(false);
@@ -198,6 +197,8 @@ const resetForm = () => {
   form.value?.clear();
   formState.value = createInitialFormState();
 };
+
+const { execute: executeRecaptcha } = useRecaptcha();
 
 const onSubmit = async (event: { data: ContactForm }) => {
   isSubmitting.value = true;
@@ -221,6 +222,10 @@ const onSubmit = async (event: { data: ContactForm }) => {
     isSuccessOpen.value = true;
     resetForm();
   } catch (error) {
+    if (error instanceof FetchError && error.statusCode === 429) {
+      toast.error('操作太過頻繁，請稍後再試');
+      return;
+    }
     toast.error(getErrorMessage(error, '表單送出失敗，請稍後再試'));
   } finally {
     isSubmitting.value = false;
