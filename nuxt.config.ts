@@ -19,13 +19,14 @@ export default defineNuxtConfig({
     '@nuxtjs/sitemap',
     'nuxt-schema-org',
   ],
-  robots: {
-    disallow: '/admin/',
-  },
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL,
     name: process.env.NUXT_PUBLIC_SITE_NAME,
     description: process.env.NUXT_PUBLIC_SITE_DESCRIPTION,
+    indexable: process.env.NUXT_PUBLIC_SITE_ENV === 'production',
+  },
+  robots: {
+    disallow: '/admin/',
   },
   sitemap: {
     exclude: ['/admin/**'],
