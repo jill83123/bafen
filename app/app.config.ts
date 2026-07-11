@@ -119,7 +119,7 @@ export default defineAppConfig({
     input: {
       slots: {
         root: tw`w-full`,
-        base: tw`disabled:bg-canvas read-only:focus-visible:ring-line-light`,
+        base: tw`disabled:bg-canvas`,
       },
       variants: {
         size: {
@@ -144,7 +144,7 @@ export default defineAppConfig({
 
     inputMenu: {
       slots: {
-        base: tw`disabled:bg-canvas read-only:focus-visible:ring-line-light`,
+        base: tw`disabled:bg-canvas`,
         trailingIcon: tw`text-ink`,
         content: tw`ring-ink shadow-none ring-inset`,
         group: tw`p-0`,
@@ -209,7 +209,8 @@ export default defineAppConfig({
 
     textarea: {
       slots: {
-        base: tw`disabled:bg-canvas read-only:focus-visible:ring-line-light`,
+        root: tw`w-full`,
+        base: tw`disabled:bg-canvas resize-none`,
       },
       variants: {
         size: {

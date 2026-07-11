@@ -37,7 +37,7 @@
           <UButton
             color="neutral"
             variant="ghost"
-            icon="i-ri-menu-fill"
+            icon="i-lucide-menu"
             :ui="{ base: 'px-6 py-6.5' }"
             @click="collapse(false)"
           />
@@ -114,11 +114,11 @@ const navMenu: NavigationMenuItem[][] = [
     },
     {
       label: '作品管理',
-      icon: 'i-nrk-gallery',
+      icon: 'i-mdi-images-outline',
       to: '/admin/dashboard/work',
     },
     {
-      label: '聯絡記錄',
+      label: '聯絡紀錄',
       icon: 'i-material-symbols-mail-outline-sharp',
       to: '/admin/dashboard/contact',
     },
@@ -126,7 +126,7 @@ const navMenu: NavigationMenuItem[][] = [
   [
     {
       label: '登出',
-      icon: 'i-ri-logout-box-line',
+      icon: 'i-material-symbols-logout-sharp',
       onSelect: () => handleLogout(),
     },
   ],

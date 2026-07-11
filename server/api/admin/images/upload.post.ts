@@ -4,12 +4,14 @@ import { imageTable } from '@nuxthub/db/schema';
 
 export default defineEventHandler(async (event) => {
   const contentType = event.node.req.headers['content-type'] || '';
-  if (!contentType.startsWith('multipart/form-data')) throw createError({ statusCode: 400 });
+  if (!contentType.startsWith('multipart/form-data')) {
+    throw createError({ statusCode: 400, message: '請使用 multipart/form-data 上傳檔案' });
+  }
 
   const formData = await readFormData(event);
   const images = formData.getAll('images') as File[];
 
-  if (!images.length) throw createError({ statusCode: 400 });
+  if (!images.length) throw createError({ statusCode: 400, message: '未上傳任何檔案' });
 
   // 上傳到檔案儲存服務
   const uploadResults = await Promise.all(
@@ -36,6 +38,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, message: '伺服器錯誤，請稍後再試' });
   }
 
+  setResponseStatus(event, 201);
   return {
     count: uploadResults.length,
   };

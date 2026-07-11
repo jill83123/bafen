@@ -30,6 +30,7 @@
               item: 'p-0',
               link: 'data-active:text-brand-main leading-5 before:inset-0',
             }"
+            aria-label="桌機版導覽列"
           />
         </template>
 
@@ -55,6 +56,7 @@
                 list: 'flex w-full flex-col gap-4',
                 link: 'data-active:text-brand-main text-white',
               }"
+              aria-label="行動版導覽列"
             />
           </div>
         </template>
@@ -92,12 +94,12 @@
             <span class="hidden px-1 sm:inline">｜</span>
           </li>
           <li class="flex items-center gap-2">
-            <Icon name="i-ic-outline-phone" size="18" class="text-white/80" />
+            <Icon name="i-mdi-phone-outline" size="18" class="text-white/80" />
             <a href="tel:+04-2565-2603" class="hover:text-white/80">04-2565-2603</a>
             <span class="hidden px-1 sm:inline">｜</span>
           </li>
           <li class="flex items-center gap-2">
-            <Icon name="i-icon-park-outline-local-two" size="18" class="text-white/80" />
+            <Icon name="i-custom-boxicons-location" size="18" class="text-white/80" />
             <address class="not-italic">台中市大雅區前村路 382 巷 40 之 1 號</address>
           </li>
         </ul>
@@ -107,6 +109,18 @@
         </div>
       </div>
     </footer>
+
+    <UButton
+      v-show="isTopButtonVisible"
+      title="回到頂部"
+      color="primary"
+      variant="outline"
+      size="lg"
+      square
+      leading-icon="i-mdi-arrow-up"
+      class="bg-default/80! active:bg-default! fixed right-3 bottom-3 z-10 ring-2 sm:right-6 sm:bottom-6"
+      @click="scrollToTop"
+    />
   </div>
 </template>
 
@@ -115,6 +129,7 @@ import type { NavigationMenuItem } from '@nuxt/ui';
 
 const route = useRoute();
 const router = useRouter();
+const runtimeConfig = useRuntimeConfig();
 
 // 導覽列
 const isNavMenuOpen = defineModel<boolean>();
@@ -244,6 +259,47 @@ const headerComponentMap: Record<string, Component> = Object.fromEntries(
 const headerComponent = computed(() => {
   const key = route.name as string | undefined;
   return key ? headerComponentMap[key] : null;
+});
+
+// =============== GA4 ===============
+const measurementId = runtimeConfig.public.gaMeasurementId;
+
+const { proxy } = useScriptGoogleAnalytics({ id: measurementId });
+proxy.gtag('config', measurementId, { send_page_view: false }); // 關閉自動追蹤，改成手動控制
+
+const trackPageView = (path: string) => {
+  proxy.gtag('event', 'page_view', {
+    page_path: path,
+    page_title: document.title,
+  });
+};
+
+onMounted(() => {
+  trackPageView(router.currentRoute.value.fullPath);
+});
+
+router.afterEach((to) => {
+  trackPageView(to.fullPath);
+});
+
+// =============== 回到頂部按鈕 ===============
+const isTopButtonVisible = ref(false);
+
+const handleScroll = () => {
+  isTopButtonVisible.value = window.scrollY > 300;
+};
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
 });
 </script>
 

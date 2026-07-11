@@ -98,7 +98,7 @@
 import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
-const imageModules = import.meta.glob<{ default: string }>('../assets/images/index/header_*.webp', {
+const imageModules = import.meta.glob<{ default: string }>('@/assets/images/index/header_*.webp', {
   eager: true,
 });
 

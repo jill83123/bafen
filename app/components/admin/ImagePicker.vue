@@ -90,7 +90,7 @@
                 <!-- 選擇打勾 -->
                 <Icon
                   v-if="isSelected(image.id)"
-                  name="i-fe-check"
+                  name="i-custom-fe-check"
                   size="26"
                   mode="svg"
                   class="text-primary absolute top-0.5 right-0.5 stroke-white stroke-4 [paint-order:stroke_fill] [stroke-linejoin:round]"
@@ -132,7 +132,7 @@
           v-if="imageList.length === 0 && !shouldShowSkeleton"
           class="text-sub flex w-full flex-col items-center gap-1 self-center py-6 text-sm"
         >
-          <Icon name="i-ix-no-image" />
+          <Icon name="i-material-symbols-hide-image-outline-sharp" />
           沒有圖片
         </div>
       </div>

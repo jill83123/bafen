@@ -114,5 +114,6 @@ export default defineEventHandler(async (event) => {
       notExists(db.select().from(workToTagTable).where(eq(workToTagTable.tagId, tagTable.id))),
     );
 
-  return {};
+  setResponseStatus(event, 204);
+  return null;
 });

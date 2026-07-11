@@ -21,7 +21,7 @@
         :data="shouldShowSkeleton ? skeletonData : (workData?.works ?? [])"
         :columns="columns"
         sticky
-        :empty="'沒有資料'"
+        :empty="'尚無資料'"
         :ui="{
           thead: 'after:hidden',
           tr: `${shouldShowSkeleton ? 'hover:bg-transparent!' : ''}`,
@@ -47,7 +47,7 @@
               title="編輯標籤"
               variant="link"
               size="sm"
-              icon="i-uil-setting"
+              icon="i-mdi-settings-outline"
               class="-m-1.5 -mt-2"
               @click="
                 () => {
@@ -81,8 +81,8 @@
         <template #actions-cell="{ row }">
           <div class="flex items-center gap-3">
             <template v-if="shouldShowSkeleton">
-              <USkeleton class="h-9 w-9" />
-              <USkeleton class="h-9 w-9" />
+              <USkeleton class="m-2 h-5 w-5" />
+              <USkeleton class="m-2 h-5 w-5" />
             </template>
 
             <template v-else>
@@ -131,6 +131,10 @@
 import { categoryLabels, categoryOptions } from '#shared/constants/work';
 import type { SelectItem, TableColumn } from '@nuxt/ui';
 
+useHead({
+  title: '作品管理',
+});
+
 type WorkModalMode = 'add' | 'edit';
 
 const toast = useAppToast();
@@ -151,7 +155,7 @@ const {
   pending: isWorkDataLoading,
   error: workError,
   refresh: refreshWorkData,
-} = await useFetch('/api/admin/works', {
+} = await useLazyFetch('/api/admin/works', {
   query: {
     page: currentPage,
     page_size: PAGE_SIZE,
@@ -188,10 +192,7 @@ const {
 
 const tagMenu = computed(() => tags.value?.map((tag) => tag.name));
 
-watch([workError, tagError], ([newWorkError, newTagError]) => {
-  const err = newWorkError ?? newTagError;
-  if (err) toast.error(getErrorMessage(err, '資料取得失敗，請稍後再試'));
-});
+useErrorToast([workError, tagError]);
 
 // =============== 表格相關 ===============
 const columns: TableColumn<AdminWorkItem>[] = [

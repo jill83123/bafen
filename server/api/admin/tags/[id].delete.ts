@@ -23,5 +23,6 @@ export default defineEventHandler(async (event) => {
 
   await db.delete(tagTable).where(eq(tagTable.id, tagId));
 
-  return {};
+  setResponseStatus(event, 204);
+  return null;
 });
