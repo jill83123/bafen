@@ -32,7 +32,7 @@
           role="button"
           @click="openPreview(image.id)"
         >
-          <img :src="image.path" class="w-full" />
+          <img :src="image.path" alt="作品照片" class="w-full" />
         </div>
       </div>
 
@@ -43,7 +43,7 @@
           role="button"
           @click="openPreview(image.id)"
         >
-          <img :src="image.path" class="w-full" />
+          <img :src="image.path" alt="作品照片" class="w-full" />
         </div>
       </div>
     </div>
@@ -51,7 +51,7 @@
     <!-- 手機版 -->
     <div class="container grid grid-cols-1 gap-2 sm:hidden">
       <div v-for="image in images" :key="image.id" role="button" @click="openPreview(image.id)">
-        <img :src="image.path" class="w-full" />
+        <img :src="image.path" alt="作品照片" class="w-full" />
       </div>
     </div>
 

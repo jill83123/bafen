@@ -30,6 +30,7 @@
               item: 'p-0',
               link: 'data-active:text-brand-main leading-5 before:inset-0',
             }"
+            aria-label="桌機版導覽列"
           />
         </template>
 
@@ -55,6 +56,7 @@
                 list: 'flex w-full flex-col gap-4',
                 link: 'data-active:text-brand-main text-white',
               }"
+              aria-label="行動版導覽列"
             />
           </div>
         </template>

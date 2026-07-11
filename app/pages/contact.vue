@@ -101,7 +101,11 @@
           </UFormField>
 
           <UFormField name="address" label="地址" required>
-            <UInput v-model="formState.address" placeholder="請輸入地址" autocomplete="address" />
+            <UInput
+              v-model="formState.address"
+              placeholder="請輸入地址"
+              autocomplete="address-line1"
+            />
           </UFormField>
 
           <UFormField name="content" label="需求內容" required>

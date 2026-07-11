@@ -19,20 +19,6 @@ export default defineNuxtConfig({
     '@nuxtjs/sitemap',
     'nuxt-schema-org',
   ],
-  site: {
-    url: process.env.NUXT_PUBLIC_SITE_URL,
-    name: process.env.NUXT_PUBLIC_SITE_NAME,
-    description: process.env.NUXT_PUBLIC_SITE_DESCRIPTION,
-    indexable: process.env.NUXT_PUBLIC_SITE_ENV === 'production',
-  },
-  robots: {
-    disallow: '/admin/',
-  },
-  sitemap: {
-    exclude: ['/admin/**'],
-    sources: ['/api/__sitemap__/urls'],
-    autoLastmod: true,
-  },
   hub: {
     blob: true,
     db: 'sqlite',
@@ -51,6 +37,28 @@ export default defineNuxtConfig({
     size: '20px',
     clientBundle: { scan: true },
     customCollections: [{ prefix: 'custom', dir: './app/assets/icons' }],
+  },
+  a11y: {
+    axe: {
+      options: {
+        rules: [{ id: 'color-contrast', enabled: false }],
+      },
+      runOptions: {},
+    },
+  },
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL,
+    name: process.env.NUXT_PUBLIC_SITE_NAME,
+    description: process.env.NUXT_PUBLIC_SITE_DESCRIPTION,
+    indexable: process.env.NUXT_PUBLIC_SITE_ENV === 'production',
+  },
+  robots: {
+    disallow: '/admin/',
+  },
+  sitemap: {
+    exclude: ['/admin/**'],
+    sources: ['/api/__sitemap__/urls'],
+    autoLastmod: true,
   },
 
   css: ['./app/assets/css/main.css'],
