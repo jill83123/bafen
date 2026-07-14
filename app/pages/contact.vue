@@ -122,6 +122,8 @@
             @click="form?.submit()"
           />
         </UForm>
+
+        <div class="text-sub mt-4 text-sm">本網站表單受到 Google reCAPTCHA 保護。</div>
       </div>
     </div>
 
