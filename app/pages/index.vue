@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- Hero -->
+    <IndexHero />
+
     <!-- 近期作品 -->
     <section class="section relative" aria-label="近期作品">
       <div class="overflow-hidden">
@@ -7,7 +10,7 @@
           <div class="mb-6 flex items-end justify-between lg:mb-10">
             <!-- 標題 -->
             <div>
-              <div class="section-overline">RECENTLY WORKS</div>
+              <div class="section-overline">RECENT WORKS</div>
               <h2 class="section-title">近期作品</h2>
             </div>
 

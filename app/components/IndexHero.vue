@@ -1,5 +1,5 @@
 <template>
-  <div class="border-sub flex h-[calc(100dvh-68px)] min-h-125 flex-col border-b lg:min-h-150">
+  <section class="border-sub flex h-[calc(100dvh-68px)] min-h-125 flex-col border-b lg:min-h-150">
     <div class="flex h-[87%] flex-col lg:h-[85%] lg:flex-row">
       <div
         class="border-sub bg-canvas relative mr-8 h-[70%] border-r border-b lg:mr-0 lg:h-full lg:w-[68%] xl:w-[72%] 2xl:w-[76%]"
@@ -91,7 +91,7 @@
         <Icon name="i-lsicon-down-filled" size="18" />
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts" setup>
