@@ -1,5 +1,7 @@
 <template>
-  <section class="border-sub flex h-[calc(100dvh-68px)] min-h-125 flex-col border-b lg:min-h-150">
+  <section
+    class="border-sub flex h-[calc(100dvh-68px)] min-h-125 flex-col overflow-hidden border-b lg:min-h-150"
+  >
     <div class="flex h-[87%] flex-col lg:h-[85%] lg:flex-row">
       <div
         class="border-sub bg-canvas relative mr-8 h-[70%] border-r border-b lg:mr-0 lg:h-full lg:w-[68%] xl:w-[72%] 2xl:w-[76%]"
@@ -69,7 +71,7 @@
         </div>
 
         <!-- 描述 -->
-        <div class="text-sm leading-loose lg:text-base">
+        <div class="description-fade-in text-sm leading-loose opacity-0 lg:text-base">
           <p>專屬設計， 打造獨特家居風格；</p>
           <p>用心服務，為您呈現更理想的生活空間。</p>
         </div>
@@ -97,6 +99,8 @@
 <script lang="ts" setup>
 import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
+
+const route = useRoute();
 
 const imageModules = import.meta.glob<{ default: string }>('@/assets/images/index/header_*.webp', {
   eager: true,
@@ -128,6 +132,20 @@ const paginationOptions = {
     return `<span class="custom-bullet ${className}"></span>`;
   },
 };
+
+// 淡入效果
+const { fadeIn } = useFadeIn();
+const { replay: replayDescriptionFadeIn } = fadeIn('.description-fade-in', {
+  direction: 'left',
+  immediate: true,
+});
+
+watch(
+  () => route.hash,
+  () => {
+    if (!route.hash) replayDescriptionFadeIn();
+  },
+);
 </script>
 
 <style scoped>

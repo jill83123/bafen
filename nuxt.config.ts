@@ -77,6 +77,8 @@ export default defineNuxtConfig({
         '@vueuse/integrations',
         '@vueuse/integrations/useSortable',
         'browser-image-compression',
+        'gsap',
+        'gsap/ScrollTrigger',
         'photoswipe',
         'photoswipe/lightbox',
         'swiper/modules',

@@ -1,7 +1,7 @@
 <template>
   <div class="one-content-page">
     <!-- 資訊區塊 -->
-    <div class="mb-15 flex flex-col items-center gap-3 sm:mb-20 lg:mb-25">
+    <div ref="infoFadeIn" class="mb-15 flex flex-col items-center gap-3 sm:mb-20 lg:mb-25">
       <NuxtLink
         :to="{
           path: '/works',
@@ -116,6 +116,11 @@ const openPreview = (imageId: string) => {
 const goBack = () => {
   router.back();
 };
+
+// 淡入效果
+const { fadeIn } = useFadeIn();
+const infoFadeIn = useTemplateRef('infoFadeIn');
+fadeIn(infoFadeIn);
 </script>
 
 <style scoped></style>
