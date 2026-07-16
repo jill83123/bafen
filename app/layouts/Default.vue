@@ -204,7 +204,7 @@ const initObserver = () => {
       const activeId = SECTION_IDS.find((id) => intersectingMap.get(id));
       setActiveHash(activeId ? `#${activeId}` : '');
     },
-    { rootMargin: '-20% 0px -60% 0px' },
+    { rootMargin: '-30% 0px -80% 0px' },
   );
 
   SECTION_IDS.forEach((id) => {
