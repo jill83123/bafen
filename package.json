@@ -16,6 +16,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@fontsource-variable/chiron-hei-hk": "^5.2.6",
     "@libsql/client": "^0.17.3",
     "@nuxt/a11y": "^1.0.0-alpha.1",
     "@nuxt/eslint": "^1.16.0",

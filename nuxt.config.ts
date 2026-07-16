@@ -30,13 +30,22 @@ export default defineNuxtConfig({
       crossOriginEmbedderPolicy: false,
     },
   },
-  ui: {
-    fonts: false,
-  },
   icon: {
     size: '20px',
     clientBundle: { scan: true },
     customCollections: [{ prefix: 'custom', dir: './app/assets/icons' }],
+  },
+  fonts: {
+    families: [
+      {
+        name: 'Noto Serif TC',
+        provider: 'google',
+        weights: [400, 500],
+        subsets: ['chinese-traditional', 'latin'],
+      },
+      { name: 'Arimo', provider: 'google' },
+      { name: 'Chiron Hei HK Variable', provider: 'npm' },
+    ],
   },
   a11y: {
     axe: {
