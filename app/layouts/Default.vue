@@ -238,7 +238,12 @@ onUnmounted(() => {
 // =============== GA4 ===============
 const measurementId = runtimeConfig.public.gaMeasurementId;
 
-const { proxy } = useScriptGoogleAnalytics({ id: measurementId });
+const { proxy } = useScriptGoogleAnalytics({
+  id: measurementId,
+  scriptOptions: {
+    trigger: useScriptTriggerIdleTimeout({ timeout: 3000 }), // 延遲載入
+  },
+});
 proxy.gtag('config', measurementId, { send_page_view: false }); // 關閉自動追蹤，改成手動控制
 
 const trackPageView = (path: string) => {
