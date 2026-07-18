@@ -117,9 +117,13 @@
             <source
               media="(max-width: 1023px)"
               :srcset="getCategoryImage(`${category.value}_md`)"
+              width="1536"
+              height="375"
             />
             <img
               :src="getCategoryImage(`${category.value}`)"
+              width="623"
+              height="842"
               alt="作品類型封面圖"
               class="bg-canvas min-h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
@@ -145,6 +149,8 @@
         <div class="order-2 flex flex-col lg:order-1 lg:col-span-6 xl:col-span-5 xl:col-start-2">
           <img
             src="@/assets/images/index/about_certificate.webp"
+            width="708"
+            height="1001"
             alt="建築物室內裝修業登記證"
             class="border-sub my-auto w-full border"
           />
@@ -178,6 +184,8 @@
           <div>
             <img
               src="@/assets/images/index/about.webp"
+              width="623"
+              height="477"
               alt="色票與材質卡"
               class="about-fade-in h-full max-h-full w-full object-cover object-bottom-left"
             />

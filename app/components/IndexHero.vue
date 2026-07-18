@@ -22,8 +22,8 @@
             <SwiperSlide v-for="(image, index) in images" :key="index">
               <img
                 :src="image"
-                width="1446"
-                height="714"
+                width="1557"
+                height="1110"
                 alt="主視覺圖片"
                 :fetchpriority="image === firstImage ? 'high' : 'auto'"
                 :loading="image === firstImage ? 'eager' : 'lazy'"
@@ -36,8 +36,8 @@
             <img
               v-if="firstImage"
               :src="firstImage"
-              width="1446"
-              height="714"
+              width="1557"
+              height="1110"
               alt="主視覺圖片"
               fetchpriority="high"
               loading="eager"
