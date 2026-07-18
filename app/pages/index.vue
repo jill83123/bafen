@@ -460,3 +460,9 @@ watch(
   @apply border-b border-(--color-sub) py-20 lg:py-40;
 }
 </style>
+
+<style>
+@import 'swiper/css';
+@import 'swiper/css/effect-fade';
+@import 'swiper/css/pagination';
+</style>

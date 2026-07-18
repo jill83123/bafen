@@ -1,6 +1,7 @@
 import type PhotoSwipe from 'photoswipe';
 import type { DataSource } from 'photoswipe';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
+import('photoswipe/style.css');
 
 type OpenLightboxOptions = {
   slides: { src: string }[];

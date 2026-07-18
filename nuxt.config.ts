@@ -1,5 +1,3 @@
-import tailwindcss from '@tailwindcss/vite';
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -30,22 +28,14 @@ export default defineNuxtConfig({
       crossOriginEmbedderPolicy: false,
     },
   },
+  ui: {
+    experimental: { componentDetection: true },
+    fonts: false,
+  },
   icon: {
     size: '20px',
     clientBundle: { scan: true },
     customCollections: [{ prefix: 'custom', dir: './app/assets/icons' }],
-  },
-  fonts: {
-    families: [
-      {
-        name: 'Noto Serif TC',
-        provider: 'google',
-        weights: [400, 500],
-        subsets: ['chinese-traditional', 'latin'],
-      },
-      { name: 'Arimo', provider: 'google' },
-      { name: 'Chiron Hei HK Variable', provider: 'npm' },
-    ],
   },
   a11y: {
     axe: {
@@ -71,12 +61,17 @@ export default defineNuxtConfig({
   },
 
   css: ['./app/assets/css/main.css'],
-  colorMode: {
-    preference: 'light', // TODO: 深色模式
-  },
+  colorMode: { preference: 'light' }, // TODO: 深色模式
 
+  app: {
+    head: {
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
+      ],
+    },
+  },
   vite: {
-    plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
         '@unhead/schema-org/vue',
@@ -107,7 +102,6 @@ export default defineNuxtConfig({
       },
       '/admin/dashboard/**': {
         appLayout: 'admin-dashboard',
-        robots: false,
       },
       '/images/**': {
         security: {
