@@ -66,7 +66,7 @@
               <!-- 載入中 -->
               <template v-if="isWorkDataLoading">
                 <SwiperSlide v-for="n in 4" :key="n" class="h-full!">
-                  <WorkCard />
+                  <LazyWorkCard />
                 </SwiperSlide>
               </template>
 
@@ -113,18 +113,14 @@
           class="group after:bg-ink/50 hover:after:bg-ink/0 relative overflow-hidden after:absolute after:inset-0 after:transition-colors lg:max-h-[calc(100dvh-68px)]"
         >
           <!-- 圖片 -->
-          <picture>
-            <source
-              media="(max-width: 1023px)"
-              :srcset="getCategoryImage(`${category.value}_md`)"
-              width="1536"
-              height="375"
-            />
+          <picture class="block aspect-1536/375 w-full lg:aspect-623/842">
+            <source media="(min-width: 1024px)" :srcset="getCategoryImage(`${category.value}`)" />
+            <source media="(min-width: 640px)" :srcset="getCategoryImage(`${category.value}_md`)" />
             <img
-              :src="getCategoryImage(`${category.value}`)"
+              :src="getCategoryImage(`${category.value}_sm`)"
+              alt="作品類型封面圖"
               width="623"
               height="842"
-              alt="作品類型封面圖"
               class="bg-canvas min-h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           </picture>
@@ -149,8 +145,8 @@
         <div class="order-2 flex flex-col lg:order-1 lg:col-span-6 xl:col-span-5 xl:col-start-2">
           <img
             src="@/assets/images/index/about_certificate.webp"
-            width="708"
-            height="1001"
+            width="640"
+            height="905"
             alt="建築物室內裝修業登記證"
             class="border-sub my-auto w-full border"
           />

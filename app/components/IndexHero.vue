@@ -20,29 +20,36 @@
             :pagination="paginationOptions"
           >
             <SwiperSlide v-for="(image, index) in images" :key="index">
-              <img
-                :src="image"
-                width="1557"
-                height="1110"
-                alt="主視覺圖片"
-                :fetchpriority="image === firstImage ? 'high' : 'auto'"
-                :loading="image === firstImage ? 'eager' : 'lazy'"
-                class="kenburns h-full w-full object-cover"
-              />
+              <picture>
+                <source media="(min-width: 1024px)" :srcset="image.lg" />
+                <source media="(min-width: 768px)" :srcset="image.md" />
+                <img
+                  :src="image.sm"
+                  width="1447"
+                  height="1032"
+                  alt="主視覺圖片"
+                  :fetchpriority="index === 0 ? 'high' : 'auto'"
+                  :loading="index === 0 ? 'eager' : 'lazy'"
+                  class="kenburns h-full w-full object-cover object-[10%_65%] lg:object-center"
+                />
+              </picture>
             </SwiperSlide>
           </Swiper>
 
           <template #fallback>
-            <img
-              v-if="firstImage"
-              :src="firstImage"
-              width="1557"
-              height="1110"
-              alt="主視覺圖片"
-              fetchpriority="high"
-              loading="eager"
-              class="h-full w-full object-cover"
-            />
+            <picture v-if="firstImage">
+              <source media="(min-width: 1024px)" :srcset="firstImage.lg" />
+              <source media="(min-width: 768px)" :srcset="firstImage.md" />
+              <img
+                :src="firstImage.sm"
+                width="1447"
+                height="1032"
+                alt="主視覺圖片"
+                fetchpriority="high"
+                loading="eager"
+                class="h-full w-full object-cover"
+              />
+            </picture>
           </template>
 
           <!-- 輪播分頁 -->
@@ -100,27 +107,51 @@
 import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
-const route = useRoute();
-
 const imageModules = import.meta.glob<{ default: string }>('@/assets/images/index/header_*.webp', {
   eager: true,
 });
 
-const images = Object.entries(imageModules)
-  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB))
-  .map(([_, module]) => module.default);
+type ResponsiveImageSizes = {
+  lg: string;
+  md: string;
+  sm: string;
+};
+
+const imageMap = new Map<string, Partial<ResponsiveImageSizes>>();
+
+for (const [path, module] of Object.entries(imageModules)) {
+  const match = path.match(/header_(?<index>\d+)(?:_(?<size>sm|md))?\.webp$/);
+  if (!match?.groups) continue;
+
+  const index = match.groups.index as string;
+  const size = match.groups.size as 'sm' | 'md' | undefined;
+
+  const entry = imageMap.get(index) ?? {};
+
+  if (size === 'sm') entry.sm = module.default;
+  else if (size === 'md') entry.md = module.default;
+  else entry.lg = module.default;
+
+  imageMap.set(index, entry);
+}
+
+const images = [...imageMap.entries()]
+  .sort(([a], [b]) => Number(a) - Number(b))
+  .map(([, sizes]) => sizes as ResponsiveImageSizes);
 
 const firstImage = images[0];
 
 // 讓瀏覽器更早開始下載首圖，改善 LCP
 useHead(() => ({
   link: [
-    {
+    firstImage && {
       rel: 'preload',
       as: 'image',
-      href: firstImage,
+      href: firstImage.lg,
       type: 'image/webp',
       fetchpriority: 'high',
+      imagesrcset: `${firstImage.sm} 640w, ${firstImage.md} 768w, ${firstImage.lg} 1024w`,
+      imagesizes: '(min-width: 1024px) 1024px, (min-width: 768px) 768px, 640px',
     },
   ],
 }));
@@ -140,6 +171,7 @@ const { replay: replayDescriptionFadeIn } = fadeIn('.description-fade-in', {
   immediate: true,
 });
 
+const route = useRoute();
 watch(
   () => route.hash,
   () => {
