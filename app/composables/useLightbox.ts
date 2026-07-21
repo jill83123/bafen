@@ -1,7 +1,6 @@
 import type PhotoSwipe from 'photoswipe';
 import type { DataSource } from 'photoswipe';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
-import('photoswipe/style.css');
 
 type OpenLightboxOptions = {
   slides: { src: string }[];
@@ -48,12 +47,15 @@ export const useLightbox = () => {
 
     destroyLightbox();
 
-    const dataSource: DataSource = await Promise.all(
-      slides.map(async (slide) => {
-        const { width, height } = await getImageSize(slide.src);
-        return { src: slide.src, width, height };
-      }),
-    );
+    const [dataSource] = await Promise.all([
+      Promise.all(
+        slides.map(async (slide) => {
+          const { width, height } = await getImageSize(slide.src);
+          return { src: slide.src, width, height };
+        }),
+      ) as Promise<DataSource>,
+      import('photoswipe/style.css'),
+    ]);
 
     lightbox = new PhotoSwipeLightbox({
       dataSource,
