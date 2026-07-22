@@ -1,44 +1,46 @@
 <template>
-  <NuxtLink v-if="props.work" :to="`/works/${props.work.slug}`" class="card group">
-    <div class="mb-4 aspect-square">
-      <img
-        :src="props.work.cover.path"
-        width="488"
-        height="488"
-        alt="作品封面圖"
-        :loading="props.isLazyLoadImage ? 'lazy' : undefined"
-        class="bg-canvas h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-75"
-      />
-    </div>
-
-    <div class="flex items-end justify-between gap-10">
-      <div class="flex min-w-0 items-end">
-        <component :is="props.titleTag" class="truncate text-xl leading-none">
-          {{ props.work.title }}
-        </component>
-        <span class="text-sub ml-0.5 shrink-0 pb-0.5 text-sm leading-none">
-          ｜{{ categoryLabels[props.work.category] }}
-        </span>
+  <div>
+    <NuxtLink v-if="props.work" :to="`/works/${props.work.slug}`" class="card group">
+      <div class="mb-4 aspect-square">
+        <img
+          :src="props.work.cover.path"
+          width="488"
+          height="488"
+          alt="作品封面圖"
+          :loading="props.isLazyLoadImage ? 'lazy' : undefined"
+          class="bg-canvas h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-75"
+        />
       </div>
 
-      <div class="card-more-label shrink-0 leading-none">
-        <span
-          v-for="(char, index) in 'MORE'"
-          :key="index"
-          class="text-brand-main inline-block text-xs font-bold transition-transform"
-        >
-          {{ char }}
-        </span>
-      </div>
-    </div>
-  </NuxtLink>
+      <div class="flex items-end justify-between gap-10">
+        <div class="flex min-w-0 items-end">
+          <component :is="props.titleTag" class="truncate text-xl leading-none">
+            {{ props.work.title }}
+          </component>
+          <span class="text-sub ml-0.5 shrink-0 pb-0.5 text-sm leading-none">
+            ｜{{ categoryLabels[props.work.category] }}
+          </span>
+        </div>
 
-  <!-- 骨架屏 -->
-  <div v-else>
-    <LazyUSkeleton class="mb-4 aspect-square" />
-    <div class="flex items-end justify-between">
-      <LazyUSkeleton class="h-5 w-30" />
-      <LazyUSkeleton class="h-4 w-9" />
+        <div class="card-more-label shrink-0 leading-none">
+          <span
+            v-for="(char, index) in 'MORE'"
+            :key="index"
+            class="text-brand-main inline-block text-xs font-bold transition-transform"
+          >
+            {{ char }}
+          </span>
+        </div>
+      </div>
+    </NuxtLink>
+
+    <!-- 骨架屏 -->
+    <div v-else>
+      <LazyUSkeleton class="mb-4 aspect-square" />
+      <div class="flex items-end justify-between">
+        <LazyUSkeleton class="h-5 w-30" />
+        <LazyUSkeleton class="h-4 w-9" />
+      </div>
     </div>
   </div>
 </template>

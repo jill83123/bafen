@@ -5,7 +5,91 @@
 
     <!-- 近期作品 -->
     <section class="section relative" aria-label="近期作品">
-      <LazyRecentWorks />
+      <div class="overflow-hidden">
+        <div class="container">
+          <div class="mb-6 flex items-end justify-between lg:mb-10">
+            <!-- 標題 -->
+            <div class="recent-fade-in">
+              <div class="section-overline">RECENT WORKS</div>
+              <h2 class="section-title">近期作品</h2>
+            </div>
+
+            <!-- 輪播按鈕 -->
+            <div class="flex gap-4 sm:gap-8">
+              <UButton
+                color="neutral"
+                variant="outline"
+                size="lg"
+                square
+                icon="i-lsicon-left-filled"
+                :disabled="worksCarouselRef?.slideState?.isBeginning ?? true"
+                aria-label="向左滾動瀏覽作品"
+                @click="
+                  () => {
+                    worksCarouselRef?.swiperInstance?.slidePrev();
+                  }
+                "
+              />
+              <UButton
+                color="neutral"
+                variant="outline"
+                size="lg"
+                square
+                icon="i-lsicon-right-filled"
+                :disabled="worksCarouselRef?.slideState?.isEnd ?? true"
+                aria-label="向右滾動瀏覽作品"
+                @click="
+                  () => {
+                    worksCarouselRef?.swiperInstance?.slideNext();
+                  }
+                "
+              />
+            </div>
+          </div>
+
+          <div class="relative">
+            <!-- 預留空間以避免抖動 -->
+            <div class="-mx-3 flex">
+              <div class="w-full shrink-0 px-3 sm:w-1/2 lg:w-1/3">
+                <WorkCard class="invisible" />
+              </div>
+            </div>
+
+            <div class="absolute inset-0">
+              <ClientOnly>
+                <!-- 輪播本體 -->
+                <LazyWorksCarousel v-if="works.length > 0" ref="worksCarouselRef" :works="works" />
+
+                <template v-else>
+                  <div class="text-sub flex h-full items-center justify-center">尚無作品</div>
+                </template>
+
+                <template #fallback>
+                  <div class="-mx-3 flex">
+                    <!-- 載入完成 -->
+                    <template v-if="works.length > 0">
+                      <div
+                        v-for="work in works"
+                        :key="work.id"
+                        class="shrink-0 px-3 sm:w-1/2 lg:w-1/3"
+                      >
+                        <WorkCard :work="work" :is-lazy-load-image="true" />
+                      </div>
+                    </template>
+
+                    <!-- 載入中 -->
+                    <template v-else-if="isWorkDataLoading">
+                      <div v-for="n in 10" :key="n" class="shrink-0 px-3 sm:w-1/2 lg:w-1/3">
+                        <WorkCard />
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </ClientOnly>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <UButton
         label="查看更多"
@@ -262,6 +346,12 @@ import contactBg from '@/assets/images/contact_bg.webp';
 useHead({
   title: '首頁',
 });
+
+// =============== 近期作品 ===============
+const worksCarouselRef = ref();
+
+const { data: workData, pending: isWorkDataLoading } = await useLazyFetch('/api/works');
+const works = computed(() => workData.value?.works ?? []);
 
 // =============== 作品類型 ===============
 const categoryImages = import.meta.glob('@/assets/images/index/category_*.webp', {
