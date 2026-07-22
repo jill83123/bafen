@@ -67,7 +67,7 @@
           <!-- 載入完成 -->
           <template v-else>
             <SwiperSlide v-for="work in workData?.works" :key="work.id" class="h-full!">
-              <WorkCard :work="work" />
+              <WorkCard :work="work" :is-lazy-load-image="true" />
             </SwiperSlide>
           </template>
         </Swiper>
