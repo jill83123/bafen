@@ -44,9 +44,10 @@
             <source media="(min-width: 640px)" :srcset="getCategoryImage(`${category.value}_md`)" />
             <img
               :src="getCategoryImage(`${category.value}_sm`)"
-              alt="作品類型封面圖"
               width="623"
               height="842"
+              alt="作品類型封面圖"
+              loading="lazy"
               class="bg-canvas min-h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           </picture>
@@ -74,6 +75,7 @@
             width="640"
             height="905"
             alt="建築物室內裝修業登記證"
+            loading="lazy"
             class="border-sub my-auto w-full border"
           />
         </div>
@@ -109,6 +111,7 @@
               width="623"
               height="477"
               alt="色票與材質卡"
+              loading="lazy"
               class="about-fade-in h-full max-h-full w-full object-cover object-bottom-left"
             />
           </div>
@@ -227,8 +230,9 @@
     <section class="relative pt-8 lg:pt-17" aria-label="聯絡我們">
       <!-- 背景圖 -->
       <div
+        ref="contactBgRef"
         class="absolute inset-0 -z-10 bg-cover bg-fixed bg-center opacity-25"
-        :style="{ backgroundImage: `url(${contactImage})` }"
+        :style="isContactBgVisible ? { backgroundImage: `url(${contactBg})` } : {}"
       />
 
       <div class="section flex flex-col justify-center overflow-hidden">
@@ -253,7 +257,7 @@
 
 <script lang="ts" setup>
 import { categoryOptions } from '#shared/constants/work';
-import contactImage from '@/assets/images/contact_bg.webp';
+import contactBg from '@/assets/images/contact_bg.webp';
 
 useHead({
   title: '首頁',
@@ -325,6 +329,21 @@ const processItems = [
     description: '與客戶驗收交屋，提供一年的售後保固服務，包括故障修復、材料保養和建議等。',
   },
 ];
+
+// =============== 聯絡我們 ===============
+const contactBgRef = ref<HTMLElement | null>(null);
+const isContactBgVisible = ref(false);
+
+// 延遲載入圖片
+const { stop } = useIntersectionObserver(
+  contactBgRef,
+  ([entry]) => {
+    if (!entry?.isIntersecting) return;
+    isContactBgVisible.value = true;
+    stop();
+  },
+  { rootMargin: '200px' },
+);
 
 // =============== 淡入效果 ===============
 const { fadeIn } = useFadeIn();

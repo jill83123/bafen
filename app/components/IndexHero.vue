@@ -4,7 +4,7 @@
   >
     <div class="flex h-[87%] flex-col lg:h-[85%] lg:flex-row">
       <div
-        class="border-sub bg-canvas relative mr-8 h-[70%] border-r border-b lg:mr-0 lg:h-full lg:w-[68%] xl:w-[72%] 2xl:w-[76%]"
+        class="border-sub bg-canvas relative h-[70%] border-r border-b sm:mr-8 lg:mr-0 lg:h-full lg:w-[68%] xl:w-[72%] 2xl:w-[76%]"
       >
         <!-- 輪播本體 -->
         <ClientOnly>
@@ -22,15 +22,15 @@
             <SwiperSlide v-for="(image, index) in images" :key="index">
               <picture>
                 <source media="(min-width: 1024px)" :srcset="image.lg" />
-                <source media="(min-width: 768px)" :srcset="image.md" />
+                <source media="(min-width: 640px)" :srcset="image.md" />
                 <img
                   :src="image.sm"
-                  width="1447"
-                  height="1032"
+                  width="640"
+                  height="456"
                   alt="主視覺圖片"
-                  :fetchpriority="index === 0 ? 'high' : 'auto'"
-                  :loading="index === 0 ? 'eager' : 'lazy'"
-                  class="kenburns h-full w-full object-cover object-[10%_65%] lg:object-center"
+                  :fetchpriority="index === 0 ? 'high' : undefined"
+                  :loading="index > 1 ? 'lazy' : undefined"
+                  class="kenburns h-full w-full object-cover object-[50%_65%] lg:object-center"
                 />
               </picture>
             </SwiperSlide>
@@ -39,15 +39,15 @@
           <template #fallback>
             <picture v-if="firstImage">
               <source media="(min-width: 1024px)" :srcset="firstImage.lg" />
-              <source media="(min-width: 768px)" :srcset="firstImage.md" />
+              <source media="(min-width: 640px)" :srcset="firstImage.md" />
               <img
                 :src="firstImage.sm"
-                width="1447"
-                height="1032"
+                width="640"
+                height="456"
                 alt="主視覺圖片"
                 fetchpriority="high"
                 loading="eager"
-                class="h-full w-full object-cover"
+                class="h-full w-full object-cover object-[50%_65%] lg:object-center"
               />
             </picture>
           </template>
@@ -78,7 +78,9 @@
         </div>
 
         <!-- 描述 -->
-        <div class="description-fade-in text-sm leading-loose opacity-0 lg:text-base">
+        <div
+          class="description-fade-in text-center text-sm leading-loose opacity-0 lg:text-start lg:text-base"
+        >
           <p>專屬設計， 打造獨特家居風格；</p>
           <p>用心服務，為您呈現更理想的生活空間。</p>
         </div>
@@ -146,17 +148,34 @@ const firstImage = images[0];
 
 // 讓瀏覽器更早開始下載首圖，改善 LCP
 useHead(() => ({
-  link: [
-    firstImage && {
-      rel: 'preload',
-      as: 'image',
-      href: firstImage.lg,
-      type: 'image/webp',
-      fetchpriority: 'high',
-      imagesrcset: `${firstImage.sm} 640w, ${firstImage.md} 768w, ${firstImage.lg} 1024w`,
-      imagesizes: '(min-width: 1024px) 1024px, (min-width: 768px) 768px, 640px',
-    },
-  ],
+  link: firstImage
+    ? [
+        {
+          rel: 'preload',
+          href: firstImage.lg,
+          as: 'image',
+          type: 'image/webp',
+          media: '(min-width: 1024px)',
+          fetchpriority: 'high',
+        },
+        {
+          rel: 'preload',
+          href: firstImage.md,
+          as: 'image',
+          type: 'image/webp',
+          media: '(min-width: 640px) and (max-width: 1023.98px)',
+          fetchpriority: 'high',
+        },
+        {
+          rel: 'preload',
+          href: firstImage.sm,
+          as: 'image',
+          type: 'image/webp',
+          media: '(max-width: 639.98px)',
+          fetchpriority: 'high',
+        },
+      ]
+    : [],
 }));
 
 const paginationOptions = {
