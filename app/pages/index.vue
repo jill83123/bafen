@@ -60,7 +60,7 @@
                 <!-- 輪播本體 -->
                 <LazyWorksCarousel v-if="works.length > 0" ref="worksCarouselRef" :works="works" />
 
-                <template v-else>
+                <template v-else-if="!isWorkDataLoading">
                   <div class="text-sub flex h-full items-center justify-center">尚無作品</div>
                 </template>
 

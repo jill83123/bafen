@@ -64,7 +64,9 @@
 
       <!-- 標題 + 描述區塊 -->
       <div class="flex grow items-center justify-center gap-6 pt-15 lg:flex-col lg:pt-0">
-        <div class="hidden h-full flex-col items-center justify-evenly lg:flex">
+        <div
+          class="sr-only flex h-full flex-col items-center justify-evenly lg:not-sr-only lg:h-full!"
+        >
           <!-- 大標 -->
           <h1 class="flex flex-col gap-4 font-serif">
             <span class="text-7xl">八分</span>

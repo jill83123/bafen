@@ -17,6 +17,8 @@ const resolvedSrc = computed(() => {
 });
 
 const isFailed = ref(false);
+if (process.env.NODE_ENV !== 'production') isFailed.value = true;
+
 const onError = () => {
   isFailed.value = true;
 };
