@@ -154,11 +154,13 @@
     >
       <div class="container mb-15 grid grid-cols-1 gap-6 lg:mb-17 lg:grid-cols-12">
         <div class="order-2 flex flex-col lg:order-1 lg:col-span-6 xl:col-span-5 xl:col-start-2">
-          <img
-            src="@/assets/images/index/about_certificate.webp"
-            width="640"
-            height="905"
+          <AppImg
+            src="/images/index/about_certificate.webp"
+            width="744"
+            height="1049"
             alt="建築物室內裝修業登記證"
+            sizes="100vw lg:488px xl:509px 2xl:616px"
+            fit="cover"
             loading="lazy"
             class="border-sub my-auto w-full border"
           />
@@ -190,11 +192,13 @@
           </div>
 
           <div>
-            <img
-              src="@/assets/images/index/about.webp"
-              width="623"
-              height="477"
+            <AppImg
+              src="/images/index/about.webp"
+              width="744"
+              height="568"
               alt="色票與材質卡"
+              sizes="100vw lg:402px 2xl:488px"
+              fit="cover"
               loading="lazy"
               class="about-fade-in h-full max-h-full w-full object-cover object-bottom-left"
             />

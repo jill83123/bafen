@@ -2,11 +2,13 @@
   <div>
     <NuxtLink v-if="props.work" :to="`/works/${props.work.slug}`" class="card group">
       <div class="mb-4 aspect-square">
-        <img
+        <AppImg
           :src="props.work.cover.path"
           width="488"
           height="488"
           alt="作品封面圖"
+          sizes="100vw sm:50vw lg:33vw"
+          fit="cover"
           :loading="props.isLazyLoadImage ? 'lazy' : undefined"
           class="bg-canvas h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-75"
         />

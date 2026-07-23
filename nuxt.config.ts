@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     'nuxt-security',
     '@vueuse/nuxt',
     '@nuxt/ui',
+    '@nuxt/image',
     '@nuxt/scripts',
     '@nuxt/a11y',
     '@nuxt/eslint',
@@ -24,8 +25,11 @@ export default defineNuxtConfig({
   },
   security: {
     headers: {
-      crossOriginOpenerPolicy: 'same-origin-allow-popups',
+      contentSecurityPolicy: {
+        'img-src': ["'self'", 'data:', 'https://wsrv.nl'],
+      },
       crossOriginEmbedderPolicy: false,
+      crossOriginOpenerPolicy: 'same-origin-allow-popups',
     },
   },
   ui: {
@@ -38,6 +42,11 @@ export default defineNuxtConfig({
     serverBundle: false,
     clientBundle: { scan: true },
     customCollections: [{ prefix: 'custom', dir: './app/assets/icons' }],
+  },
+  image: {
+    provider: 'weserv',
+    weserv: { baseURL: 'https://wsrv.nl' },
+    densities: [1, 1.5],
   },
   a11y: {
     axe: {
@@ -123,6 +132,8 @@ export default defineNuxtConfig({
         },
       },
     },
+    // 本地測試時使用，正式環境不需要
+    // compressPublicAssets: true,
   },
   runtimeConfig: {
     adminEmails: process.env.NUXT_ADMIN_EMAILS, // 使用 ',' 分隔
@@ -145,6 +156,7 @@ export default defineNuxtConfig({
       googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
       recaptchaSiteKey: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY,
       gaMeasurementId: process.env.NUXT_PUBLIC_GA_MEASUREMENT_ID,
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
     },
   },
 });
