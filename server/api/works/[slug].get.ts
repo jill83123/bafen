@@ -48,6 +48,8 @@ export default defineEventHandler(async (event) => {
       .select({
         id: workToImageTable.imageId,
         path: imageTable.storageKey,
+        width: imageTable.width,
+        height: imageTable.height,
       })
       .from(workToImageTable)
       .innerJoin(imageTable, eq(workToImageTable.imageId, imageTable.id))

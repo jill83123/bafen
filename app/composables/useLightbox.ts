@@ -2,9 +2,32 @@ import type PhotoSwipe from 'photoswipe';
 import type { DataSource } from 'photoswipe';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 
+type SlideItem = {
+  src: string;
+  width?: number;
+  height?: number;
+};
+
 type OpenLightboxOptions = {
-  slides: { src: string }[];
+  slides: SlideItem[];
   index?: number;
+};
+
+// 在瀏覽器閒置時預先載入 PhotoSwipe 的 CSS
+let isStyleLoaded = false;
+
+// Safari 不支援 requestIdleCallback，退回用 setTimeout 代替
+const idleCallback =
+  (typeof window !== 'undefined' && window.requestIdleCallback) ||
+  ((callback) => setTimeout(callback, 1));
+
+const prefetchLightboxStyle = () => {
+  if (import.meta.server) return;
+  idleCallback(() => {
+    if (!isStyleLoaded) {
+      import('photoswipe/style.css').then(() => (isStyleLoaded = true));
+    }
+  });
 };
 
 const getImageSize = (src: string) => {
@@ -47,15 +70,14 @@ export const useLightbox = () => {
 
     destroyLightbox();
 
-    const [dataSource] = await Promise.all([
-      Promise.all(
-        slides.map(async (slide) => {
-          const { width, height } = await getImageSize(slide.src);
-          return { src: slide.src, width, height };
-        }),
-      ) as Promise<DataSource>,
-      import('photoswipe/style.css'),
-    ]);
+    const dataSource = (await Promise.all(
+      slides.map(async (slide) => {
+        if (slide.width && slide.height) return slide;
+
+        const { width, height } = await getImageSize(slide.src);
+        return { src: slide.src, width, height };
+      }),
+    )) as DataSource;
 
     lightbox = new PhotoSwipeLightbox({
       dataSource,
@@ -86,6 +108,10 @@ export const useLightbox = () => {
     lightbox.init();
     lightbox.loadAndOpen(index);
   };
+
+  onMounted(() => {
+    prefetchLightboxStyle();
+  });
 
   onUnmounted(() => destroyLightbox());
 

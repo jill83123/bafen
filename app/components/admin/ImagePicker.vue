@@ -32,6 +32,7 @@
             }"
           />
           <UButton
+            v-if="usageFilter !== 'current'"
             title="重新載入"
             color="neutral"
             variant="link"

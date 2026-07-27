@@ -5,5 +5,7 @@ export const imageTable = sqliteTable('image', {
   id: uuid('id'),
   storageKey: text('storage_key').notNull().unique(),
   size: integer('size').notNull(),
+  width: integer('width').notNull(),
+  height: integer('height').notNull(),
   createdAt: timestamp('created_at'),
 });

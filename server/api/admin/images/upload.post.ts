@@ -1,6 +1,7 @@
 import { blob, ensureBlob } from '@nuxthub/blob';
 import { db } from '@nuxthub/db';
 import { imageTable } from '@nuxthub/db/schema';
+import { imageSize } from 'image-size';
 
 export default defineEventHandler(async (event) => {
   const contentType = event.node.req.headers['content-type'] || '';
@@ -13,14 +14,23 @@ export default defineEventHandler(async (event) => {
 
   if (!images.length) throw createError({ statusCode: 400, message: '未上傳任何檔案' });
 
+  // 驗證格式與大小
+  images.forEach((file) => {
+    ensureBlob(file, { maxSize: '1MB', types: ['image/webp'] });
+  });
+
   // 上傳到檔案儲存服務
   const uploadResults = await Promise.all(
     images.map(async (file) => {
-      ensureBlob(file, { maxSize: '1MB', types: ['image/webp'] });
+      const buffer = new Uint8Array(await file.arrayBuffer());
+      const { width, height } = imageSize(buffer);
+
       const ext = file.name.split('.').pop();
       const randomName = crypto.randomUUID();
       const pathname = `images/${randomName}.${ext}`;
-      return await blob.put(pathname, file);
+
+      const result = await blob.put(pathname, file);
+      return { ...result, width, height };
     }),
   );
 
@@ -28,6 +38,8 @@ export default defineEventHandler(async (event) => {
   const recordsToInsert = uploadResults.map((file) => ({
     storageKey: `/${file.pathname}`,
     size: file.size as number,
+    width: file.width,
+    height: file.height,
   }));
 
   try {
