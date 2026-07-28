@@ -21,7 +21,7 @@ const encodeMimeHeader = (value: string) => `=?utf-8?B?${Buffer.from(value).toSt
 
 const buildContactEmailTextBody = (data: ContactForm) => {
   return (
-    `網站收到一筆新的聯絡表單，內容如下。${CRLF}${CRLF}` +
+    `以下是透過官網送出的資料：${CRLF}${CRLF}` +
     `姓名：${data.name}${CRLF}` +
     `Email：${data.email}${CRLF}` +
     `電話：${data.tel}${CRLF}` +
@@ -66,7 +66,7 @@ const buildContactEmailHtmlBody = (data: ContactForm) => {
 };
 
 const CONTACT_EMAIL_FROM_NAME = '八分官網';
-const CONTACT_EMAIL_SUBJECT = '收到了新的聯絡！';
+const CONTACT_EMAIL_SUBJECT = '官網收到了新的聯絡！';
 const CONTACT_EMAIL_BOUNDARY = 'contact-form-boundary';
 
 export const buildContactEmail = ({ from, to, data }: BuildContactEmailParams) => {

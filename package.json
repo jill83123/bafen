@@ -5,6 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "dev:lan": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "preview:workers": "cross-env NITRO_PRESET=cloudflare_module nuxt build && wrangler dev --cwd .output",
@@ -16,10 +17,12 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@fontsource-variable/chiron-hei-hk": "^5.2.6",
     "@libsql/client": "^0.17.3",
     "@nuxt/a11y": "^1.0.0-alpha.1",
     "@nuxt/eslint": "^1.16.0",
     "@nuxt/hints": "^1.1.2",
+    "@nuxt/image": "^2.0.0",
     "@nuxt/scripts": "^1.1.1",
     "@nuxt/ui": "^4.8.2",
     "@nuxthub/core": "^0.10.7",
@@ -33,6 +36,8 @@
     "browser-image-compression": "^2.0.2",
     "drizzle-orm": "^0.45.2",
     "eslint": "^10.4.0",
+    "gsap": "^3.15.0",
+    "image-size": "^2.0.2",
     "jose": "^6.2.3",
     "ms": "^2.1.3",
     "nuxt": "^4.4.8",
@@ -57,6 +62,7 @@
     "@types/sortablejs": "^1.15.9",
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.10",
+    "eruda": "^3.4.3",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "prettier": "^3.8.3",

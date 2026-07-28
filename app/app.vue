@@ -1,4 +1,5 @@
 <template>
+  <NuxtLoadingIndicator color="var(--color-primary-300)" />
   <UApp :toaster="{ position: 'top-right' }">
     <NuxtRouteAnnouncer />
     <NuxtLayout>

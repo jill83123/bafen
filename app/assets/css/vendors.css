@@ -1,0 +1,9 @@
+/* 燈箱 */
+.pswp__button--arrow:disabled {
+  display: block;
+}
+
+/* reCAPTCHA */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}

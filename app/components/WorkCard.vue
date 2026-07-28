@@ -1,12 +1,15 @@
 <template>
-  <template v-if="props.work">
-    <NuxtLink :to="`/works/${props.work.slug}`" class="card group">
+  <div>
+    <NuxtLink v-if="props.work" :to="`/works/${props.work.slug}`" class="card group">
       <div class="mb-4 aspect-square">
-        <img
+        <AppImg
           :src="props.work.cover.path"
-          alt="作品封面圖"
           width="488"
           height="488"
+          alt="作品封面圖"
+          sizes="100vw sm:50vw lg:33vw"
+          fit="cover"
+          :loading="props.isLazyLoadImage ? 'lazy' : undefined"
           class="bg-canvas h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-75"
         />
       </div>
@@ -32,18 +35,16 @@
         </div>
       </div>
     </NuxtLink>
-  </template>
 
-  <!-- 骨架屏 -->
-  <template v-else>
-    <div>
+    <!-- 骨架屏 -->
+    <div v-else>
       <LazyUSkeleton class="mb-4 aspect-square" />
       <div class="flex items-end justify-between">
         <LazyUSkeleton class="h-5 w-30" />
         <LazyUSkeleton class="h-4 w-9" />
       </div>
     </div>
-  </template>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -52,10 +53,12 @@ import { categoryLabels } from '#shared/constants/work';
 const props = withDefaults(
   defineProps<{
     work?: WorkItem | null;
+    isLazyLoadImage?: boolean;
     titleTag?: string;
   }>(),
   {
     work: null,
+    isLazyLoadImage: false,
     titleTag: 'h3' as string,
   },
 );

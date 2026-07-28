@@ -1,80 +1,93 @@
 <template>
   <div>
+    <!-- Hero -->
+    <IndexHero />
+
     <!-- 近期作品 -->
     <section class="section relative" aria-label="近期作品">
       <div class="overflow-hidden">
         <div class="container">
           <div class="mb-6 flex items-end justify-between lg:mb-10">
             <!-- 標題 -->
-            <div>
-              <div class="section-overline">RECENTLY WORKS</div>
+            <div class="recent-fade-in">
+              <div class="section-overline">RECENT WORKS</div>
               <h2 class="section-title">近期作品</h2>
             </div>
 
             <!-- 輪播按鈕 -->
-            <ClientOnly>
-              <div class="flex gap-4 sm:gap-8">
-                <UButton
-                  color="neutral"
-                  variant="outline"
-                  size="lg"
-                  square
-                  icon="i-lsicon-left-filled"
-                  :disabled="slideState.isBeginning"
-                  aria-label="向左滾動瀏覽作品"
-                  @click="
-                    () => {
-                      swiperInstance?.slidePrev();
-                    }
-                  "
-                />
-                <UButton
-                  color="neutral"
-                  variant="outline"
-                  size="lg"
-                  square
-                  icon="i-lsicon-right-filled"
-                  :disabled="slideState.isEnd"
-                  aria-label="向右滾動瀏覽作品"
-                  @click="
-                    () => {
-                      swiperInstance?.slideNext();
-                    }
-                  "
-                />
-              </div>
-            </ClientOnly>
+            <div class="flex gap-4 sm:gap-8">
+              <UButton
+                color="neutral"
+                variant="outline"
+                size="lg"
+                square
+                icon="i-lsicon-left-filled"
+                :disabled="worksCarouselRef?.slideState?.isBeginning ?? true"
+                aria-label="向左滾動瀏覽作品"
+                @click="
+                  () => {
+                    worksCarouselRef?.swiperInstance?.slidePrev();
+                  }
+                "
+              />
+              <UButton
+                color="neutral"
+                variant="outline"
+                size="lg"
+                square
+                icon="i-lsicon-right-filled"
+                :disabled="worksCarouselRef?.slideState?.isEnd ?? true"
+                aria-label="向右滾動瀏覽作品"
+                @click="
+                  () => {
+                    worksCarouselRef?.swiperInstance?.slideNext();
+                  }
+                "
+              />
+            </div>
           </div>
 
-          <!-- 輪播本體 -->
-          <ClientOnly>
-            <Swiper
-              :modules="[Navigation]"
-              :space-between="24"
-              :breakpoints="{
-                0: { slidesPerView: 1 },
-                640: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 },
-              }"
-              class="overflow-visible!"
-              @swiper="onSwiper"
-              @slide-change="updateSlideState"
-            >
-              <!-- 載入中 -->
-              <template v-if="isWorkDataLoading">
-                <SwiperSlide v-for="n in 4" :key="n" class="h-full!">
-                  <WorkCard />
-                </SwiperSlide>
-              </template>
+          <div class="relative">
+            <!-- 預留空間以避免抖動 -->
+            <div class="-mx-3 flex">
+              <div class="w-full shrink-0 px-3 sm:w-1/2 lg:w-1/3">
+                <WorkCard class="invisible" />
+              </div>
+            </div>
 
-              <!-- 載入完成 -->
-              <template v-else>
-                <SwiperSlide v-for="work in workData?.works" :key="work.id" class="h-full!">
-                  <WorkCard :work="work" />
-                </SwiperSlide>
-              </template>
-            </Swiper>
-          </ClientOnly>
+            <div class="absolute inset-0">
+              <ClientOnly>
+                <!-- 輪播本體 -->
+                <LazyWorksCarousel v-if="works.length > 0" ref="worksCarouselRef" :works="works" />
+
+                <template v-else-if="!isWorkDataLoading">
+                  <div class="text-sub flex h-full items-center justify-center">尚無作品</div>
+                </template>
+
+                <template #fallback>
+                  <div class="-mx-3 flex">
+                    <!-- 載入完成 -->
+                    <template v-if="works.length > 0">
+                      <div
+                        v-for="work in works"
+                        :key="work.id"
+                        class="shrink-0 px-3 sm:w-1/2 lg:w-1/3"
+                      >
+                        <WorkCard :work="work" :is-lazy-load-image="true" />
+                      </div>
+                    </template>
+
+                    <!-- 載入中 -->
+                    <template v-else-if="isWorkDataLoading">
+                      <div v-for="n in 10" :key="n" class="shrink-0 px-3 sm:w-1/2 lg:w-1/3">
+                        <WorkCard />
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </ClientOnly>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -93,8 +106,10 @@
     <section class="section lg:pb-0!" aria-label="作品類型">
       <!-- 標題 -->
       <div>
-        <div class="section-overline text-center">CATEGORY</div>
-        <h2 class="section-title mb-6 text-center lg:mb-10">作品類型</h2>
+        <div class="category-fade-in">
+          <div class="section-overline text-center">CATEGORY</div>
+          <h2 class="section-title mb-6 text-center lg:mb-10">作品類型</h2>
+        </div>
       </div>
 
       <div class="grid gap-y-3 px-3 lg:grid-cols-3 lg:px-0">
@@ -108,15 +123,16 @@
           class="group after:bg-ink/50 hover:after:bg-ink/0 relative overflow-hidden after:absolute after:inset-0 after:transition-colors lg:max-h-[calc(100dvh-68px)]"
         >
           <!-- 圖片 -->
-          <picture>
-            <source
-              media="(max-width: 1023px)"
-              :srcset="getCategoryImage(`${category.value}_md`)"
-            />
+          <picture class="block aspect-1536/375 w-full lg:aspect-623/842">
+            <source media="(min-width: 1024px)" :srcset="getCategoryImage(`${category.value}`)" />
+            <source media="(min-width: 640px)" :srcset="getCategoryImage(`${category.value}_md`)" />
             <img
-              :src="getCategoryImage(`${category.value}`)"
+              :src="getCategoryImage(`${category.value}_sm`)"
+              width="623"
+              height="842"
               alt="作品類型封面圖"
-              class="bg-canvas min-h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+              class="bg-canvas h-full min-h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           </picture>
 
@@ -131,12 +147,23 @@
     </section>
 
     <!-- 關於八分 -->
-    <section id="about" class="bg-canvas section scroll-m-10 lg:-scroll-m-10" aria-label="關於八分">
-      <div class="container mb-15 grid grid-cols-1 gap-6 lg:mb-17 lg:grid-cols-12">
+    <section
+      id="about"
+      class="bg-canvas section scroll-m-10 overflow-hidden lg:-scroll-m-10"
+      aria-label="關於八分"
+    >
+      <div
+        class="about-fade-in-trigger container mb-15 grid grid-cols-1 gap-6 lg:mb-17 lg:grid-cols-12"
+      >
         <div class="order-2 flex flex-col lg:order-1 lg:col-span-6 xl:col-span-5 xl:col-start-2">
-          <img
-            src="@/assets/images/index/about_certificate.webp"
+          <AppImg
+            src="/images/index/about_certificate.webp"
+            width="744"
+            height="1049"
             alt="建築物室內裝修業登記證"
+            sizes="100vw lg:488px xl:509px 2xl:616px"
+            fit="cover"
+            loading="lazy"
             class="border-sub my-auto w-full border"
           />
         </div>
@@ -146,15 +173,18 @@
           class="order-1 flex h-full flex-col justify-center space-y-7 lg:order-2 lg:col-span-5 lg:col-start-8 xl:col-span-4 xl:col-start-8 2xl:space-y-8"
         >
           <div class="mb-7">
-            <div class="section-overline">ABOUT</div>
-            <h2 class="section-title mb-7">關於八分</h2>
-            <blockquote class="text-brand-main text-2xl font-medium">
+            <div class="about-fade-in">
+              <div class="section-overline">ABOUT</div>
+              <h2 class="section-title mb-7">關於八分</h2>
+            </div>
+
+            <blockquote class="about-fade-in text-brand-main text-2xl font-medium">
               家是生活的舞台，<br />
               室內裝修是生活品質的提升。
             </blockquote>
           </div>
 
-          <div class="space-y-4">
+          <div class="about-fade-in space-y-4">
             <p>
               我們致力於為每一個家庭打造一個獨一無二的家居空間，讓您的家成為一個真正的溫馨港灣，一個能夠反映您個性和品味的地方。
             </p>
@@ -164,10 +194,15 @@
           </div>
 
           <div>
-            <img
-              src="@/assets/images/index/about.webp"
+            <AppImg
+              src="/images/index/about.webp"
+              width="744"
+              height="568"
               alt="色票與材質卡"
-              class="h-full max-h-full w-full object-cover object-bottom-left"
+              sizes="100vw lg:402px 2xl:488px"
+              fit="cover"
+              loading="lazy"
+              class="about-fade-in h-full max-h-full w-full object-cover object-bottom-left"
             />
           </div>
         </div>
@@ -177,7 +212,7 @@
     <!-- 服務項目 -->
     <section
       id="services"
-      class="section relative scroll-m-45 border-b-0! pt-20! lg:pt-30!"
+      class="section relative scroll-m-40 border-b-0! pt-20! lg:pt-30!"
       aria-label="服務項目"
     >
       <div class="absolute inset-x-0 top-0">
@@ -206,17 +241,15 @@
       </div>
 
       <div class="container">
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <div
-            v-for="(service, index) in serviceItems"
-            :key="index"
-            class="flex w-full flex-col items-center p-4"
-          >
-            <Icon :name="service.icon" size="100" class="mb-7" />
-            <h3 class="text-brand-main mb-4 text-2xl font-medium">{{ service.title }}</h3>
-            <p>{{ service.description }}</p>
-          </div>
-        </div>
+        <ul class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <li v-for="(service, index) in serviceItems" :key="index">
+            <div class="service-fade-in flex w-full flex-col items-center p-4">
+              <Icon :name="service.icon" size="100" class="mb-7" />
+              <h3 class="text-brand-main mb-4 text-2xl font-medium">{{ service.title }}</h3>
+              <p>{{ service.description }}</p>
+            </div>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -245,11 +278,13 @@
             <!-- 直線 -->
             <div class="bg-ink absolute inset-y-0 w-px md:left-[22.4%] lg:left-[42.3%]" />
 
-            <ul class="flex flex-col gap-15 py-10 md:items-center lg:items-end lg:gap-30 lg:py-17">
+            <ul
+              class="process-fade-in-trigger flex flex-col gap-15 py-10 md:items-center lg:items-end lg:gap-30 lg:py-17"
+            >
               <li
                 v-for="(item, index) in processItems"
                 :key="index"
-                class="relative flex flex-col gap-3 pl-8 sm:pl-12 lg:flex-row lg:items-center lg:gap-12 lg:pl-0"
+                class="process-fade-in relative flex flex-col gap-3 pl-8 sm:pl-12 lg:flex-row lg:items-center lg:gap-12 lg:pl-0"
               >
                 <!-- 標題 -->
                 <div>
@@ -285,8 +320,9 @@
     <section class="relative pt-8 lg:pt-17" aria-label="聯絡我們">
       <!-- 背景圖 -->
       <div
-        class="absolute inset-0 -z-10 bg-cover bg-fixed bg-center opacity-25"
-        :style="{ backgroundImage: `url(${contactImage})` }"
+        ref="contactBgRef"
+        class="absolute inset-0 -z-10 bg-cover bg-center opacity-25"
+        :style="{ backgroundImage: isContactBgVisible ? `url(${contactBg})` : undefined }"
       />
 
       <div class="section flex flex-col justify-center overflow-hidden">
@@ -311,31 +347,17 @@
 
 <script lang="ts" setup>
 import { categoryOptions } from '#shared/constants/work';
-import contactImage from '@/assets/images/contact_bg.webp';
-import type { Swiper as SwiperType } from 'swiper';
-import { Navigation } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/vue';
+import contactBg from '@/assets/images/contact_bg.webp';
 
 useHead({
   title: '首頁',
 });
 
 // =============== 近期作品 ===============
+const worksCarouselRef = ref();
+
 const { data: workData, pending: isWorkDataLoading } = await useLazyFetch('/api/works');
-
-const swiperInstance = ref<SwiperType | null>(null);
-const slideState = ref({ isBeginning: true, isEnd: false });
-
-const onSwiper = (swiper: SwiperType) => {
-  swiperInstance.value = swiper;
-};
-
-const updateSlideState = (swiper: SwiperType) => {
-  slideState.value = {
-    isBeginning: swiper.isBeginning,
-    isEnd: swiper.isEnd,
-  };
-};
+const works = computed(() => workData.value?.works ?? []);
 
 // =============== 作品類型 ===============
 const categoryImages = import.meta.glob('@/assets/images/index/category_*.webp', {
@@ -403,6 +425,56 @@ const processItems = [
     description: '與客戶驗收交屋，提供一年的售後保固服務，包括故障修復、材料保養和建議等。',
   },
 ];
+
+// =============== 聯絡我們 ===============
+const contactBgRef = ref<HTMLElement | null>(null);
+const isContactBgVisible = ref(false);
+
+// 延遲載入圖片
+const { stop } = useIntersectionObserver(
+  contactBgRef,
+  ([entry]) => {
+    if (!entry?.isIntersecting) return;
+    isContactBgVisible.value = true;
+    stop();
+  },
+  { rootMargin: '200px' },
+);
+
+// =============== 淡入效果 ===============
+const { fadeIn } = useFadeIn();
+
+// 近期作品
+fadeIn('.recent-fade-in', { direction: 'right' });
+
+// 作品類型
+fadeIn('.category-fade-in', { trigger: 'parent' });
+
+// 關於八分
+const { replay: replayAboutFadeIn } = fadeIn('.about-fade-in', {
+  direction: 'left',
+  trigger: '.about-fade-in-trigger',
+});
+
+// 服務項目
+const { replay: replayServiceFadeIn } = fadeIn('.service-fade-in', { trigger: 'parent' });
+
+// 服務流程
+const { replay: replayProcessFadeIn } = fadeIn('.process-fade-in', {
+  stagger: 0.3,
+  trigger: '.process-fade-in-trigger',
+});
+
+// 切換 hash 時觸發淡入效果
+const route = useRoute();
+watch(
+  () => route.hash,
+  () => {
+    if (route.hash === '#about') replayAboutFadeIn();
+    if (route.hash === '#services') replayServiceFadeIn();
+    else if (route.hash === '#process') replayProcessFadeIn();
+  },
+);
 </script>
 
 <style scoped>

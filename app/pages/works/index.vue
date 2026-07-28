@@ -64,7 +64,13 @@
       v-else-if="(workData?.works.length ?? 0) > 0"
       class="grid gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-12"
     >
-      <WorkCard v-for="work in workData?.works" :key="work.id" :work="work" title-tag="h2" />
+      <WorkCard
+        v-for="(work, index) in workData?.works"
+        :key="work.id"
+        :work="work"
+        :is-lazy-load-image="index > 2"
+        title-tag="h2"
+      />
     </div>
 
     <div v-else-if="!isWorkDataLoading" class="flex grow flex-col items-center justify-center">

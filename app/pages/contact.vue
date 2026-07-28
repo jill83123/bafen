@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="overflow-hidden">
     <header class="relative h-70 sm:h-80 lg:h-90">
       <!-- 背景圖片 -->
       <div
@@ -20,8 +20,14 @@
 
       <!-- 標題 -->
       <div class="absolute inset-0 container grid grid-cols-12 gap-6">
-        <div class="col-span-full flex flex-col justify-center gap-6 lg:col-span-11 lg:col-start-2">
-          <h1 class="section-title">聯絡我們</h1>
+        <div
+          class="page-title-fade-in col-span-full flex flex-col justify-center gap-6 lg:col-span-11 lg:col-start-2"
+        >
+          <div>
+            <div class="section-overline">CONTACT</div>
+            <h1 class="section-title">聯絡我們</h1>
+          </div>
+
           <p class="text-base lg:text-lg">
             若您有新成屋規劃、老屋翻新、商辦空間設計、油漆工程...等需求，<br
               class="hidden sm:block"
@@ -122,6 +128,8 @@
             @click="form?.submit()"
           />
         </UForm>
+
+        <div class="text-sub mt-4 text-sm">本網站表單受到 Google reCAPTCHA 保護。</div>
       </div>
     </div>
 
@@ -235,6 +243,10 @@ const onSubmit = async (event: { data: ContactForm }) => {
     isSubmitting.value = false;
   }
 };
+
+// 淡入效果
+const { fadeIn } = useFadeIn();
+fadeIn('.page-title-fade-in', { direction: 'left' });
 </script>
 
 <style scoped></style>

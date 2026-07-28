@@ -1,73 +1,66 @@
 <template>
   <div>
-    <!-- header -->
-    <header>
-      <!-- 導覽列 -->
-      <UHeader
-        as="div"
-        mode="slideover"
-        :ui="{
-          root: 'border-sub bg-default fixed inset-x-0 top-0 h-auto backdrop-filter-none',
-          container: 'max-w-[auto] pr-0! pl-3! lg:pl-6!',
-          title: 'flex items-end gap-1 font-serif font-normal',
-          toggle: 'border-sub m-0 border-l p-6 lg:hidden',
-          content:
-            'bg-ink/90 w-full max-w-full data-[state=closed]:animate-[slide-fade-out-to-right_300ms_ease-in-out] data-[state=open]:animate-[slide-fade-in-from-right_300ms_ease-in-out] lg:hidden',
-          header: 'hidden',
-        }"
-      >
-        <template #title>
-          <span class="text-3xl">八分</span>
-          <span class="text-sm">室內裝修</span>
-        </template>
+    <!-- 導覽列 -->
+    <UHeader
+      mode="slideover"
+      :ui="{
+        root: 'border-sub bg-default fixed inset-x-0 top-0 h-auto backdrop-filter-none',
+        container: 'max-w-[auto] pr-0! pl-3! lg:pl-6!',
+        title: 'flex items-end gap-1 font-serif font-normal',
+        toggle: 'border-sub m-0 border-l p-6 lg:hidden',
+        content:
+          'bg-ink/90 w-full max-w-full data-[state=closed]:animate-[slide-fade-out-to-right_300ms_ease-in-out] data-[state=open]:animate-[slide-fade-in-from-right_300ms_ease-in-out] lg:hidden',
+        header: 'hidden',
+      }"
+    >
+      <template #title>
+        <span class="text-3xl">八分</span>
+        <span class="text-sm">室內裝修</span>
+      </template>
 
-        <!-- 電腦版選單 -->
-        <template #right>
-          <UNavigationMenu
-            :items="navMenu"
-            :ui="{
-              root: 'hidden lg:flex',
-              item: 'p-0',
-              link: 'data-active:text-brand-main leading-5 before:inset-0',
-            }"
-            aria-label="桌機版導覽列"
-          />
-        </template>
+      <!-- 電腦版選單 -->
+      <template #right>
+        <UNavigationMenu
+          :items="navMenu"
+          :ui="{
+            root: 'hidden lg:flex',
+            item: 'p-0',
+            link: 'data-active:text-brand-main leading-5 before:inset-0',
+          }"
+          aria-label="桌機版導覽列"
+        />
+      </template>
 
-        <!-- 手機版選單 -->
-        <template #content="{ close }">
-          <div class="flex h-full flex-col gap-6">
-            <div class="flex">
-              <UButton
-                color="neutral"
-                variant="soft"
-                icon="i-lucide-x"
-                class="ml-auto bg-white p-6"
-                @click="close"
-              />
-            </div>
-
-            <UNavigationMenu
-              v-model:open="isNavMenuOpen"
-              :items="navMenu"
-              orientation="vertical"
-              :ui="{
-                root: 'grow overflow-y-scroll px-6',
-                list: 'flex w-full flex-col gap-4',
-                link: 'data-active:text-brand-main text-white',
-              }"
-              aria-label="行動版導覽列"
+      <!-- 手機版選單 -->
+      <template #content="{ close }">
+        <div class="flex h-full flex-col gap-6">
+          <div class="flex">
+            <UButton
+              color="neutral"
+              variant="soft"
+              icon="i-lucide-x"
+              class="ml-auto bg-white p-6"
+              @click="close"
             />
           </div>
-        </template>
-      </UHeader>
 
-      <!-- header 其他要插入的內容 -->
-      <component :is="headerComponent" v-if="headerComponent" class="mt-17" />
-    </header>
+          <UNavigationMenu
+            v-model:open="isNavMenuOpen"
+            :items="navMenu"
+            orientation="vertical"
+            :ui="{
+              root: 'grow overflow-y-scroll px-6',
+              list: 'flex w-full flex-col gap-4',
+              link: 'data-active:text-brand-main text-white',
+            }"
+            aria-label="行動版導覽列"
+          />
+        </div>
+      </template>
+    </UHeader>
 
     <!-- 頁面內容 -->
-    <main :class="{ 'mt-17': !headerComponent }">
+    <main class="mt-17">
       <slot />
     </main>
 
@@ -118,7 +111,7 @@
       size="lg"
       square
       leading-icon="i-mdi-arrow-up"
-      class="bg-default/80! active:bg-default! fixed right-3 bottom-3 z-10 ring-2 sm:right-6 sm:bottom-6"
+      class="bg-default/80! active:bg-default! fixed right-6 bottom-6 z-10 ring-2"
       @click="scrollToTop"
     />
   </div>
@@ -211,7 +204,7 @@ const initObserver = () => {
       const activeId = SECTION_IDS.find((id) => intersectingMap.get(id));
       setActiveHash(activeId ? `#${activeId}` : '');
     },
-    { rootMargin: '-20% 0px -60% 0px' },
+    { rootMargin: '-30% 0px -60% 0px' },
   );
 
   SECTION_IDS.forEach((id) => {
@@ -242,29 +235,15 @@ onUnmounted(() => {
   if (observer) observer.disconnect();
 });
 
-// header 其他要插入的內容
-const headerModules = import.meta.glob<{ default: Component }>('@/components/*Header.vue', {
-  eager: true,
-});
-
-const headerComponentMap: Record<string, Component> = Object.fromEntries(
-  Object.entries(headerModules).map(([path, module]) => {
-    const fileName = path.split('/').pop()?.replace('.vue', '') ?? ''; // e.g. 'IndexHeader'
-    const key = fileName.replace(/Header$/, ''); // 'Index'
-    const routeKey = key.charAt(0).toLowerCase() + key.slice(1); // 'index'
-    return [routeKey, module.default];
-  }),
-);
-
-const headerComponent = computed(() => {
-  const key = route.name as string | undefined;
-  return key ? headerComponentMap[key] : null;
-});
-
 // =============== GA4 ===============
 const measurementId = runtimeConfig.public.gaMeasurementId;
 
-const { proxy } = useScriptGoogleAnalytics({ id: measurementId });
+const { proxy } = useScriptGoogleAnalytics({
+  id: measurementId,
+  scriptOptions: {
+    trigger: useScriptTriggerIdleTimeout({ timeout: 3000 }), // 延遲載入
+  },
+});
 proxy.gtag('config', measurementId, { send_page_view: false }); // 關閉自動追蹤，改成手動控制
 
 const trackPageView = (path: string) => {

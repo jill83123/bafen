@@ -32,8 +32,3 @@
     transform: translateX(100%);
   }
 }
-
-/* 燈箱 */
-.pswp__button--arrow:disabled {
-  display: block;
-}

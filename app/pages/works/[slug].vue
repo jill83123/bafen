@@ -1,7 +1,7 @@
 <template>
   <div class="one-content-page">
     <!-- 資訊區塊 -->
-    <div class="mb-15 flex flex-col items-center gap-3 sm:mb-20 lg:mb-25">
+    <div ref="infoFadeIn" class="mb-15 flex flex-col items-center gap-3 sm:mb-20 lg:mb-25">
       <NuxtLink
         :to="{
           path: '/works',
@@ -27,31 +27,57 @@
     <div class="container hidden grid-cols-2 gap-2 sm:grid">
       <div class="flex flex-col gap-2">
         <div
-          v-for="image in leftColumnImages"
+          v-for="(image, index) in leftColumnImages"
           :key="image.id"
           role="button"
           @click="openPreview(image.id)"
         >
-          <img :src="image.path" alt="作品照片" class="w-full" />
+          <img
+            :src="image.path"
+            :width="image.width"
+            :height="image.height"
+            alt="作品照片"
+            :loading="index > 0 ? 'lazy' : undefined"
+            class="w-full"
+          />
         </div>
       </div>
 
       <div class="flex flex-col gap-2">
         <div
-          v-for="image in rightColumnImages"
+          v-for="(image, index) in rightColumnImages"
           :key="image.id"
           role="button"
           @click="openPreview(image.id)"
         >
-          <img :src="image.path" alt="作品照片" class="w-full" />
+          <img
+            :src="image.path"
+            :width="image.width"
+            :height="image.height"
+            alt="作品照片"
+            :loading="index > 0 ? 'lazy' : undefined"
+            class="w-full"
+          />
         </div>
       </div>
     </div>
 
     <!-- 手機版 -->
     <div class="container grid grid-cols-1 gap-2 sm:hidden">
-      <div v-for="image in images" :key="image.id" role="button" @click="openPreview(image.id)">
-        <img :src="image.path" alt="作品照片" class="w-full" />
+      <div
+        v-for="(image, index) in images"
+        :key="image.id"
+        role="button"
+        @click="openPreview(image.id)"
+      >
+        <img
+          :src="image.path"
+          :width="image.width"
+          :height="image.height"
+          alt="作品照片"
+          :loading="index > 0 ? 'lazy' : undefined"
+          class="w-full"
+        />
       </div>
     </div>
 
@@ -116,6 +142,11 @@ const openPreview = (imageId: string) => {
 const goBack = () => {
   router.back();
 };
+
+// 淡入效果
+const { fadeIn } = useFadeIn();
+const infoFadeIn = useTemplateRef('infoFadeIn');
+fadeIn(infoFadeIn);
 </script>
 
 <style scoped></style>
