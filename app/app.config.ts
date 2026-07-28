@@ -210,7 +210,7 @@ export default defineAppConfig({
     textarea: {
       slots: {
         root: tw`w-full`,
-        base: tw`disabled:bg-canvas resize-none`,
+        base: tw`disabled:bg-canvas`,
       },
       variants: {
         size: {
