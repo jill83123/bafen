@@ -1,6 +1,6 @@
 <template>
   <section
-    class="border-sub flex h-[calc(100dvh-68px)] min-h-125 flex-col overflow-hidden border-b lg:min-h-150"
+    class="border-sub flex h-[calc(100svh-68px)] min-h-125 flex-col overflow-hidden border-b lg:min-h-150"
   >
     <div class="flex h-[87%] flex-col lg:h-[85%] lg:flex-row">
       <div

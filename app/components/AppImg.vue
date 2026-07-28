@@ -13,6 +13,7 @@ const { siteUrl } = runtimeConfig.public;
 
 const resolvedSrc = computed(() => {
   if (props.src.startsWith('http')) return props.src;
+  if (process.env.NODE_ENV !== 'production') return props.src;
   return siteUrl + props.src;
 });
 

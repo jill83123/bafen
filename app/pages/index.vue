@@ -132,7 +132,7 @@
               height="842"
               alt="作品類型封面圖"
               loading="lazy"
-              class="bg-canvas min-h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              class="bg-canvas h-full min-h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           </picture>
 
@@ -152,7 +152,9 @@
       class="bg-canvas section scroll-m-10 overflow-hidden lg:-scroll-m-10"
       aria-label="關於八分"
     >
-      <div class="container mb-15 grid grid-cols-1 gap-6 lg:mb-17 lg:grid-cols-12">
+      <div
+        class="about-fade-in-trigger container mb-15 grid grid-cols-1 gap-6 lg:mb-17 lg:grid-cols-12"
+      >
         <div class="order-2 flex flex-col lg:order-1 lg:col-span-6 xl:col-span-5 xl:col-start-2">
           <AppImg
             src="/images/index/about_certificate.webp"
@@ -168,7 +170,7 @@
 
         <!-- 主要內容 -->
         <div
-          class="about-fade-in-trigger order-1 flex h-full flex-col justify-center space-y-7 lg:order-2 lg:col-span-5 lg:col-start-8 xl:col-span-4 xl:col-start-8 2xl:space-y-8"
+          class="order-1 flex h-full flex-col justify-center space-y-7 lg:order-2 lg:col-span-5 lg:col-start-8 xl:col-span-4 xl:col-start-8 2xl:space-y-8"
         >
           <div class="mb-7">
             <div class="about-fade-in">
@@ -319,8 +321,8 @@
       <!-- 背景圖 -->
       <div
         ref="contactBgRef"
-        class="absolute inset-0 -z-10 bg-cover bg-fixed bg-center opacity-25"
-        :style="isContactBgVisible ? { backgroundImage: `url(${contactBg})` } : {}"
+        class="absolute inset-0 -z-10 bg-cover bg-center opacity-25"
+        :style="{ backgroundImage: isContactBgVisible ? `url(${contactBg})` : undefined }"
       />
 
       <div class="section flex flex-col justify-center overflow-hidden">

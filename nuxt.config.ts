@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: '2026-07-28',
   devtools: { enabled: true },
   typescript: { typeCheck: true },
 
@@ -92,6 +92,7 @@ export default defineNuxtConfig({
         '@vueuse/integrations',
         '@vueuse/integrations/useSortable',
         'browser-image-compression',
+        'eruda',
         'gsap',
         'gsap/ScrollTrigger',
         'photoswipe',
@@ -158,5 +159,12 @@ export default defineNuxtConfig({
       gaMeasurementId: process.env.NUXT_PUBLIC_GA_MEASUREMENT_ID,
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
     },
+  },
+
+  // 使用區網測試其他裝置
+  devServer: {
+    host: '0.0.0.0',
+    port: 3000,
+    https: true,
   },
 });

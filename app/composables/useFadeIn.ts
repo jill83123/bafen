@@ -24,7 +24,7 @@ type ResolvedFadeInOptions = Required<FadeInOptions>;
 type FadeInTarget =
   string | HTMLElement | HTMLElement[] | Ref<HTMLElement | null> | Ref<HTMLElement[] | null>;
 
-const DEFAULT_OPTIONS: Omit<ResolvedFadeInOptions, 'useParentTrigger'> = {
+const DEFAULT_OPTIONS: ResolvedFadeInOptions = {
   direction: 'up',
   offset: 120,
   duration: 1,
@@ -71,11 +71,20 @@ const resolveElements = (target: FadeInTarget): HTMLElement[] => {
 };
 
 let registered = false;
+let globalRefreshTimer: ReturnType<typeof setTimeout> | null = null;
+
+const scheduleGlobalRefresh = () => {
+  if (globalRefreshTimer) clearTimeout(globalRefreshTimer);
+  globalRefreshTimer = setTimeout(() => ScrollTrigger.refresh(), 100);
+};
 
 export const useFadeIn = () => {
   if (import.meta.client && !registered) {
-    ScrollTrigger.config({ ignoreMobileResize: true });
     gsap.registerPlugin(ScrollTrigger);
+
+    const bodyObserver = new ResizeObserver(() => scheduleGlobalRefresh());
+    bodyObserver.observe(document.body);
+
     registered = true;
   }
 
@@ -146,7 +155,8 @@ export const useFadeIn = () => {
     // 建立動畫
     if (!isRef(target)) {
       // HTMLElement：DOM 在 onNuxtReady 時已存在，可直接建立
-      onNuxtReady(() => {
+      onNuxtReady(async () => {
+        await nextTick();
         const resolved = resolveElements(target);
         if (resolved.length > 0) build(resolved);
       });
@@ -154,8 +164,8 @@ export const useFadeIn = () => {
       // Ref：可能是之後才被賦值（例如：v-for 動態收集的 template refs）
       watch(
         () => normalizeToArray(target.value),
-        (resolved) => {
-          if (resolved.length > 0) build(resolved);
+        (resolved, prev) => {
+          if (resolved.length > 0 && resolved.length !== prev?.length) build(resolved);
         },
         { flush: 'post' }, // 確保 DOM 已更新完成
       );

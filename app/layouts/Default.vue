@@ -111,7 +111,7 @@
       size="lg"
       square
       leading-icon="i-mdi-arrow-up"
-      class="bg-default/80! active:bg-default! fixed right-3 bottom-3 z-10 ring-2 sm:right-6 sm:bottom-6"
+      class="bg-default/80! active:bg-default! fixed right-6 bottom-6 z-10 ring-2"
       @click="scrollToTop"
     />
   </div>
@@ -204,7 +204,7 @@ const initObserver = () => {
       const activeId = SECTION_IDS.find((id) => intersectingMap.get(id));
       setActiveHash(activeId ? `#${activeId}` : '');
     },
-    { rootMargin: '-30% 0px -80% 0px' },
+    { rootMargin: '-30% 0px -60% 0px' },
   );
 
   SECTION_IDS.forEach((id) => {
