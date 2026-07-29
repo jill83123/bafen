@@ -14,24 +14,50 @@
       "persist": true,
     },
   },
-  "r2_buckets": [
-    {
-      "binding": "BLOB",
-      "bucket_name": "bafen",
+  "env": {
+    "staging": {
+      "r2_buckets": [
+        {
+          "binding": "BLOB",
+          "bucket_name": "bafen",
+        },
+      ],
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_id": "51e38e30-2454-4667-a4d0-49c9e786540b",
+          "migrations_table": "_hub_migrations",
+          "migrations_dir": "server/db/migrations/sqlite/",
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "KV",
+          "id": "a1fd2ba419874ad5b82927773b7dd14f",
+        },
+      ],
     },
-  ],
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_id": "51e38e30-2454-4667-a4d0-49c9e786540b",
-      "migrations_table": "_hub_migrations",
-      "migrations_dir": "server/db/migrations/sqlite/",
+    "production": {
+      "r2_buckets": [
+        {
+          "binding": "BLOB",
+          "bucket_name": "bafen",
+        },
+      ],
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_id": "068dddae-a819-4ac4-a658-19ba604e572a",
+          "migrations_table": "_hub_migrations",
+          "migrations_dir": "server/db/migrations/sqlite/",
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "KV",
+          "id": "70654c945f3e4230b5a32c208a435ddf",
+        },
+      ],
     },
-  ],
-  "kv_namespaces": [
-    {
-      "binding": "KV",
-      "id": "a1fd2ba419874ad5b82927773b7dd14f",
-    },
-  ],
+  },
 }
