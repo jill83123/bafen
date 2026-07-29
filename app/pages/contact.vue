@@ -246,7 +246,10 @@ const onSubmit = async (event: { data: ContactForm }) => {
 
 // 淡入效果
 const { fadeIn } = useFadeIn();
-fadeIn('.page-title-fade-in', { direction: 'left' });
+fadeIn('.page-title-fade-in', {
+  direction: 'left',
+  immediate: true,
+});
 </script>
 
 <style scoped></style>

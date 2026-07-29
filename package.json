@@ -12,7 +12,8 @@
     "postinstall": "nuxt prepare",
     "db:generate": "nuxt db generate",
     "db:migrate:local": "nuxt db migrate && wrangler d1 migrations apply DB --local",
-    "db:migrate:remote": "nuxt db migrate && wrangler d1 migrations apply DB --remote",
+    "db:migrate:staging": "nuxt db migrate && wrangler d1 migrations apply DB --env staging --remote",
+    "db:migrate:production": "nuxt db migrate && wrangler d1 migrations apply DB --env production --remote",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
