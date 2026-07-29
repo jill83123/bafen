@@ -168,8 +168,16 @@ import { ContactFormSchema } from '#shared/schema';
 import contactImage from '@/assets/images/contact_bg.webp';
 import { FetchError } from 'ofetch';
 
+const { getPageTitle } = usePageTitle();
+const pageTitleChunk = '聯絡我們';
+
 useHead({
-  title: '聯絡我們',
+  title: pageTitleChunk,
+});
+
+useSeoMeta({
+  ogTitle: getPageTitle(pageTitleChunk),
+  twitterTitle: getPageTitle(pageTitleChunk),
 });
 
 const toast = useAppToast();

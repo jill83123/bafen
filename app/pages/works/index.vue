@@ -106,8 +106,16 @@ import type { categories } from '#shared/constants/work';
 import { categoryOptions } from '#shared/constants/work';
 import type { TabsItem } from '@nuxt/ui';
 
+const { getPageTitle } = usePageTitle();
+const pageTitleChunk = '作品展示';
+
 useHead({
-  title: '作品展示',
+  title: pageTitleChunk,
+});
+
+useSeoMeta({
+  ogTitle: getPageTitle(pageTitleChunk),
+  twitterTitle: getPageTitle(pageTitleChunk),
 });
 
 type Category = (typeof categories)[number];

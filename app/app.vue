@@ -12,14 +12,13 @@
 import ogImage from '@/assets/images/index/header_1.webp';
 
 const site = useSiteConfig();
+const { getPageTitle } = usePageTitle();
 
 useHead({
   htmlAttrs: {
     lang: 'zh-Hant-TW',
   },
-  titleTemplate: (titleChunk) => {
-    return `${titleChunk ? `${titleChunk}｜` : ''}${site.name}`;
-  },
+  titleTemplate: (titleChunk) => getPageTitle(titleChunk),
   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
 });
 
