@@ -97,13 +97,18 @@ const site = useSiteConfig();
 const slug = route.params.slug;
 const { data, error } = await useFetch(`/api/works/${slug}`);
 
+const { getPageTitle } = usePageTitle();
+const pageTitleChunk = computed(() => data.value?.title);
+
 useHead({
-  title: () => data.value?.title,
+  title: () => pageTitleChunk.value,
 });
 
 useSeoMeta({
-  ogImage: data.value?.cover.path,
-  twitterImage: data.value?.cover.path,
+  ogTitle: () => getPageTitle(pageTitleChunk.value),
+  twitterTitle: () => getPageTitle(pageTitleChunk.value),
+  ogImage: () => data.value?.cover.path,
+  twitterImage: () => data.value?.cover.path,
 });
 
 useSchemaOrg([
