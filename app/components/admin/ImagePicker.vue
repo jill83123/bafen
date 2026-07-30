@@ -270,9 +270,7 @@ watch(data, async (newData) => {
   else imageList.value.push(...newData.images);
 });
 
-watch(error, (newError) => {
-  if (newError) toast.error(newError.data.message || '資料取得失敗，請稍後再試');
-});
+useErrorToast([error]);
 
 let isFirstOpen = true;
 

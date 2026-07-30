@@ -20,12 +20,17 @@ useHead({
   },
   titleTemplate: (titleChunk) => getPageTitle(titleChunk),
   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+  meta: [
+    {
+      name: 'keywords',
+      content: '八分,室內設計,住宅設計,室內裝修,空間規劃,裝修設計,居家設計,客製化設計',
+    },
+  ],
 });
 
 useSeoMeta({
   title: site.name,
   description: site.description,
-  keywords: '八分,室內設計,住宅設計,室內裝修,空間規劃,裝修設計,居家設計,客製化設計',
 
   ogUrl: site.url,
   ogTitle: site.name,
