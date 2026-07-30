@@ -42,4 +42,32 @@ useSeoMeta({
   twitterDescription: site.description,
   twitterImage: ogImage,
 });
+
+useSchemaOrg([
+  defineLocalBusiness({
+    type: ['InteriorDesign', 'GeneralContractor'],
+
+    // Basic Information
+    name: site.name,
+    description: site.description,
+    url: site.url,
+    image: ogImage,
+    telephone: '+886-4-2565-2603',
+    email: 'chun.sin999@gmail.com',
+
+    // Location
+    address: {
+      streetAddress: '前村路 382 巷 40 之 1 號',
+      addressLocality: '大雅區',
+      addressRegion: '台中市',
+      postalCode: '428',
+      addressCountry: 'TW',
+    },
+    geo: {
+      latitude: '24.223',
+      longitude: '120.662',
+    },
+    areaServed: ['台中市', '大雅區'],
+  }),
+]);
 </script>
