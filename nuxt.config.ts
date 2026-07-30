@@ -71,7 +71,7 @@ export default defineNuxtConfig({
     autoLastmod: true,
   },
 
-  css: ['./app/assets/css/main.css'],
+  css: ['~/assets/css/main.css'],
   colorMode: { preference: 'light' }, // TODO: 深色模式
 
   app: {
@@ -162,9 +162,9 @@ export default defineNuxtConfig({
   },
 
   // 使用區網測試其他裝置
-  devServer: {
-    host: '0.0.0.0',
-    port: 3000,
-    https: true,
-  },
+  // devServer: {
+  //   host: '0.0.0.0',
+  //   port: 3000,
+  //   https: true,
+  // },
 });
