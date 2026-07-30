@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     headers: {
       contentSecurityPolicy: {
         'img-src': ["'self'", 'data:', 'https://wsrv.nl'],
+        'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       },
       crossOriginEmbedderPolicy: false,
       crossOriginOpenerPolicy: 'same-origin-allow-popups',
