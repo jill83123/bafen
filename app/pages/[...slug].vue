@@ -10,6 +10,9 @@
 useHead({
   title: '404',
 });
+
+const event = useRequestEvent();
+if (event) setResponseStatus(event, 404);
 </script>
 
 <style scoped></style>
